@@ -568,14 +568,15 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>native-maven-plugin</artifactId>
-            <executions>
+            <executions
+            >
               <execution>
                 <phase>compile</phase>
                 <goals>
                   <goal>javah</goal>
                 </goals>
                 <configuration>
-                  <javahPath>${env.JAVA_HOME}/bin/javah</javahPath>
+                  <javahPath>D:\application\JDK8\bin\javah</javahPath>
                   <javahClassNames>
                     <javahClassName>org.apache.hadoop.io.compress.zlib.ZlibCompressor</javahClassName>
                     <javahClassName>org.apache.hadoop.io.compress.zlib.ZlibDecompressor</javahClassName>
@@ -695,7 +696,7 @@
                   <goal>javah</goal>
                 </goals>
                 <configuration>
-                  <javahPath>${env.JAVA_HOME}/bin/javah</javahPath>
+                  <javahPath>D:\application\JDK8\bin\javah</javahPath>
                   <javahClassNames>
                     <javahClassName>org.apache.hadoop.io.compress.zlib.ZlibCompressor</javahClassName>
                     <javahClassName>org.apache.hadoop.io.compress.zlib.ZlibDecompressor</javahClassName>
