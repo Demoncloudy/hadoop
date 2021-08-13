@@ -951,6 +951,7 @@ public class FSNamesystem implements Namesystem, FSClusterStats,
       prog.setTotal(Phase.SAFEMODE, STEP_AWAITING_REPORTED_BLOCKS, getCompleteBlocksTotal());
       // 判断是否要进入safemode和进入safemode后需要做什么
       setBlockTotal();
+      // 启动blockManager中的线程, FSNamesystem实例化时创建的
       blockManager.activate(conf);
     } finally {
       writeUnlock();
