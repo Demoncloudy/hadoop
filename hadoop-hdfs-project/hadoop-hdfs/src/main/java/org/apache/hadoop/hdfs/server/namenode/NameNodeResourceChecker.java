@@ -17,14 +17,9 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
@@ -33,9 +28,13 @@ import org.apache.hadoop.fs.DF;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.server.common.Util;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Collections2;
-import com.google.common.base.Predicate;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -85,7 +84,9 @@ public class NameNodeResourceChecker {
         LOG.debug("Space available on volume '" + volume + "' is "
             + availableSpace);
       }
+      // duReserved默认配置好的最小磁盘空间 dfs.namenode.resource.du.reserved 默认100M
       if (availableSpace < duReserved) {
+        // 打印警告
         LOG.warn("Space available on volume '" + volume + "' is "
             + availableSpace +
             ", which is below the configured reserved amount " + duReserved);
@@ -130,6 +131,7 @@ public class NameNodeResourceChecker {
 
     // Add all the local edits dirs, marking some as required if they are
     // configured as such.
+    // 放入需要检查的目录
     for (URI editsDirToCheck : localEditDirs) {
       addDirToCheck(editsDirToCheck,
           FSNamesystem.getRequiredNamespaceEditsDirs(conf).contains(

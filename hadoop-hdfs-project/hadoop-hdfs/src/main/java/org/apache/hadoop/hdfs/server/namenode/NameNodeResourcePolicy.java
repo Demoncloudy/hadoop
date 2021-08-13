@@ -17,9 +17,9 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
-import java.util.Collection;
-
 import org.apache.hadoop.classification.InterfaceAudience;
+
+import java.util.Collection;
 
 /**
  * Given a set of checkable resources, this class is capable of determining
@@ -38,6 +38,7 @@ final class NameNodeResourcePolicy {
    * @return true if and only if there are sufficient NN resources to
    *         continue logging edits.
    */
+  // 检查磁盘空间是否满足edits log写入的大小, 如果hdfs namenode可以正常运行, 必edits log可以正常写入
   static boolean areResourcesAvailable(
       Collection<? extends CheckableNameNodeResource> resources,
       int minimumRedundantResources) {

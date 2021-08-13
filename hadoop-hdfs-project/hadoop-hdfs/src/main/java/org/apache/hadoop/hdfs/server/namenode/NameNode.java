@@ -21,7 +21,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.HadoopIllegalArgumentException;
@@ -48,6 +47,7 @@ import org.apache.hadoop.hdfs.server.namenode.metrics.NameNodeMetrics;
 import org.apache.hadoop.hdfs.server.namenode.startupprogress.StartupProgress;
 import org.apache.hadoop.hdfs.server.namenode.startupprogress.StartupProgressMetrics;
 import org.apache.hadoop.hdfs.server.protocol.*;
+import org.apache.hadoop.ipc.RefreshCallQueueProtocol;
 import org.apache.hadoop.ipc.Server;
 import org.apache.hadoop.ipc.StandbyException;
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
@@ -58,7 +58,6 @@ import org.apache.hadoop.security.RefreshUserMappingsProtocol;
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authorize.RefreshAuthorizationPolicyProtocol;
-import org.apache.hadoop.ipc.RefreshCallQueueProtocol;
 import org.apache.hadoop.tools.GetUserMappingsProtocol;
 import org.apache.hadoop.tracing.SpanReceiverHost;
 import org.apache.hadoop.tracing.TraceAdminProtocol;
@@ -69,7 +68,6 @@ import org.apache.hadoop.util.ServicePlugin;
 import org.apache.hadoop.util.StringUtils;
 
 import javax.management.ObjectName;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.InetSocketAddress;
@@ -81,9 +79,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.FS_DEFAULT_NAME_KEY;
-import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.FS_TRASH_INTERVAL_DEFAULT;
-import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.FS_TRASH_INTERVAL_KEY;
+import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.*;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.*;
 import static org.apache.hadoop.util.ExitUtil.terminate;
 import static org.apache.hadoop.util.ToolRunner.confirmPrompt;
@@ -536,6 +532,9 @@ public class NameNode implements NameNodeStatusMXBean {
   }
 
   protected void loadNamesystem(Configuration conf) throws IOException {
+    // 创建和初始化FSNamesystem
+    // namenode启动的时候,会将磁盘上的fsimage和edits 2个文件读取到内存中进行合并
+    // 合并后是最新的一份数据, 合并后的元数据, 就是FSNamesystem放在内存中
     this.namesystem = FSNamesystem.loadFromDisk(conf);
   }
 
@@ -590,21 +589,25 @@ public class NameNode implements NameNodeStatusMXBean {
     StartupProgressMetrics.register(startupProgress);
 
     if (NamenodeRole.NAMENODE == role) {
+      // 角色为namenode时, 启动http server, 端口号为50070
       startHttpServer(conf);
     }
 
     this.spanReceiverHost = SpanReceiverHost.getInstance(conf);
 
+    // 初始化FSNamesystem
     loadNamesystem(conf);
 
+    // 初始化rpc server
+    // 里面有serviceRpcServer(datanode)和clientRpcServer(client)
     rpcServer = createRpcServer(conf);
     if (clientNamenodeAddress == null) {
       // This is expected for MiniDFSCluster. Set it now using 
       // the RPC server's bind address.
-      clientNamenodeAddress = 
-          NetUtils.getHostPortString(rpcServer.getRpcAddress());
+      clientNamenodeAddress =
+              NetUtils.getHostPortString(rpcServer.getRpcAddress());
       LOG.info("Clients are to use " + clientNamenodeAddress + " to access"
-          + " this namenode/service.");
+              + " this namenode/service.");
     }
     if (NamenodeRole.NAMENODE == role) {
       httpServer.setNameNodeAddress(getNameNodeAddress());
@@ -629,6 +632,7 @@ public class NameNode implements NameNodeStatusMXBean {
 
   /** Start the services common to active and standby states */
   private void startCommonServices(Configuration conf) throws IOException {
+    // FSNamesystem startCommonServices
     namesystem.startCommonServices(conf, haContext);
     registerNNSMXBean();
     if (NamenodeRole.NAMENODE != role) {
@@ -702,6 +706,7 @@ public class NameNode implements NameNodeStatusMXBean {
   }
   
   private void startHttpServer(final Configuration conf) throws IOException {
+    // 默认端口号50070
     httpServer = new NameNodeHttpServer(conf, this, getHttpServerBindAddress(conf));
     httpServer.start();
     httpServer.setStartupProgress(startupProgress);
@@ -746,6 +751,7 @@ public class NameNode implements NameNodeStatusMXBean {
    * @throws IOException
    */
   public NameNode(Configuration conf) throws IOException {
+    // 传入角色
     this(conf, NamenodeRole.NAMENODE);
   }
 
@@ -762,6 +768,7 @@ public class NameNode implements NameNodeStatusMXBean {
     this.haContext = createHAContext();
     try {
       initializeGenericKeys(conf, nsId, namenodeId);
+      // 初始化
       initialize(conf);
       try {
         haContext.writeLock();
@@ -1375,6 +1382,7 @@ public class NameNode implements NameNodeStatusMXBean {
     GenericOptionsParser hParser = new GenericOptionsParser(conf, argv);
     argv = hParser.getRemainingArgs();
     // Parse the rest, NN specific args.
+    // hdfs namenode -format
     StartupOption startOpt = parseArguments(argv);
     if (startOpt == null) {
       printUsage(System.err);
@@ -1383,6 +1391,7 @@ public class NameNode implements NameNodeStatusMXBean {
     setStartupOption(conf, startOpt);
 
     switch (startOpt) {
+      // 传递-format 格式化
       case FORMAT: {
         boolean aborted = format(conf, startOpt.getForceFormat(),
             startOpt.getInteractiveFormat());
@@ -1441,6 +1450,7 @@ public class NameNode implements NameNodeStatusMXBean {
         terminate(0);
         return null;
       }
+      // 正常情况启动namenode
       default: {
         DefaultMetricsSystem.initialize("NameNode");
         return new NameNode(conf);
@@ -1502,6 +1512,7 @@ public class NameNode implements NameNodeStatusMXBean {
   
   /**
    */
+  // namenode启动主流程
   public static void main(String argv[]) throws Exception {
     if (DFSUtil.parseHelpArgument(argv, NameNode.USAGE, System.out, true)) {
       System.exit(0);
@@ -1509,6 +1520,7 @@ public class NameNode implements NameNodeStatusMXBean {
 
     try {
       StringUtils.startupShutdownMessage(NameNode.class, argv, LOG);
+      // 创建namenode
       NameNode namenode = createNameNode(argv, null);
       if (namenode != null) {
         namenode.join();

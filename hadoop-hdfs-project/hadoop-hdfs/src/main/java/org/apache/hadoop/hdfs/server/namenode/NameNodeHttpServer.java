@@ -18,13 +18,6 @@
 package org.apache.hadoop.hdfs.server.namenode;
 
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
@@ -41,8 +34,14 @@ import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UserGroupInformation;
 
+import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Encapsulates the HTTP server started by the NameNode. 
+ * Encapsulates the HTTP server started by the NameNode.
  */
 @InterfaceAudience.Private
 public class NameNodeHttpServer {
@@ -118,6 +117,7 @@ public class NameNodeHttpServer {
       }
     }
 
+    // httpServer2 -> hadoop common 中自己实现的http server
     HttpServer2.Builder builder = DFSUtil.httpServerTemplateForNNAndJN(conf,
         httpAddr, httpsAddr, "hdfs",
         DFSConfigKeys.DFS_NAMENODE_KERBEROS_INTERNAL_SPNEGO_PRINCIPAL_KEY,
@@ -138,7 +138,9 @@ public class NameNodeHttpServer {
 
     httpServer.setAttribute(NAMENODE_ATTRIBUTE_KEY, nn);
     httpServer.setAttribute(JspHelper.CURRENT_CONF, conf);
+    // 绑定了对应的servlet, 定义了自己可以接收那些http请求, 接受到了请求后, 转发给那个servlet来处理
     setupServlets(httpServer, conf);
+    // 启动http server2
     httpServer.start();
 
     int connIdx = 0;

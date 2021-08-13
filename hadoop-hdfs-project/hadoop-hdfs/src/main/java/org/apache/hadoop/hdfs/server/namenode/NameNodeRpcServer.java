@@ -17,46 +17,16 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
-import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_HANDLER_COUNT_DEFAULT;
-import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_HANDLER_COUNT_KEY;
-import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_SERVICE_HANDLER_COUNT_DEFAULT;
-import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_SERVICE_HANDLER_COUNT_KEY;
-import static org.apache.hadoop.hdfs.protocol.HdfsConstants.MAX_PATH_DEPTH;
-import static org.apache.hadoop.hdfs.protocol.HdfsConstants.MAX_PATH_LENGTH;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+import com.google.protobuf.BlockingService;
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.HadoopIllegalArgumentException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.crypto.CryptoProtocolVersion;
 import org.apache.hadoop.fs.BatchedRemoteIterator.BatchedEntries;
-import org.apache.hadoop.fs.CacheFlag;
-import org.apache.hadoop.fs.CommonConfigurationKeys;
-import org.apache.hadoop.fs.ContentSummary;
-import org.apache.hadoop.fs.CreateFlag;
-import org.apache.hadoop.fs.FileAlreadyExistsException;
-import org.apache.hadoop.fs.FsServerDefaults;
-import org.apache.hadoop.fs.InvalidPathException;
-import org.apache.hadoop.fs.Options;
-import org.apache.hadoop.fs.ParentNotDirectoryException;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.UnresolvedLinkException;
-import org.apache.hadoop.fs.XAttr;
-import org.apache.hadoop.fs.XAttrSetFlag;
-import org.apache.hadoop.fs.permission.AclEntry;
-import org.apache.hadoop.fs.permission.AclStatus;
-import org.apache.hadoop.fs.permission.FsAction;
-import org.apache.hadoop.fs.permission.FsPermission;
-import org.apache.hadoop.fs.permission.PermissionStatus;
+import org.apache.hadoop.fs.*;
+import org.apache.hadoop.fs.permission.*;
 import org.apache.hadoop.ha.HAServiceStatus;
 import org.apache.hadoop.ha.HealthCheckFailedException;
 import org.apache.hadoop.ha.ServiceFailedException;
@@ -68,46 +38,14 @@ import org.apache.hadoop.hdfs.DFSUtil;
 import org.apache.hadoop.hdfs.HDFSPolicyProvider;
 import org.apache.hadoop.hdfs.inotify.EventBatch;
 import org.apache.hadoop.hdfs.inotify.EventBatchList;
-import org.apache.hadoop.hdfs.protocol.AclException;
-import org.apache.hadoop.hdfs.protocol.AlreadyBeingCreatedException;
-import org.apache.hadoop.hdfs.protocol.BlockListAsLongs;
-import org.apache.hadoop.hdfs.protocol.BlockStoragePolicy;
-import org.apache.hadoop.hdfs.protocol.CacheDirectiveEntry;
-import org.apache.hadoop.hdfs.protocol.CacheDirectiveInfo;
-import org.apache.hadoop.hdfs.protocol.CachePoolEntry;
-import org.apache.hadoop.hdfs.protocol.CachePoolInfo;
-import org.apache.hadoop.hdfs.protocol.CorruptFileBlocks;
-import org.apache.hadoop.hdfs.protocol.DSQuotaExceededException;
-import org.apache.hadoop.hdfs.protocol.DatanodeID;
-import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
-import org.apache.hadoop.hdfs.protocol.DirectoryListing;
-import org.apache.hadoop.hdfs.protocol.EncryptionZone;
-import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
-import org.apache.hadoop.hdfs.protocol.FSLimitException;
-import org.apache.hadoop.hdfs.protocol.HdfsConstants;
+import org.apache.hadoop.hdfs.protocol.*;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants.DatanodeReportType;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants.RollingUpgradeAction;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants.SafeModeAction;
-import org.apache.hadoop.hdfs.protocol.HdfsFileStatus;
-import org.apache.hadoop.hdfs.protocol.LocatedBlock;
-import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
-import org.apache.hadoop.hdfs.protocol.NSQuotaExceededException;
-import org.apache.hadoop.hdfs.protocol.QuotaExceededException;
-import org.apache.hadoop.hdfs.protocol.RecoveryInProgressException;
-import org.apache.hadoop.hdfs.protocol.RollingUpgradeInfo;
-import org.apache.hadoop.hdfs.protocol.SnapshotDiffReport;
-import org.apache.hadoop.hdfs.protocol.SnapshottableDirectoryStatus;
-import org.apache.hadoop.hdfs.protocol.UnregisteredNodeException;
-import org.apache.hadoop.hdfs.protocol.UnresolvedPathException;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.ClientNamenodeProtocol;
 import org.apache.hadoop.hdfs.protocol.proto.DatanodeProtocolProtos.DatanodeProtocolService;
 import org.apache.hadoop.hdfs.protocol.proto.NamenodeProtocolProtos.NamenodeProtocolService;
-import org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolPB;
-import org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB;
-import org.apache.hadoop.hdfs.protocolPB.DatanodeProtocolPB;
-import org.apache.hadoop.hdfs.protocolPB.DatanodeProtocolServerSideTranslatorPB;
-import org.apache.hadoop.hdfs.protocolPB.NamenodeProtocolPB;
-import org.apache.hadoop.hdfs.protocolPB.NamenodeProtocolServerSideTranslatorPB;
+import org.apache.hadoop.hdfs.protocolPB.*;
 import org.apache.hadoop.hdfs.security.token.block.DataEncryptionKey;
 import org.apache.hadoop.hdfs.security.token.block.ExportedBlockKeys;
 import org.apache.hadoop.hdfs.security.token.delegation.DelegationTokenIdentifier;
@@ -117,31 +55,10 @@ import org.apache.hadoop.hdfs.server.common.IncorrectVersionException;
 import org.apache.hadoop.hdfs.server.namenode.NameNode.OperationCategory;
 import org.apache.hadoop.hdfs.server.namenode.metrics.NameNodeMetrics;
 import org.apache.hadoop.hdfs.server.namenode.web.resources.NamenodeWebHdfsMethods;
-import org.apache.hadoop.hdfs.server.protocol.BlockReportContext;
-import org.apache.hadoop.hdfs.server.protocol.BlocksWithLocations;
-import org.apache.hadoop.hdfs.server.protocol.DatanodeCommand;
-import org.apache.hadoop.hdfs.server.protocol.DatanodeProtocol;
-import org.apache.hadoop.hdfs.server.protocol.DatanodeRegistration;
-import org.apache.hadoop.hdfs.server.protocol.DatanodeStorageReport;
-import org.apache.hadoop.hdfs.server.protocol.FinalizeCommand;
-import org.apache.hadoop.hdfs.server.protocol.HeartbeatResponse;
-import org.apache.hadoop.hdfs.server.protocol.NamenodeCommand;
-import org.apache.hadoop.hdfs.server.protocol.NamenodeProtocols;
-import org.apache.hadoop.hdfs.server.protocol.NamenodeRegistration;
-import org.apache.hadoop.hdfs.server.protocol.NamespaceInfo;
-import org.apache.hadoop.hdfs.server.protocol.NodeRegistration;
-import org.apache.hadoop.hdfs.server.protocol.RemoteEditLogManifest;
-import org.apache.hadoop.hdfs.server.protocol.StorageBlockReport;
-import org.apache.hadoop.hdfs.server.protocol.StorageReceivedDeletedBlocks;
-import org.apache.hadoop.hdfs.server.protocol.StorageReport;
+import org.apache.hadoop.hdfs.server.protocol.*;
 import org.apache.hadoop.io.EnumSetWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.ipc.ProtobufRpcEngine;
-import org.apache.hadoop.ipc.RPC;
-import org.apache.hadoop.ipc.RefreshRegistry;
-import org.apache.hadoop.ipc.RefreshResponse;
-import org.apache.hadoop.ipc.Server;
-import org.apache.hadoop.ipc.WritableRpcEngine;
+import org.apache.hadoop.ipc.*;
 import org.apache.hadoop.ipc.proto.GenericRefreshProtocolProtos.GenericRefreshProtocolService;
 import org.apache.hadoop.ipc.proto.RefreshCallQueueProtocolProtos.RefreshCallQueueProtocolService;
 import org.apache.hadoop.ipc.protocolPB.GenericRefreshProtocolPB;
@@ -172,9 +89,14 @@ import org.apache.hadoop.tracing.TraceAdminProtocolServerSideTranslatorPB;
 import org.apache.hadoop.util.VersionInfo;
 import org.apache.hadoop.util.VersionUtil;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-import com.google.protobuf.BlockingService;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.*;
+
+import static org.apache.hadoop.hdfs.DFSConfigKeys.*;
+import static org.apache.hadoop.hdfs.protocol.HdfsConstants.MAX_PATH_DEPTH;
+import static org.apache.hadoop.hdfs.protocol.HdfsConstants.MAX_PATH_LENGTH;
 
 /**
  * This class is responsible for handling all of the RPC calls to the NameNode.
@@ -213,24 +135,27 @@ class NameNodeRpcServer implements NamenodeProtocols {
       conf.getInt(DFS_NAMENODE_HANDLER_COUNT_KEY, 
                   DFS_NAMENODE_HANDLER_COUNT_DEFAULT);
 
-    RPC.setProtocolEngine(conf, ClientNamenodeProtocolPB.class,
-        ProtobufRpcEngine.class);
+      RPC.setProtocolEngine(conf, ClientNamenodeProtocolPB.class,
+              ProtobufRpcEngine.class);
 
-    ClientNamenodeProtocolServerSideTranslatorPB 
-       clientProtocolServerTranslator = 
-         new ClientNamenodeProtocolServerSideTranslatorPB(this);
-     BlockingService clientNNPbService = ClientNamenodeProtocol.
-         newReflectiveBlockingService(clientProtocolServerTranslator);
-    
-    DatanodeProtocolServerSideTranslatorPB dnProtoPbTranslator = 
-        new DatanodeProtocolServerSideTranslatorPB(this);
-    BlockingService dnProtoPbService = DatanodeProtocolService
-        .newReflectiveBlockingService(dnProtoPbTranslator);
+      // client 和namenode通信需要调用的接口
+      ClientNamenodeProtocolServerSideTranslatorPB
+              clientProtocolServerTranslator =
+              new ClientNamenodeProtocolServerSideTranslatorPB(this);
+      BlockingService clientNNPbService = ClientNamenodeProtocol.
+              newReflectiveBlockingService(clientProtocolServerTranslator);
 
-    NamenodeProtocolServerSideTranslatorPB namenodeProtocolXlator = 
-        new NamenodeProtocolServerSideTranslatorPB(this);
-    BlockingService NNPbService = NamenodeProtocolService
-          .newReflectiveBlockingService(namenodeProtocolXlator);
+      // datanode和namenode通信需要调用的接口
+      DatanodeProtocolServerSideTranslatorPB dnProtoPbTranslator =
+              new DatanodeProtocolServerSideTranslatorPB(this);
+      BlockingService dnProtoPbService = DatanodeProtocolService
+              .newReflectiveBlockingService(dnProtoPbTranslator);
+
+      // 可能namenode之间调用的接口
+      NamenodeProtocolServerSideTranslatorPB namenodeProtocolXlator =
+              new NamenodeProtocolServerSideTranslatorPB(this);
+      BlockingService NNPbService = NamenodeProtocolService
+              .newReflectiveBlockingService(namenodeProtocolXlator);
     
     RefreshAuthorizationPolicyProtocolServerSideTranslatorPB refreshAuthPolicyXlator = 
         new RefreshAuthorizationPolicyProtocolServerSideTranslatorPB(this);
@@ -247,40 +172,44 @@ class NameNodeRpcServer implements NamenodeProtocols {
     BlockingService refreshCallQueueService = RefreshCallQueueProtocolService
         .newReflectiveBlockingService(refreshCallQueueXlator);
 
-    GenericRefreshProtocolServerSideTranslatorPB genericRefreshXlator =
-        new GenericRefreshProtocolServerSideTranslatorPB(this);
-    BlockingService genericRefreshService = GenericRefreshProtocolService
-        .newReflectiveBlockingService(genericRefreshXlator);
+      GenericRefreshProtocolServerSideTranslatorPB genericRefreshXlator =
+              new GenericRefreshProtocolServerSideTranslatorPB(this);
+      BlockingService genericRefreshService = GenericRefreshProtocolService
+              .newReflectiveBlockingService(genericRefreshXlator);
 
-    GetUserMappingsProtocolServerSideTranslatorPB getUserMappingXlator = 
-        new GetUserMappingsProtocolServerSideTranslatorPB(this);
-    BlockingService getUserMappingService = GetUserMappingsProtocolService
-        .newReflectiveBlockingService(getUserMappingXlator);
-    
-    HAServiceProtocolServerSideTranslatorPB haServiceProtocolXlator = 
-        new HAServiceProtocolServerSideTranslatorPB(this);
-    BlockingService haPbService = HAServiceProtocolService
-        .newReflectiveBlockingService(haServiceProtocolXlator);
+      GetUserMappingsProtocolServerSideTranslatorPB getUserMappingXlator =
+              new GetUserMappingsProtocolServerSideTranslatorPB(this);
+      BlockingService getUserMappingService = GetUserMappingsProtocolService
+              .newReflectiveBlockingService(getUserMappingXlator);
 
-    TraceAdminProtocolServerSideTranslatorPB traceAdminXlator =
-        new TraceAdminProtocolServerSideTranslatorPB(this);
-    BlockingService traceAdminService = TraceAdminService
-        .newReflectiveBlockingService(traceAdminXlator);
-    
-    WritableRpcEngine.ensureInitialized();
+      // 主备HA切换需要调用的接口
+      HAServiceProtocolServerSideTranslatorPB haServiceProtocolXlator =
+              new HAServiceProtocolServerSideTranslatorPB(this);
+      BlockingService haPbService = HAServiceProtocolService
+              .newReflectiveBlockingService(haServiceProtocolXlator);
 
-    InetSocketAddress serviceRpcAddr = nn.getServiceRpcServerAddress(conf);
-    if (serviceRpcAddr != null) {
-      String bindHost = nn.getServiceRpcServerBindHost(conf);
-      if (bindHost == null) {
-        bindHost = serviceRpcAddr.getHostName();
-      }
-      LOG.info("Service RPC server is binding to " + bindHost + ":" +
+      TraceAdminProtocolServerSideTranslatorPB traceAdminXlator =
+              new TraceAdminProtocolServerSideTranslatorPB(this);
+      BlockingService traceAdminService = TraceAdminService
+              .newReflectiveBlockingService(traceAdminXlator);
+
+      // 初始化rpc server, 可以接收各种接口的调用
+      WritableRpcEngine.ensureInitialized();
+
+      // 从配置文件中获取地址
+      InetSocketAddress serviceRpcAddr = nn.getServiceRpcServerAddress(conf);
+      if (serviceRpcAddr != null) {
+          String bindHost = nn.getServiceRpcServerBindHost(conf);
+          if (bindHost == null) {
+              bindHost = serviceRpcAddr.getHostName();
+          }
+          LOG.info("Service RPC server is binding to " + bindHost + ":" +
           serviceRpcAddr.getPort());
 
       int serviceHandlerCount =
         conf.getInt(DFS_NAMENODE_SERVICE_HANDLER_COUNT_KEY,
                     DFS_NAMENODE_SERVICE_HANDLER_COUNT_DEFAULT);
+          // 初始化serviceRpcServer requests from DataNodes
       this.serviceRpcServer = new RPC.Builder(conf)
           .setProtocol(
               org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolPB.class)
@@ -328,6 +257,7 @@ class NameNodeRpcServer implements NamenodeProtocols {
     }
     LOG.info("RPC server is binding to " + bindHost + ":" + rpcAddr.getPort());
 
+      // 初始化clientRpcServer requests from clients
     this.clientRpcServer = new RPC.Builder(conf)
         .setProtocol(
             org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolPB.class)

@@ -17,20 +17,8 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
-import static org.apache.hadoop.util.Time.now;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableSet;
-import java.util.NoSuchElementException;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
@@ -41,8 +29,10 @@ import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
 import org.apache.hadoop.util.Daemon;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
+import java.io.IOException;
+import java.util.*;
+
+import static org.apache.hadoop.util.Time.now;
 
 /**
  * LeaseManager does the lease housekeeping for writing on files.   
@@ -111,11 +101,14 @@ public class LeaseManager {
     assert this.fsnamesystem.hasReadLock() : "The FSNamesystem read lock wasn't"
       + "acquired before counting under construction blocks";
     long numUCBlocks = 0;
+      // 每个lease中有多个path, 每个path相当于一个文件路径
     for (Lease lease : sortedLeases) {
       for (String path : lease.getPaths()) {
         final INodeFile cons;
         try {
+            // 获取代表文件路径的 INodeFile
           cons = this.fsnamesystem.getFSDirectory().getINode(path).asFile();
+            // 不是处于UnderConstruction 就继续检查下一个
           if (!cons.isUnderConstruction()) {
             LOG.warn("The file " + cons.getFullPathName()
                 + " is not under construction but has lease.");
@@ -124,10 +117,12 @@ public class LeaseManager {
         } catch (UnresolvedLinkException e) {
           throw new AssertionError("Lease files should reside on this FS");
         }
+          // 获取文件的blocks, 每个可能有多个block
         BlockInfo[] blocks = cons.getBlocks();
         if(blocks == null)
           continue;
         for(BlockInfo b : blocks) {
+            // 如果不是complete, 就是UnderConstruction
           if(!b.isComplete())
             numUCBlocks++;
         }
