@@ -196,7 +196,8 @@ class NameNodeRpcServer implements NamenodeProtocols {
       // 初始化rpc server, 可以接收各种接口的调用
       WritableRpcEngine.ensureInitialized();
 
-      // 从配置文件中获取地址
+      // 从配置文件中获取地址, 默认dfs.namenode.servicerpc-address -> 为空, 返回时null
+      // 所以默认serviceRpcServer不会启动
       InetSocketAddress serviceRpcAddr = nn.getServiceRpcServerAddress(conf);
       if (serviceRpcAddr != null) {
           String bindHost = nn.getServiceRpcServerBindHost(conf);
@@ -204,9 +205,9 @@ class NameNodeRpcServer implements NamenodeProtocols {
               bindHost = serviceRpcAddr.getHostName();
           }
           LOG.info("Service RPC server is binding to " + bindHost + ":" +
-          serviceRpcAddr.getPort());
+                  serviceRpcAddr.getPort());
 
-      int serviceHandlerCount =
+          int serviceHandlerCount =
         conf.getInt(DFS_NAMENODE_SERVICE_HANDLER_COUNT_KEY,
                     DFS_NAMENODE_SERVICE_HANDLER_COUNT_DEFAULT);
           // 初始化serviceRpcServer requests from DataNodes
@@ -345,6 +346,7 @@ class NameNodeRpcServer implements NamenodeProtocols {
    */
   void start() {
     clientRpcServer.start();
+      // 默认情况下serviceRpcServer 为null
     if (serviceRpcServer != null) {
       serviceRpcServer.start();      
     }

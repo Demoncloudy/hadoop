@@ -400,6 +400,7 @@ public class NameNode implements NameNodeStatusMXBean {
    */
   public static InetSocketAddress getServiceAddress(Configuration conf,
                                                         boolean fallback) {
+    // dfs.namenode.servicerpc-address -> 默认为空, 返回时null
     String addr = conf.get(DFS_NAMENODE_SERVICE_RPC_ADDRESS_KEY);
     if (addr == null || addr.isEmpty()) {
       return fallback ? getAddress(conf) : null;
@@ -640,6 +641,7 @@ public class NameNode implements NameNodeStatusMXBean {
       httpServer.setNameNodeAddress(getNameNodeAddress());
       httpServer.setFSImage(getFSImage());
     }
+    // 启动rpc server
     rpcServer.start();
     plugins = conf.getInstances(DFS_NAMENODE_PLUGINS_KEY,
         ServicePlugin.class);
@@ -1523,6 +1525,7 @@ public class NameNode implements NameNodeStatusMXBean {
       // 创建namenode
       NameNode namenode = createNameNode(argv, null);
       if (namenode != null) {
+        // join, 等待rpc server结束
         namenode.join();
       }
     } catch (Throwable e) {
