@@ -16,34 +16,34 @@
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-  <xsl:output method="html"/>
-  <xsl:template match="configuration">
-    <html>
-      <body>
-        <h2>Configuration Properties</h2>
-        <table border="1">
-          <tr>
-            <th>name</th>
-            <th>value</th>
-            <th>description</th>
-          </tr>
-          <xsl:for-each select="property">
-            <tr>
-              <td>
-                <a name="{name}">
-                  <xsl:value-of select="name"/>
-                </a>
-              </td>
-              <td>
-                <xsl:value-of select="value"/>
-              </td>
-              <td>
-                <xsl:value-of select="description"/>
-              </td>
-            </tr>
-          </xsl:for-each>
-        </table>
-      </body>
-    </html>
-  </xsl:template>
+    <xsl:output method="html"/>
+    <xsl:template match="configuration">
+        <html>
+            <body>
+                <h2>Configuration Properties</h2>
+                <table border="1">
+                    <tr>
+                        <th>name</th>
+                        <th>value</th>
+                        <th>description</th>
+                    </tr>
+                    <xsl:for-each select="property">
+                        <tr>
+                            <td>
+                                <a name="{name}">
+                                    <xsl:value-of select="name"/>
+                                </a>
+                            </td>
+                            <td>
+                                <xsl:value-of select="value"/>
+                            </td>
+                            <td>
+                                <xsl:value-of select="description"/>
+                            </td>
+                        </tr>
+                    </xsl:for-each>
+                </table>
+            </body>
+        </html>
+    </xsl:template>
 </xsl:stylesheet>

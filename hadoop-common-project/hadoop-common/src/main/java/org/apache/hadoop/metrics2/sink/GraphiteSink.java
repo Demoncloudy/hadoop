@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,23 +18,19 @@
 
 package org.apache.hadoop.metrics2.sink;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.io.Closeable;
-import java.net.Socket;
-
 import org.apache.commons.configuration.SubsetConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.io.IOUtils;
-import org.apache.hadoop.metrics2.AbstractMetric;
-import org.apache.hadoop.metrics2.MetricsException;
-import org.apache.hadoop.metrics2.MetricsRecord;
-import org.apache.hadoop.metrics2.MetricsSink;
-import org.apache.hadoop.metrics2.MetricsTag;
+import org.apache.hadoop.metrics2.*;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.net.Socket;
 
 /**
  * A metrics sink that writes to a Graphite server
@@ -102,10 +98,10 @@ public class GraphiteSink implements MetricsSink, Closeable {
         }
 
         try {
-            if(writer != null){
-              writer.write(lines.toString());
+            if (writer != null) {
+                writer.write(lines.toString());
             } else {
-              throw new MetricsException("Writer in GraphiteSink is null!");
+                throw new MetricsException("Writer in GraphiteSink is null!");
             }
         } catch (Exception e) {
             throw new MetricsException("Error sending metrics", e);
@@ -123,18 +119,18 @@ public class GraphiteSink implements MetricsSink, Closeable {
 
     @Override
     public void close() throws IOException {
-      try {
-        IOUtils.closeStream(writer);
-        writer = null;
-        LOG.info("writer in GraphiteSink is closed!");
-      } catch (Throwable e){
-        throw new MetricsException("Error closing writer", e);
-      } finally {
-        if (socket != null && !socket.isClosed()) {
-          socket.close();
-          socket = null;
-          LOG.info("socket in GraphiteSink is closed!");
+        try {
+            IOUtils.closeStream(writer);
+            writer = null;
+            LOG.info("writer in GraphiteSink is closed!");
+        } catch (Throwable e) {
+            throw new MetricsException("Error closing writer", e);
+        } finally {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+                socket = null;
+                LOG.info("socket in GraphiteSink is closed!");
+            }
         }
-      }
     }
 }

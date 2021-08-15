@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,37 +17,42 @@
  */
 package org.apache.hadoop.hdfs.web.resources;
 
-import java.util.EnumSet;
-
 import org.apache.hadoop.fs.XAttrSetFlag;
 
+import java.util.EnumSet;
+
 public class XAttrSetFlagParam extends EnumSetParam<XAttrSetFlag> {
-  /** Parameter name. */
-  public static final String NAME = "flag";
-  /** Default parameter value. */
-  public static final String DEFAULT = "";
+    /**
+     * Parameter name.
+     */
+    public static final String NAME = "flag";
+    /**
+     * Default parameter value.
+     */
+    public static final String DEFAULT = "";
 
-  private static final Domain<XAttrSetFlag> DOMAIN = new Domain<XAttrSetFlag>(
-      NAME, XAttrSetFlag.class);
+    private static final Domain<XAttrSetFlag> DOMAIN = new Domain<XAttrSetFlag>(
+            NAME, XAttrSetFlag.class);
 
-  public XAttrSetFlagParam(final EnumSet<XAttrSetFlag> flag) {
-    super(DOMAIN, flag);
-  }
-  
-  /**
-   * Constructor.
-   * @param str a string representation of the parameter value.
-   */
-  public XAttrSetFlagParam(final String str) {
-    super(DOMAIN, DOMAIN.parse(str));
-  }
+    public XAttrSetFlagParam(final EnumSet<XAttrSetFlag> flag) {
+        super(DOMAIN, flag);
+    }
 
-  @Override
-  public String getName() {
-    return NAME;
-  }
-  
-  public EnumSet<XAttrSetFlag> getFlag() {
-    return getValue();
-  }
+    /**
+     * Constructor.
+     *
+     * @param str a string representation of the parameter value.
+     */
+    public XAttrSetFlagParam(final String str) {
+        super(DOMAIN, DOMAIN.parse(str));
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    public EnumSet<XAttrSetFlag> getFlag() {
+        return getValue();
+    }
 }

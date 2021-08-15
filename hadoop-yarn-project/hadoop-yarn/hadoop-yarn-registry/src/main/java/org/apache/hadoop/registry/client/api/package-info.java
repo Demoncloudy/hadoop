@@ -18,7 +18,7 @@
 
 /**
  * YARN Registry Client API.
- *
+ * <p>
  * This package contains the core API for the YARN registry.
  *
  * <ol>
@@ -29,7 +29,5 @@
  *   <li> Classes to assist use of the registry are in
  * {@link org.apache.hadoop.registry.client.binding}</li>
  * </ol>
- *
- *
  */
 package org.apache.hadoop.registry.client.api;

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,65 +35,64 @@ import java.util.UUID;
 
 @RunWith(value = Parameterized.class)
 public class TestHttpFSFWithSWebhdfsFileSystem
-  extends TestHttpFSWithHttpFSFileSystem {
-  private static String classpathDir;
-  private static final String BASEDIR = System.getProperty("test.build.dir",
-      "target/test-dir") + "/" + UUID.randomUUID();
+        extends TestHttpFSWithHttpFSFileSystem {
+    private static final String BASEDIR = System.getProperty("test.build.dir",
+            "target/test-dir") + "/" + UUID.randomUUID();
+    private static String classpathDir;
+    private static Configuration sslConf;
 
-  private static Configuration sslConf;
-
-  {
-    URL url = Thread.currentThread().getContextClassLoader().
-        getResource("classutils.txt");
-    classpathDir = url.toExternalForm();
-    if (classpathDir.startsWith("file:")) {
-      classpathDir = classpathDir.substring("file:".length());
-      classpathDir = classpathDir.substring(0,
-          classpathDir.length() - "/classutils.txt".length());
-    } else {
-      throw new RuntimeException("Cannot find test classes dir");
+    {
+        URL url = Thread.currentThread().getContextClassLoader().
+                getResource("classutils.txt");
+        classpathDir = url.toExternalForm();
+        if (classpathDir.startsWith("file:")) {
+            classpathDir = classpathDir.substring("file:".length());
+            classpathDir = classpathDir.substring(0,
+                    classpathDir.length() - "/classutils.txt".length());
+        } else {
+            throw new RuntimeException("Cannot find test classes dir");
+        }
+        File base = new File(BASEDIR);
+        FileUtil.fullyDelete(base);
+        base.mkdirs();
+        String keyStoreDir = new File(BASEDIR).getAbsolutePath();
+        try {
+            sslConf = new Configuration();
+            KeyStoreTestUtil.setupSSLConfig(keyStoreDir, classpathDir, sslConf, false);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+        jettyTestHelper = new TestJettyHelper("jks", keyStoreDir + "/serverKS.jks",
+                "serverP");
     }
-    File base = new File(BASEDIR);
-    FileUtil.fullyDelete(base);
-    base.mkdirs();
-    String keyStoreDir = new File(BASEDIR).getAbsolutePath();
-    try {
-      sslConf = new Configuration();
-      KeyStoreTestUtil.setupSSLConfig(keyStoreDir, classpathDir, sslConf, false);
-    } catch (Exception ex) {
-      throw new RuntimeException(ex);
+
+    public TestHttpFSFWithSWebhdfsFileSystem(Operation operation) {
+        super(operation);
     }
-    jettyTestHelper = new TestJettyHelper("jks", keyStoreDir + "/serverKS.jks",
-        "serverP");
-  }
 
-  @AfterClass
-  public static void cleanUp() {
-    new File(classpathDir, "ssl-client.xml").delete();
-    new File(classpathDir, "ssl-server.xml").delete();
-  }
+    @AfterClass
+    public static void cleanUp() {
+        new File(classpathDir, "ssl-client.xml").delete();
+        new File(classpathDir, "ssl-server.xml").delete();
+    }
 
-  public TestHttpFSFWithSWebhdfsFileSystem(Operation operation) {
-    super(operation);
-  }
+    @Override
+    protected Class getFileSystemClass() {
+        return SWebHdfsFileSystem.class;
+    }
 
-  @Override
-  protected Class getFileSystemClass() {
-    return SWebHdfsFileSystem.class;
-  }
+    @Override
+    protected String getScheme() {
+        return "swebhdfs";
+    }
 
-  @Override
-  protected String getScheme() {
-    return "swebhdfs";
-  }
-
-  @Override
-  protected FileSystem getHttpFSFileSystem() throws Exception {
-    Configuration conf = new Configuration(sslConf);
-    conf.set("fs.swebhdfs.impl", getFileSystemClass().getName());
-    URI uri = new URI("swebhdfs://" +
-        TestJettyHelper.getJettyURL().toURI().getAuthority());
-    return FileSystem.get(uri, conf);
-  }
+    @Override
+    protected FileSystem getHttpFSFileSystem() throws Exception {
+        Configuration conf = new Configuration(sslConf);
+        conf.set("fs.swebhdfs.impl", getFileSystemClass().getName());
+        URI uri = new URI("swebhdfs://" +
+                TestJettyHelper.getJettyURL().toURI().getAuthority());
+        return FileSystem.get(uri, conf);
+    }
 
 }

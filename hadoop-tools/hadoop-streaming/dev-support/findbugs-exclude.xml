@@ -16,15 +16,15 @@
    limitations under the License.
 -->
 <FindBugsFilter>
-  <Match>
-    <Or>
-      <Class name="org.apache.hadoop.streaming.PipeMapper" />
-      <Class name="org.apache.hadoop.streaming.PipeReducer"/>
-    </Or>
-    <Or>
-      <Method name="getFieldSeparator"/>
-      <Method name="getInputSeparator"/>
-    </Or>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
+    <Match>
+        <Or>
+            <Class name="org.apache.hadoop.streaming.PipeMapper"/>
+            <Class name="org.apache.hadoop.streaming.PipeReducer"/>
+        </Or>
+        <Or>
+            <Method name="getFieldSeparator"/>
+            <Method name="getInputSeparator"/>
+        </Or>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
 </FindBugsFilter>

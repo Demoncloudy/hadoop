@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,15 +17,11 @@
  */
 package org.apache.hadoop.mapreduce.lib.join;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.io.Writable;
+
+import java.io.*;
 
 /**
  * This class provides an implementation of ResetableIterator. This
@@ -34,70 +30,72 @@ import org.apache.hadoop.io.Writable;
 @InterfaceAudience.Public
 @InterfaceStability.Stable
 public class StreamBackedIterator<X extends Writable>
-    implements ResetableIterator<X> {
+        implements ResetableIterator<X> {
 
-  private static class ReplayableByteInputStream extends ByteArrayInputStream {
-    public ReplayableByteInputStream(byte[] arr) {
-      super(arr);
+    private ByteArrayOutputStream outbuf = new ByteArrayOutputStream();
+    private DataOutputStream outfbuf = new DataOutputStream(outbuf);
+    private ReplayableByteInputStream inbuf;
+    private DataInputStream infbuf;
+
+    public StreamBackedIterator() {
     }
-    public void resetStream() {
-      mark = 0;
-      reset();
+
+    public boolean hasNext() {
+        return infbuf != null && inbuf.available() > 0;
     }
-  }
 
-  private ByteArrayOutputStream outbuf = new ByteArrayOutputStream();
-  private DataOutputStream outfbuf = new DataOutputStream(outbuf);
-  private ReplayableByteInputStream inbuf;
-  private DataInputStream infbuf;
-
-  public StreamBackedIterator() { }
-
-  public boolean hasNext() {
-    return infbuf != null && inbuf.available() > 0;
-  }
-
-  public boolean next(X val) throws IOException {
-    if (hasNext()) {
-      inbuf.mark(0);
-      val.readFields(infbuf);
-      return true;
+    public boolean next(X val) throws IOException {
+        if (hasNext()) {
+            inbuf.mark(0);
+            val.readFields(infbuf);
+            return true;
+        }
+        return false;
     }
-    return false;
-  }
 
-  public boolean replay(X val) throws IOException {
-    inbuf.reset();
-    if (0 == inbuf.available())
-      return false;
-    val.readFields(infbuf);
-    return true;
-  }
-
-  public void reset() {
-    if (null != outfbuf) {
-      inbuf = new ReplayableByteInputStream(outbuf.toByteArray());
-      infbuf =  new DataInputStream(inbuf);
-      outfbuf = null;
+    public boolean replay(X val) throws IOException {
+        inbuf.reset();
+        if (0 == inbuf.available())
+            return false;
+        val.readFields(infbuf);
+        return true;
     }
-    inbuf.resetStream();
-  }
 
-  public void add(X item) throws IOException {
-    item.write(outfbuf);
-  }
+    public void reset() {
+        if (null != outfbuf) {
+            inbuf = new ReplayableByteInputStream(outbuf.toByteArray());
+            infbuf = new DataInputStream(inbuf);
+            outfbuf = null;
+        }
+        inbuf.resetStream();
+    }
 
-  public void close() throws IOException {
-    if (null != infbuf)
-      infbuf.close();
-    if (null != outfbuf)
-      outfbuf.close();
-  }
+    public void add(X item) throws IOException {
+        item.write(outfbuf);
+    }
 
-  public void clear() {
-    if (null != inbuf)
-      inbuf.resetStream();
-    outbuf.reset();
-    outfbuf = new DataOutputStream(outbuf);
-  }
+    public void close() throws IOException {
+        if (null != infbuf)
+            infbuf.close();
+        if (null != outfbuf)
+            outfbuf.close();
+    }
+
+    public void clear() {
+        if (null != inbuf)
+            inbuf.resetStream();
+        outbuf.reset();
+        outfbuf = new DataOutputStream(outbuf);
+    }
+
+    private static class ReplayableByteInputStream extends ByteArrayInputStream {
+        public ReplayableByteInputStream(byte[] arr) {
+            super(arr);
+        }
+
+        public void resetStream() {
+            mark = 0;
+            reset();
+        }
+    }
 }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,38 +21,39 @@ package org.apache.hadoop.yarn.applications.distributedshell;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class TestDSSleepingAppMaster extends ApplicationMaster{
+public class TestDSSleepingAppMaster extends ApplicationMaster {
 
-  private static final Log LOG = LogFactory.getLog(TestDSSleepingAppMaster.class);
-  private static final long SLEEP_TIME = 5000;
+    private static final Log LOG = LogFactory.getLog(TestDSSleepingAppMaster.class);
+    private static final long SLEEP_TIME = 5000;
 
-  public static void main(String[] args) {
-    boolean result = false;
-    try {
-      TestDSSleepingAppMaster appMaster = new TestDSSleepingAppMaster();
-      boolean doRun = appMaster.init(args);
-      if (!doRun) {
-        System.exit(0);
-      }
-      appMaster.run();
-      if (appMaster.appAttemptID.getAttemptId() <= 2) {
+    public static void main(String[] args) {
+        boolean result = false;
         try {
-          // sleep some time
-          Thread.sleep(SLEEP_TIME);
-        } catch (InterruptedException e) {}
-        // fail the first am.
-        System.exit(100);
-      }
-      result = appMaster.finish();
-    } catch (Throwable t) {
-      System.exit(1);
+            TestDSSleepingAppMaster appMaster = new TestDSSleepingAppMaster();
+            boolean doRun = appMaster.init(args);
+            if (!doRun) {
+                System.exit(0);
+            }
+            appMaster.run();
+            if (appMaster.appAttemptID.getAttemptId() <= 2) {
+                try {
+                    // sleep some time
+                    Thread.sleep(SLEEP_TIME);
+                } catch (InterruptedException e) {
+                }
+                // fail the first am.
+                System.exit(100);
+            }
+            result = appMaster.finish();
+        } catch (Throwable t) {
+            System.exit(1);
+        }
+        if (result) {
+            LOG.info("Application Master completed successfully. exiting");
+            System.exit(0);
+        } else {
+            LOG.info("Application Master failed. exiting");
+            System.exit(2);
+        }
     }
-    if (result) {
-      LOG.info("Application Master completed successfully. exiting");
-      System.exit(0);
-    } else {
-      LOG.info("Application Master failed. exiting");
-      System.exit(2);
-    }
-  }
 }

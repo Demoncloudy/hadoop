@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,70 +18,70 @@
 package org.apache.hadoop.tools.rumen;
 
 public class TaskInfo {
-  private final long bytesIn;
-  private final int recsIn;
-  private final long bytesOut;
-  private final int recsOut;
-  private final long maxMemory;
-  private final ResourceUsageMetrics metrics;
+    private final long bytesIn;
+    private final int recsIn;
+    private final long bytesOut;
+    private final int recsOut;
+    private final long maxMemory;
+    private final ResourceUsageMetrics metrics;
 
-  public TaskInfo(long bytesIn, int recsIn, long bytesOut, int recsOut,
-      long maxMemory) {
-    this(bytesIn, recsIn, bytesOut, recsOut, maxMemory, 
-         new ResourceUsageMetrics());
-  }
-  
-  public TaskInfo(long bytesIn, int recsIn, long bytesOut, int recsOut,
-                  long maxMemory, ResourceUsageMetrics metrics) {
-    this.bytesIn = bytesIn;
-    this.recsIn = recsIn;
-    this.bytesOut = bytesOut;
-    this.recsOut = recsOut;
-    this.maxMemory = maxMemory;
-    this.metrics = metrics;
-  }
+    public TaskInfo(long bytesIn, int recsIn, long bytesOut, int recsOut,
+                    long maxMemory) {
+        this(bytesIn, recsIn, bytesOut, recsOut, maxMemory,
+                new ResourceUsageMetrics());
+    }
 
-  /**
-   * @return Raw bytes read from the FileSystem into the task. Note that this
-   *         may not always match the input bytes to the task.
-   */
-  public long getInputBytes() {
-    return bytesIn;
-  }
+    public TaskInfo(long bytesIn, int recsIn, long bytesOut, int recsOut,
+                    long maxMemory, ResourceUsageMetrics metrics) {
+        this.bytesIn = bytesIn;
+        this.recsIn = recsIn;
+        this.bytesOut = bytesOut;
+        this.recsOut = recsOut;
+        this.maxMemory = maxMemory;
+        this.metrics = metrics;
+    }
 
-  /**
-   * @return Number of records input to this task.
-   */
-  public int getInputRecords() {
-    return recsIn;
-  }
+    /**
+     * @return Raw bytes read from the FileSystem into the task. Note that this
+     * may not always match the input bytes to the task.
+     */
+    public long getInputBytes() {
+        return bytesIn;
+    }
 
-  /**
-   * @return Raw bytes written to the destination FileSystem. Note that this may
-   *         not match output bytes.
-   */
-  public long getOutputBytes() {
-    return bytesOut;
-  }
+    /**
+     * @return Number of records input to this task.
+     */
+    public int getInputRecords() {
+        return recsIn;
+    }
 
-  /**
-   * @return Number of records output from this task.
-   */
-  public int getOutputRecords() {
-    return recsOut;
-  }
+    /**
+     * @return Raw bytes written to the destination FileSystem. Note that this may
+     * not match output bytes.
+     */
+    public long getOutputBytes() {
+        return bytesOut;
+    }
 
-  /**
-   * @return Memory used by the task leq the heap size.
-   */
-  public long getTaskMemory() {
-    return maxMemory;
-  }
+    /**
+     * @return Number of records output from this task.
+     */
+    public int getOutputRecords() {
+        return recsOut;
+    }
 
-  /**
-   * @return Resource usage metrics
-   */
-  public ResourceUsageMetrics getResourceUsageMetrics() {
-    return metrics;
-  }
+    /**
+     * @return Memory used by the task leq the heap size.
+     */
+    public long getTaskMemory() {
+        return maxMemory;
+    }
+
+    /**
+     * @return Resource usage metrics
+     */
+    public ResourceUsageMetrics getResourceUsageMetrics() {
+        return metrics;
+    }
 }

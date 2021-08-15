@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@
 package org.apache.hadoop.yarn.api.protocolrecords.impl.pb;
 
 
+import com.google.protobuf.TextFormat;
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.yarn.api.protocolrecords.GetClusterMetricsResponse;
@@ -28,105 +29,102 @@ import org.apache.hadoop.yarn.proto.YarnProtos.YarnClusterMetricsProto;
 import org.apache.hadoop.yarn.proto.YarnServiceProtos.GetClusterMetricsResponseProto;
 import org.apache.hadoop.yarn.proto.YarnServiceProtos.GetClusterMetricsResponseProtoOrBuilder;
 
-import com.google.protobuf.TextFormat;
-
 @Private
 @Unstable
 public class GetClusterMetricsResponsePBImpl extends GetClusterMetricsResponse {
-  GetClusterMetricsResponseProto proto = GetClusterMetricsResponseProto.getDefaultInstance();
-  GetClusterMetricsResponseProto.Builder builder = null;
-  boolean viaProto = false;
-  
-  private YarnClusterMetrics yarnClusterMetrics = null;
-  
-  
-  public GetClusterMetricsResponsePBImpl() {
-    builder = GetClusterMetricsResponseProto.newBuilder();
-  }
+    GetClusterMetricsResponseProto proto = GetClusterMetricsResponseProto.getDefaultInstance();
+    GetClusterMetricsResponseProto.Builder builder = null;
+    boolean viaProto = false;
 
-  public GetClusterMetricsResponsePBImpl(GetClusterMetricsResponseProto proto) {
-    this.proto = proto;
-    viaProto = true;
-  }
-  
-  public GetClusterMetricsResponseProto getProto() {
-      mergeLocalToProto();
-    proto = viaProto ? proto : builder.build();
-    viaProto = true;
-    return proto;
-  }
+    private YarnClusterMetrics yarnClusterMetrics = null;
 
-  @Override
-  public int hashCode() {
-    return getProto().hashCode();
-  }
 
-  @Override
-  public boolean equals(Object other) {
-    if (other == null)
-      return false;
-    if (other.getClass().isAssignableFrom(this.getClass())) {
-      return this.getProto().equals(this.getClass().cast(other).getProto());
+    public GetClusterMetricsResponsePBImpl() {
+        builder = GetClusterMetricsResponseProto.newBuilder();
     }
-    return false;
-  }
 
-  @Override
-  public String toString() {
-    return TextFormat.shortDebugString(getProto());
-  }
-
-  private void mergeLocalToBuilder() {
-    if (this.yarnClusterMetrics != null) {
-      builder.setClusterMetrics(convertToProtoFormat(this.yarnClusterMetrics));
+    public GetClusterMetricsResponsePBImpl(GetClusterMetricsResponseProto proto) {
+        this.proto = proto;
+        viaProto = true;
     }
-  }
 
-  private void mergeLocalToProto() {
-    if (viaProto) 
-      maybeInitBuilder();
-    mergeLocalToBuilder();
-    proto = builder.build();
-    viaProto = true;
-  }
-
-  private void maybeInitBuilder() {
-    if (viaProto || builder == null) {
-      builder = GetClusterMetricsResponseProto.newBuilder(proto);
+    public GetClusterMetricsResponseProto getProto() {
+        mergeLocalToProto();
+        proto = viaProto ? proto : builder.build();
+        viaProto = true;
+        return proto;
     }
-    viaProto = false;
-  }
-    
-  
-  @Override
-  public YarnClusterMetrics getClusterMetrics() {
-    GetClusterMetricsResponseProtoOrBuilder p = viaProto ? proto : builder;
-    if (this.yarnClusterMetrics != null) {
-      return this.yarnClusterMetrics;
+
+    @Override
+    public int hashCode() {
+        return getProto().hashCode();
     }
-    if (!p.hasClusterMetrics()) {
-      return null;
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null)
+            return false;
+        if (other.getClass().isAssignableFrom(this.getClass())) {
+            return this.getProto().equals(this.getClass().cast(other).getProto());
+        }
+        return false;
     }
-    this.yarnClusterMetrics = convertFromProtoFormat(p.getClusterMetrics());
-    return this.yarnClusterMetrics;
-  }
 
-  @Override
-  public void setClusterMetrics(YarnClusterMetrics clusterMetrics) {
-    maybeInitBuilder();
-    if (clusterMetrics == null) 
-      builder.clearClusterMetrics();
-    this.yarnClusterMetrics = clusterMetrics;
-  }
+    @Override
+    public String toString() {
+        return TextFormat.shortDebugString(getProto());
+    }
 
-  private YarnClusterMetricsPBImpl convertFromProtoFormat(YarnClusterMetricsProto p) {
-    return new YarnClusterMetricsPBImpl(p);
-  }
+    private void mergeLocalToBuilder() {
+        if (this.yarnClusterMetrics != null) {
+            builder.setClusterMetrics(convertToProtoFormat(this.yarnClusterMetrics));
+        }
+    }
 
-  private YarnClusterMetricsProto convertToProtoFormat(YarnClusterMetrics t) {
-    return ((YarnClusterMetricsPBImpl)t).getProto();
-  }
+    private void mergeLocalToProto() {
+        if (viaProto)
+            maybeInitBuilder();
+        mergeLocalToBuilder();
+        proto = builder.build();
+        viaProto = true;
+    }
+
+    private void maybeInitBuilder() {
+        if (viaProto || builder == null) {
+            builder = GetClusterMetricsResponseProto.newBuilder(proto);
+        }
+        viaProto = false;
+    }
 
 
+    @Override
+    public YarnClusterMetrics getClusterMetrics() {
+        GetClusterMetricsResponseProtoOrBuilder p = viaProto ? proto : builder;
+        if (this.yarnClusterMetrics != null) {
+            return this.yarnClusterMetrics;
+        }
+        if (!p.hasClusterMetrics()) {
+            return null;
+        }
+        this.yarnClusterMetrics = convertFromProtoFormat(p.getClusterMetrics());
+        return this.yarnClusterMetrics;
+    }
 
-}  
+    @Override
+    public void setClusterMetrics(YarnClusterMetrics clusterMetrics) {
+        maybeInitBuilder();
+        if (clusterMetrics == null)
+            builder.clearClusterMetrics();
+        this.yarnClusterMetrics = clusterMetrics;
+    }
+
+    private YarnClusterMetricsPBImpl convertFromProtoFormat(YarnClusterMetricsProto p) {
+        return new YarnClusterMetricsPBImpl(p);
+    }
+
+    private YarnClusterMetricsProto convertToProtoFormat(YarnClusterMetrics t) {
+        return ((YarnClusterMetricsPBImpl) t).getProto();
+    }
+
+
+}

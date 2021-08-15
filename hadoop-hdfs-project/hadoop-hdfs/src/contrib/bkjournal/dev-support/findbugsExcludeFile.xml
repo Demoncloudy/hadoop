@@ -1,5 +1,5 @@
 <FindBugsFilter>
-     <Match>
-       <Class name="~org.apache.hadoop.contrib.bkjournal.BKJournalProtos.*" />
-     </Match>
+    <Match>
+        <Class name="~org.apache.hadoop.contrib.bkjournal.BKJournalProtos.*"/>
+    </Match>
 </FindBugsFilter>

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,11 +18,11 @@
 
 package org.apache.hadoop.hdfs.protocol;
 
-import java.io.IOException;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.fs.BatchedRemoteIterator;
+
+import java.io.IOException;
 
 /**
  * CachePoolIterator is a remote iterator that iterates cache pools.
@@ -31,23 +31,23 @@ import org.apache.hadoop.fs.BatchedRemoteIterator;
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
 public class CachePoolIterator
-    extends BatchedRemoteIterator<String, CachePoolEntry> {
+        extends BatchedRemoteIterator<String, CachePoolEntry> {
 
-  private final ClientProtocol namenode;
+    private final ClientProtocol namenode;
 
-  public CachePoolIterator(ClientProtocol namenode) {
-    super("");
-    this.namenode = namenode;
-  }
+    public CachePoolIterator(ClientProtocol namenode) {
+        super("");
+        this.namenode = namenode;
+    }
 
-  @Override
-  public BatchedEntries<CachePoolEntry> makeRequest(String prevKey)
-      throws IOException {
-    return namenode.listCachePools(prevKey);
-  }
+    @Override
+    public BatchedEntries<CachePoolEntry> makeRequest(String prevKey)
+            throws IOException {
+        return namenode.listCachePools(prevKey);
+    }
 
-  @Override
-  public String elementToPrevKey(CachePoolEntry entry) {
-    return entry.getInfo().getPoolName();
-  }
+    @Override
+    public String elementToPrevKey(CachePoolEntry entry) {
+        return entry.getInfo().getPoolName();
+    }
 }

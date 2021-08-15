@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,27 +22,27 @@ import org.apache.hadoop.yarn.server.api.records.MasterKey;
 import org.apache.hadoop.yarn.server.api.records.NodeAction;
 
 public interface RegisterNodeManagerResponse {
-  MasterKey getContainerTokenMasterKey();
+    MasterKey getContainerTokenMasterKey();
 
-  void setContainerTokenMasterKey(MasterKey secretKey);
+    void setContainerTokenMasterKey(MasterKey secretKey);
 
-  MasterKey getNMTokenMasterKey();
+    MasterKey getNMTokenMasterKey();
 
-  void setNMTokenMasterKey(MasterKey secretKey);
+    void setNMTokenMasterKey(MasterKey secretKey);
 
-  NodeAction getNodeAction();
+    NodeAction getNodeAction();
 
-  void setNodeAction(NodeAction nodeAction);
+    void setNodeAction(NodeAction nodeAction);
 
-  long getRMIdentifier();
+    long getRMIdentifier();
 
-  void setRMIdentifier(long rmIdentifier);
+    void setRMIdentifier(long rmIdentifier);
 
-  String getDiagnosticsMessage();
+    String getDiagnosticsMessage();
 
-  void setDiagnosticsMessage(String diagnosticsMessage);
+    void setDiagnosticsMessage(String diagnosticsMessage);
 
-  void setRMVersion(String version);
+    String getRMVersion();
 
-  String getRMVersion();
+    void setRMVersion(String version);
 }

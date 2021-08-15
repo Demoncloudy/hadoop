@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,43 +17,44 @@
  */
 package org.apache.hadoop.mapred.gridmix;
 
-import java.io.IOException;
-import java.net.URI;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.security.UserGroupInformation;
+
+import java.io.IOException;
+import java.net.URI;
 
 /**
  * Resolves all UGIs to the submitting user.
  */
 public class SubmitterUserResolver implements UserResolver {
-  public static final Log LOG = LogFactory.getLog(SubmitterUserResolver.class);
-  
-  private UserGroupInformation ugi = null;
+    public static final Log LOG = LogFactory.getLog(SubmitterUserResolver.class);
 
-  public SubmitterUserResolver() throws IOException {
-    LOG.info(" Current user resolver is SubmitterUserResolver ");
-    ugi = UserGroupInformation.getLoginUser();
-  }
+    private UserGroupInformation ugi = null;
 
-  public synchronized boolean setTargetUsers(URI userdesc, Configuration conf)
-      throws IOException {
-    return false;
-  }
+    public SubmitterUserResolver() throws IOException {
+        LOG.info(" Current user resolver is SubmitterUserResolver ");
+        ugi = UserGroupInformation.getLoginUser();
+    }
 
-  public synchronized UserGroupInformation getTargetUgi(
-      UserGroupInformation ugi) {
-    return this.ugi;
-  }
+    public synchronized boolean setTargetUsers(URI userdesc, Configuration conf)
+            throws IOException {
+        return false;
+    }
 
-  /**
-   * {@inheritDoc}
-   * <p>
-   * Since {@link SubmitterUserResolver} returns the user name who is running
-   * gridmix, it doesn't need a target list of users.
-   */
-  public boolean needsTargetUsersList() {
-    return false;
-  }
+    public synchronized UserGroupInformation getTargetUgi(
+            UserGroupInformation ugi) {
+        return this.ugi;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Since {@link SubmitterUserResolver} returns the user name who is running
+     * gridmix, it doesn't need a target list of users.
+     */
+    public boolean needsTargetUsersList() {
+        return false;
+    }
 }

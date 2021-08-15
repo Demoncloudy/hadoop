@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,36 +18,36 @@
 
 package org.apache.hadoop.mapred;
 
-import java.io.IOException;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 
+import java.io.IOException;
+
 /**
  * This exception is thrown when jobconf misses some mendatory attributes
- * or value of some attributes is invalid. 
+ * or value of some attributes is invalid.
  */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
 public class InvalidJobConfException
-    extends IOException {
+        extends IOException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public InvalidJobConfException() {
-    super();
-  }
+    public InvalidJobConfException() {
+        super();
+    }
 
-  public InvalidJobConfException(String msg) {
-    super(msg);
-  }
-  
-  public InvalidJobConfException(String msg, Throwable t) {
-    super(msg, t);
-  }
+    public InvalidJobConfException(String msg) {
+        super(msg);
+    }
 
-  public InvalidJobConfException(Throwable t) {
-    super(t);
-  }
+    public InvalidJobConfException(String msg, Throwable t) {
+        super(msg, t);
+    }
+
+    public InvalidJobConfException(Throwable t) {
+        super(t);
+    }
 
 }

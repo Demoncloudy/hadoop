@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,11 +17,11 @@
  */
 package org.apache.hadoop.mapreduce.lib.output;
 
-import java.io.IOException;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+
+import java.io.IOException;
 
 /**
  * Interface for an {@link org.apache.hadoop.mapreduce.OutputCommitter}
@@ -31,13 +31,14 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 @InterfaceStability.Evolving
 public interface PartialOutputCommitter {
 
-  /**
-   * Remove all previously committed outputs from prior executions of this task.
-   * @param context Context for cleaning up previously promoted output.
-   * @throws IOException If cleanup fails, then the state of the task my not be
-   *                     well defined.
-   */
-  public void cleanUpPartialOutputForTask(TaskAttemptContext context)
-    throws IOException;
+    /**
+     * Remove all previously committed outputs from prior executions of this task.
+     *
+     * @param context Context for cleaning up previously promoted output.
+     * @throws IOException If cleanup fails, then the state of the task my not be
+     *                     well defined.
+     */
+    public void cleanUpPartialOutputForTask(TaskAttemptContext context)
+            throws IOException;
 
 }

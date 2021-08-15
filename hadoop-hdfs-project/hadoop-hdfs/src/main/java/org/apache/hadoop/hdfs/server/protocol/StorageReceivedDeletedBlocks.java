@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,32 +23,32 @@ package org.apache.hadoop.hdfs.server.protocol;
  * storage.
  */
 public class StorageReceivedDeletedBlocks {
-  final DatanodeStorage storage;
-  private final ReceivedDeletedBlockInfo[] blocks;
+    final DatanodeStorage storage;
+    private final ReceivedDeletedBlockInfo[] blocks;
 
-  @Deprecated
-  public String getStorageID() {
-    return storage.getStorageID();
-  }
+    @Deprecated
+    public StorageReceivedDeletedBlocks(final String storageID,
+                                        final ReceivedDeletedBlockInfo[] blocks) {
+        this.storage = new DatanodeStorage(storageID);
+        this.blocks = blocks;
+    }
 
-  public DatanodeStorage getStorage() {
-    return storage;
-  }
+    public StorageReceivedDeletedBlocks(final DatanodeStorage storage,
+                                        final ReceivedDeletedBlockInfo[] blocks) {
+        this.storage = storage;
+        this.blocks = blocks;
+    }
 
-  public ReceivedDeletedBlockInfo[] getBlocks() {
-    return blocks;
-  }
+    @Deprecated
+    public String getStorageID() {
+        return storage.getStorageID();
+    }
 
-  @Deprecated
-  public StorageReceivedDeletedBlocks(final String storageID,
-      final ReceivedDeletedBlockInfo[] blocks) {
-    this.storage = new DatanodeStorage(storageID);
-    this.blocks = blocks;
-  }
+    public DatanodeStorage getStorage() {
+        return storage;
+    }
 
-  public StorageReceivedDeletedBlocks(final DatanodeStorage storage,
-      final ReceivedDeletedBlockInfo[] blocks) {
-    this.storage = storage;
-    this.blocks = blocks;
-  }
+    public ReceivedDeletedBlockInfo[] getBlocks() {
+        return blocks;
+    }
 }

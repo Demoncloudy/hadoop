@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,158 +17,157 @@
  */
 package org.apache.hadoop.io.compress;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import org.apache.hadoop.conf.Configuration;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.apache.hadoop.conf.Configuration;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class TestBlockDecompressorStream {
-  
-  private byte[] buf;
-  private ByteArrayInputStream bytesIn;
-  private ByteArrayOutputStream bytesOut;
 
-  @Test
-  public void testRead1() throws IOException {
-    testRead(0);
-  }
+    private byte[] buf;
+    private ByteArrayInputStream bytesIn;
+    private ByteArrayOutputStream bytesOut;
 
-  @Test
-  public void testRead2() throws IOException {
-    // Test eof after getting non-zero block size info
-    testRead(4);
-  }
-
-  private void testRead(int bufLen) throws IOException {
-    // compress empty stream
-    bytesOut = new ByteArrayOutputStream();
-    if (bufLen > 0) {
-      bytesOut.write(ByteBuffer.allocate(bufLen).putInt(1024).array(), 0,
-          bufLen);
+    @Test
+    public void testRead1() throws IOException {
+        testRead(0);
     }
-    BlockCompressorStream blockCompressorStream = 
-      new BlockCompressorStream(bytesOut, 
-          new FakeCompressor(), 1024, 0);
-    // close without any write
-    blockCompressorStream.close();
-    
-    // check compressed output 
-    buf = bytesOut.toByteArray();
-    assertEquals("empty file compressed output size is not " + (bufLen + 4),
-        bufLen + 4, buf.length);
-    
-    // use compressed output as input for decompression
-    bytesIn = new ByteArrayInputStream(buf);
-    
-    // get decompression stream
-    BlockDecompressorStream blockDecompressorStream = 
-      new BlockDecompressorStream(bytesIn, new FakeDecompressor(), 1024);
-    try {
-      assertEquals("return value is not -1", 
-          -1 , blockDecompressorStream.read());
-    } catch (IOException e) {
-      fail("unexpected IOException : " + e);
-    } finally {
-      blockDecompressorStream.close();
+
+    @Test
+    public void testRead2() throws IOException {
+        // Test eof after getting non-zero block size info
+        testRead(4);
     }
-  }
+
+    private void testRead(int bufLen) throws IOException {
+        // compress empty stream
+        bytesOut = new ByteArrayOutputStream();
+        if (bufLen > 0) {
+            bytesOut.write(ByteBuffer.allocate(bufLen).putInt(1024).array(), 0,
+                    bufLen);
+        }
+        BlockCompressorStream blockCompressorStream =
+                new BlockCompressorStream(bytesOut,
+                        new FakeCompressor(), 1024, 0);
+        // close without any write
+        blockCompressorStream.close();
+
+        // check compressed output
+        buf = bytesOut.toByteArray();
+        assertEquals("empty file compressed output size is not " + (bufLen + 4),
+                bufLen + 4, buf.length);
+
+        // use compressed output as input for decompression
+        bytesIn = new ByteArrayInputStream(buf);
+
+        // get decompression stream
+        BlockDecompressorStream blockDecompressorStream =
+                new BlockDecompressorStream(bytesIn, new FakeDecompressor(), 1024);
+        try {
+            assertEquals("return value is not -1",
+                    -1, blockDecompressorStream.read());
+        } catch (IOException e) {
+            fail("unexpected IOException : " + e);
+        } finally {
+            blockDecompressorStream.close();
+        }
+    }
 }
 
 /**
  * A fake compressor
  * Its input and output is the same.
  */
-class FakeCompressor implements Compressor{
+class FakeCompressor implements Compressor {
 
-  private boolean finish;
-  private boolean finished;
-  int nread;
-  int nwrite;
-  
-  byte [] userBuf;
-  int userBufOff;
-  int userBufLen;
-  
-  @Override
-  public int compress(byte[] b, int off, int len) throws IOException {
-    int n = Math.min(len, userBufLen);
-    if (userBuf != null && b != null)
-      System.arraycopy(userBuf, userBufOff, b, off, n);
-    userBufOff += n;
-    userBufLen -= n;
-    nwrite += n;
-    
-    if (finish && userBufLen <= 0)
-      finished = true;   
-        
-    return n;
-  }
+    int nread;
+    int nwrite;
+    byte[] userBuf;
+    int userBufOff;
+    int userBufLen;
+    private boolean finish;
+    private boolean finished;
 
-  @Override
-  public void end() {
-    // nop
-  }
+    @Override
+    public int compress(byte[] b, int off, int len) throws IOException {
+        int n = Math.min(len, userBufLen);
+        if (userBuf != null && b != null)
+            System.arraycopy(userBuf, userBufOff, b, off, n);
+        userBufOff += n;
+        userBufLen -= n;
+        nwrite += n;
 
-  @Override
-  public void finish() {
-    finish = true;
-  }
+        if (finish && userBufLen <= 0)
+            finished = true;
 
-  @Override
-  public boolean finished() {
-    return finished;
-  }
+        return n;
+    }
 
-  @Override
-  public long getBytesRead() {
-    return nread;
-  }
+    @Override
+    public void end() {
+        // nop
+    }
 
-  @Override
-  public long getBytesWritten() {
-    return nwrite;
-  }
+    @Override
+    public void finish() {
+        finish = true;
+    }
 
-  @Override
-  public boolean needsInput() {
-    return userBufLen <= 0;
-  }
+    @Override
+    public boolean finished() {
+        return finished;
+    }
 
-  @Override
-  public void reset() {
-    finish = false;
-    finished = false;
-    nread = 0;
-    nwrite = 0;
-    userBuf = null;
-    userBufOff = 0;
-    userBufLen = 0;
-  }
+    @Override
+    public long getBytesRead() {
+        return nread;
+    }
 
-  @Override
-  public void setDictionary(byte[] b, int off, int len) {
-    // nop
-  }
+    @Override
+    public long getBytesWritten() {
+        return nwrite;
+    }
 
-  @Override
-  public void setInput(byte[] b, int off, int len) {
-    nread += len;
-    userBuf = b;
-    userBufOff = off;
-    userBufLen = len;
-  }
+    @Override
+    public boolean needsInput() {
+        return userBufLen <= 0;
+    }
 
-  @Override
-  public void reinit(Configuration conf) {
-    // nop
-  }
-  
+    @Override
+    public void reset() {
+        finish = false;
+        finished = false;
+        nread = 0;
+        nwrite = 0;
+        userBuf = null;
+        userBufOff = 0;
+        userBufLen = 0;
+    }
+
+    @Override
+    public void setDictionary(byte[] b, int off, int len) {
+        // nop
+    }
+
+    @Override
+    public void setInput(byte[] b, int off, int len) {
+        nread += len;
+        userBuf = b;
+        userBufOff = off;
+        userBufLen = len;
+    }
+
+    @Override
+    public void reinit(Configuration conf) {
+        // nop
+    }
+
 }
 
 /**
@@ -176,78 +175,77 @@ class FakeCompressor implements Compressor{
  * Its input and output is the same.
  */
 class FakeDecompressor implements Decompressor {
-  
-  private boolean finish;
-  private boolean finished;
-  int nread;
-  int nwrite;
-  
-  byte [] userBuf;
-  int userBufOff;
-  int userBufLen;
 
-  @Override
-  public int decompress(byte[] b, int off, int len) throws IOException {
-    int n = Math.min(len, userBufLen);
-    if (userBuf != null && b != null)
-      System.arraycopy(userBuf, userBufOff, b, off, n);
-    userBufOff += n;
-    userBufLen -= n;
-    nwrite += n;
-    
-    if (finish && userBufLen <= 0)
-      finished = true;
-    
-    return n;
-  }
+    int nread;
+    int nwrite;
+    byte[] userBuf;
+    int userBufOff;
+    int userBufLen;
+    private boolean finish;
+    private boolean finished;
 
-  @Override
-  public void end() {
-    // nop
-  }
+    @Override
+    public int decompress(byte[] b, int off, int len) throws IOException {
+        int n = Math.min(len, userBufLen);
+        if (userBuf != null && b != null)
+            System.arraycopy(userBuf, userBufOff, b, off, n);
+        userBufOff += n;
+        userBufLen -= n;
+        nwrite += n;
 
-  @Override
-  public boolean finished() {
-    return finished;
-  }
+        if (finish && userBufLen <= 0)
+            finished = true;
 
-  @Override
-  public boolean needsDictionary() {
-    return false;
-  }
+        return n;
+    }
 
-  @Override
-  public boolean needsInput() {
-    return userBufLen <= 0;
-  }
+    @Override
+    public void end() {
+        // nop
+    }
 
-  @Override
-  public void reset() {
-    finish = false;
-    finished = false;
-    nread = 0;
-    nwrite = 0;
-    userBuf = null;
-    userBufOff = 0;
-    userBufLen = 0;
-  }
+    @Override
+    public boolean finished() {
+        return finished;
+    }
 
-  @Override
-  public void setDictionary(byte[] b, int off, int len) {
-    // nop
-  }
+    @Override
+    public boolean needsDictionary() {
+        return false;
+    }
 
-  @Override
-  public void setInput(byte[] b, int off, int len) {
-    nread += len;
-    userBuf = b;
-    userBufOff = off;
-    userBufLen = len;
-  }
+    @Override
+    public boolean needsInput() {
+        return userBufLen <= 0;
+    }
 
-  @Override
-  public int getRemaining() {
-    return 0;
-  }
-  
+    @Override
+    public void reset() {
+        finish = false;
+        finished = false;
+        nread = 0;
+        nwrite = 0;
+        userBuf = null;
+        userBufOff = 0;
+        userBufLen = 0;
+    }
+
+    @Override
+    public void setDictionary(byte[] b, int off, int len) {
+        // nop
+    }
+
+    @Override
+    public void setInput(byte[] b, int off, int len) {
+        nread += len;
+        userBuf = b;
+        userBufOff = off;
+        userBufLen = len;
+    }
+
+    @Override
+    public int getRemaining() {
+        return 0;
+    }
+
 }

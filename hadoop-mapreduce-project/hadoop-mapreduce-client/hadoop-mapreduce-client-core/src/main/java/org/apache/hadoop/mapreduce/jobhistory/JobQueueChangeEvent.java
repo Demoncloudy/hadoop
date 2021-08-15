@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,41 +23,46 @@ import org.apache.hadoop.mapreduce.JobID;
 
 @SuppressWarnings("deprecation")
 public class JobQueueChangeEvent implements HistoryEvent {
-  private JobQueueChange datum = new JobQueueChange();
-  
-  public JobQueueChangeEvent(JobID id, String queueName) {
-    datum.jobid = new Utf8(id.toString());
-    datum.jobQueueName = new Utf8(queueName);
-  }
-  
-  JobQueueChangeEvent() { }
-  
-  @Override
-  public EventType getEventType() {
-    return EventType.JOB_QUEUE_CHANGED;
-  }
+    private JobQueueChange datum = new JobQueueChange();
 
-  @Override
-  public Object getDatum() {
-    return datum;
-  }
-
-  @Override
-  public void setDatum(Object datum) {
-    this.datum = (JobQueueChange) datum;
-  }
-  
-  /** Get the Job ID */
-  public JobID getJobId() {
-    return JobID.forName(datum.jobid.toString());
-  }
-  
-  /** Get the new Job queue name */
-  public String getJobQueueName() {
-    if (datum.jobQueueName != null) {
-      return datum.jobQueueName.toString();
+    public JobQueueChangeEvent(JobID id, String queueName) {
+        datum.jobid = new Utf8(id.toString());
+        datum.jobQueueName = new Utf8(queueName);
     }
-    return null;
-  }
+
+    JobQueueChangeEvent() {
+    }
+
+    @Override
+    public EventType getEventType() {
+        return EventType.JOB_QUEUE_CHANGED;
+    }
+
+    @Override
+    public Object getDatum() {
+        return datum;
+    }
+
+    @Override
+    public void setDatum(Object datum) {
+        this.datum = (JobQueueChange) datum;
+    }
+
+    /**
+     * Get the Job ID
+     */
+    public JobID getJobId() {
+        return JobID.forName(datum.jobid.toString());
+    }
+
+    /**
+     * Get the new Job queue name
+     */
+    public String getJobQueueName() {
+        if (datum.jobQueueName != null) {
+            return datum.jobQueueName.toString();
+        }
+        return null;
+    }
 
 }

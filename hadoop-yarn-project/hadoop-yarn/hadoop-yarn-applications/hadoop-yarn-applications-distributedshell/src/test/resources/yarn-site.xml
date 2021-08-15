@@ -15,7 +15,7 @@
 -->
 
 <configuration>
-  <!-- Dummy (invalid) config file to be overwriten by TestDistributedShell with MiniCluster configuration. -->
+    <!-- Dummy (invalid) config file to be overwriten by TestDistributedShell with MiniCluster configuration. -->
 </configuration>
 
 

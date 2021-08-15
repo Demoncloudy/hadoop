@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,37 +24,40 @@ import org.apache.hadoop.classification.InterfaceStability;
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
 public final class NSQuotaExceededException extends QuotaExceededException {
-  protected static final long serialVersionUID = 1L;
-  
-  private String prefix;
-  
-  public NSQuotaExceededException() {}
+    protected static final long serialVersionUID = 1L;
 
-  public NSQuotaExceededException(String msg) {
-    super(msg);
-  }
-  
-  public NSQuotaExceededException(long quota, long count) {
-    super(quota, count);
-  }
+    private String prefix;
 
-  @Override
-  public String getMessage() {
-    String msg = super.getMessage();
-    if (msg == null) {
-      msg = "The NameSpace quota (directories and files)" + 
-      (pathName==null?"":(" of directory " + pathName)) + 
-          " is exceeded: quota=" + quota + " file count=" + count; 
-
-      if (prefix != null) {
-        msg = prefix + ": " + msg;
-      }
+    public NSQuotaExceededException() {
     }
-    return msg;
-  }
 
-  /** Set a prefix for the error message. */
-  public void setMessagePrefix(final String prefix) {
-    this.prefix = prefix;
-  }
+    public NSQuotaExceededException(String msg) {
+        super(msg);
+    }
+
+    public NSQuotaExceededException(long quota, long count) {
+        super(quota, count);
+    }
+
+    @Override
+    public String getMessage() {
+        String msg = super.getMessage();
+        if (msg == null) {
+            msg = "The NameSpace quota (directories and files)" +
+                    (pathName == null ? "" : (" of directory " + pathName)) +
+                    " is exceeded: quota=" + quota + " file count=" + count;
+
+            if (prefix != null) {
+                msg = prefix + ": " + msg;
+            }
+        }
+        return msg;
+    }
+
+    /**
+     * Set a prefix for the error message.
+     */
+    public void setMessagePrefix(final String prefix) {
+        this.prefix = prefix;
+    }
 }

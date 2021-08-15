@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,96 +25,96 @@ import java.util.Properties;
 
 public class TestPseudoAuthenticationHandler {
 
-  @Test
-  public void testInit() throws Exception {
-    PseudoAuthenticationHandler handler = new PseudoAuthenticationHandler();
-    try {
-      Properties props = new Properties();
-      props.setProperty(PseudoAuthenticationHandler.ANONYMOUS_ALLOWED, "false");
-      handler.init(props);
-      Assert.assertEquals(false, handler.getAcceptAnonymous());
-    } finally {
-      handler.destroy();
+    @Test
+    public void testInit() throws Exception {
+        PseudoAuthenticationHandler handler = new PseudoAuthenticationHandler();
+        try {
+            Properties props = new Properties();
+            props.setProperty(PseudoAuthenticationHandler.ANONYMOUS_ALLOWED, "false");
+            handler.init(props);
+            Assert.assertEquals(false, handler.getAcceptAnonymous());
+        } finally {
+            handler.destroy();
+        }
     }
-  }
 
-  @Test
-  public void testType() throws Exception {
-    PseudoAuthenticationHandler handler = new PseudoAuthenticationHandler();
-    Assert.assertEquals(PseudoAuthenticationHandler.TYPE, handler.getType());
-  }
-
-  @Test
-  public void testAnonymousOn() throws Exception {
-    PseudoAuthenticationHandler handler = new PseudoAuthenticationHandler();
-    try {
-      Properties props = new Properties();
-      props.setProperty(PseudoAuthenticationHandler.ANONYMOUS_ALLOWED, "true");
-      handler.init(props);
-
-      HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-      HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-
-      AuthenticationToken token = handler.authenticate(request, response);
-
-      Assert.assertEquals(AuthenticationToken.ANONYMOUS, token);
-    } finally {
-      handler.destroy();
+    @Test
+    public void testType() throws Exception {
+        PseudoAuthenticationHandler handler = new PseudoAuthenticationHandler();
+        Assert.assertEquals(PseudoAuthenticationHandler.TYPE, handler.getType());
     }
-  }
 
-  @Test
-  public void testAnonymousOff() throws Exception {
-    PseudoAuthenticationHandler handler = new PseudoAuthenticationHandler();
-    try {
-      Properties props = new Properties();
-      props.setProperty(PseudoAuthenticationHandler.ANONYMOUS_ALLOWED, "false");
-      handler.init(props);
+    @Test
+    public void testAnonymousOn() throws Exception {
+        PseudoAuthenticationHandler handler = new PseudoAuthenticationHandler();
+        try {
+            Properties props = new Properties();
+            props.setProperty(PseudoAuthenticationHandler.ANONYMOUS_ALLOWED, "true");
+            handler.init(props);
 
-      HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-      HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+            HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+            HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-      handler.authenticate(request, response);
-      Assert.fail();
-    } catch (AuthenticationException ex) {
-      // Expected
-    } catch (Exception ex) {
-      Assert.fail();
-    } finally {
-      handler.destroy();
+            AuthenticationToken token = handler.authenticate(request, response);
+
+            Assert.assertEquals(AuthenticationToken.ANONYMOUS, token);
+        } finally {
+            handler.destroy();
+        }
     }
-  }
 
-  private void _testUserName(boolean anonymous) throws Exception {
-    PseudoAuthenticationHandler handler = new PseudoAuthenticationHandler();
-    try {
-      Properties props = new Properties();
-      props.setProperty(PseudoAuthenticationHandler.ANONYMOUS_ALLOWED, Boolean.toString(anonymous));
-      handler.init(props);
+    @Test
+    public void testAnonymousOff() throws Exception {
+        PseudoAuthenticationHandler handler = new PseudoAuthenticationHandler();
+        try {
+            Properties props = new Properties();
+            props.setProperty(PseudoAuthenticationHandler.ANONYMOUS_ALLOWED, "false");
+            handler.init(props);
 
-      HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-      HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-      Mockito.when(request.getQueryString()).thenReturn(PseudoAuthenticator.USER_NAME + "=" + "user");
+            HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+            HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-      AuthenticationToken token = handler.authenticate(request, response);
-
-      Assert.assertNotNull(token);
-      Assert.assertEquals("user", token.getUserName());
-      Assert.assertEquals("user", token.getName());
-      Assert.assertEquals(PseudoAuthenticationHandler.TYPE, token.getType());
-    } finally {
-      handler.destroy();
+            handler.authenticate(request, response);
+            Assert.fail();
+        } catch (AuthenticationException ex) {
+            // Expected
+        } catch (Exception ex) {
+            Assert.fail();
+        } finally {
+            handler.destroy();
+        }
     }
-  }
 
-  @Test
-  public void testUserNameAnonymousOff() throws Exception {
-    _testUserName(false);
-  }
+    private void _testUserName(boolean anonymous) throws Exception {
+        PseudoAuthenticationHandler handler = new PseudoAuthenticationHandler();
+        try {
+            Properties props = new Properties();
+            props.setProperty(PseudoAuthenticationHandler.ANONYMOUS_ALLOWED, Boolean.toString(anonymous));
+            handler.init(props);
 
-  @Test
-  public void testUserNameAnonymousOn() throws Exception {
-    _testUserName(true);
-  }
+            HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+            HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+            Mockito.when(request.getQueryString()).thenReturn(PseudoAuthenticator.USER_NAME + "=" + "user");
+
+            AuthenticationToken token = handler.authenticate(request, response);
+
+            Assert.assertNotNull(token);
+            Assert.assertEquals("user", token.getUserName());
+            Assert.assertEquals("user", token.getName());
+            Assert.assertEquals(PseudoAuthenticationHandler.TYPE, token.getType());
+        } finally {
+            handler.destroy();
+        }
+    }
+
+    @Test
+    public void testUserNameAnonymousOff() throws Exception {
+        _testUserName(false);
+    }
+
+    @Test
+    public void testUserNameAnonymousOn() throws Exception {
+        _testUserName(true);
+    }
 
 }

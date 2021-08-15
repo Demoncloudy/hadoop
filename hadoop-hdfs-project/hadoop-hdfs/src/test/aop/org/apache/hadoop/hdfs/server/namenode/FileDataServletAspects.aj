@@ -17,30 +17,25 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
-import java.net.URL;
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
-import org.apache.hadoop.hdfs.protocol.ClientProtocol;
-import org.apache.hadoop.hdfs.protocol.HdfsFileStatus;
-import org.apache.hadoop.security.UserGroupInformation;
+
+import java.io.IOException;
+import java.net.URL;
 
 public aspect FileDataServletAspects {
-  static final Log LOG = FileDataServlet.LOG;
+    static final Log LOG = FileDataServlet.LOG;
 
-  pointcut callCreateUrl() : call (URL FileDataServlet.createRedirectURL(
-      String, String, HdfsFileStatus, UserGroupInformation, ClientProtocol,
-      HttpServletRequest, String));
+    pointcut callCreateUrl(): call (URL FileDataServlet.createRedirectURL(
+            String, String, HdfsFileStatus, UserGroupInformation, ClientProtocol,
+                    HttpServletRequest, String));
 
-  /** Replace host name with "localhost" for unit test environment. */
-  URL around () throws IOException : callCreateUrl() {
-    final URL original = proceed();
-    LOG.info("FI: original url = " + original);
-    final URL replaced = new URL("http", "localhost", original.getPort(),
-        original.getPath() + '?' + original.getQuery());
-    LOG.info("FI: replaced url = " + replaced);
-    return replaced;
-  }
+    /** Replace host name with "localhost" for unit test environment. */
+    URL around ()throws IOException: callCreateUrl() {
+        final URL original = proceed();
+        LOG.info("FI: original url = " + original);
+        final URL replaced = new URL("http", "localhost", original.getPort(),
+                original.getPath() + '?' + original.getQuery());
+        LOG.info("FI: replaced url = " + replaced);
+        return replaced;
+    }
 }

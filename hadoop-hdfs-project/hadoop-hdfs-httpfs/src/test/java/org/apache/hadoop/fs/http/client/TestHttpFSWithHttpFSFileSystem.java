@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,29 +28,29 @@ import org.junit.runners.Parameterized;
 @RunWith(value = Parameterized.class)
 public class TestHttpFSWithHttpFSFileSystem extends BaseTestHttpFSWith {
 
-  public TestHttpFSWithHttpFSFileSystem(Operation operation) {
-    super(operation);
-  }
+    public TestHttpFSWithHttpFSFileSystem(Operation operation) {
+        super(operation);
+    }
 
-  @Override
-  protected Class getFileSystemClass() {
-    return HttpFSFileSystem.class;
-  }
+    @Override
+    protected Class getFileSystemClass() {
+        return HttpFSFileSystem.class;
+    }
 
-  @Override
-  protected Path getProxiedFSTestDir() {
-    return TestHdfsHelper.getHdfsTestDir();
-  }
+    @Override
+    protected Path getProxiedFSTestDir() {
+        return TestHdfsHelper.getHdfsTestDir();
+    }
 
-  @Override
-  protected String getProxiedFSURI() {
-    return TestHdfsHelper.getHdfsConf().get(
-      CommonConfigurationKeysPublic.FS_DEFAULT_NAME_KEY);
-  }
+    @Override
+    protected String getProxiedFSURI() {
+        return TestHdfsHelper.getHdfsConf().get(
+                CommonConfigurationKeysPublic.FS_DEFAULT_NAME_KEY);
+    }
 
-  @Override
-  protected Configuration getProxiedFSConf() {
-    return TestHdfsHelper.getHdfsConf();
-  }
+    @Override
+    protected Configuration getProxiedFSConf() {
+        return TestHdfsHelper.getHdfsConf();
+    }
 
 }

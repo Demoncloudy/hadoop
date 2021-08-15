@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,11 +24,7 @@ import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.SaslRpcServer;
 import org.apache.hadoop.security.UserGroupInformation;
-import org.apache.hadoop.security.authentication.server.AuthenticationFilter;
-import org.apache.hadoop.security.authentication.server.AuthenticationHandler;
-import org.apache.hadoop.security.authentication.server.AuthenticationToken;
-import org.apache.hadoop.security.authentication.server.KerberosAuthenticationHandler;
-import org.apache.hadoop.security.authentication.server.PseudoAuthenticationHandler;
+import org.apache.hadoop.security.authentication.server.*;
 import org.apache.hadoop.security.authentication.util.ZKSignerSecretProvider;
 import org.apache.hadoop.security.authorize.AuthorizationException;
 import org.apache.hadoop.security.authorize.ProxyUsers;
@@ -37,7 +33,6 @@ import org.apache.hadoop.security.token.delegation.ZKDelegationTokenSecretManage
 import org.apache.hadoop.util.HttpExceptionUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -47,13 +42,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Writer;
 import java.nio.charset.Charset;
 import java.security.Principal;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -73,204 +65,199 @@ import java.util.Properties;
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
 public class DelegationTokenAuthenticationFilter
-    extends AuthenticationFilter {
+        extends AuthenticationFilter {
 
-  private static final String APPLICATION_JSON_MIME = "application/json";
-  private static final String ERROR_EXCEPTION_JSON = "exception";
-  private static final String ERROR_MESSAGE_JSON = "message";
+    /**
+     * Sets an external <code>DelegationTokenSecretManager</code> instance to
+     * manage creation and verification of Delegation Tokens.
+     * <p/>
+     * This is useful for use cases where secrets must be shared across multiple
+     * services.
+     */
 
-  /**
-   * Sets an external <code>DelegationTokenSecretManager</code> instance to
-   * manage creation and verification of Delegation Tokens.
-   * <p/>
-   * This is useful for use cases where secrets must be shared across multiple
-   * services.
-   */
+    public static final String DELEGATION_TOKEN_SECRET_MANAGER_ATTR =
+            "hadoop.http.delegation-token-secret-manager";
+    public static final String PROXYUSER_PREFIX = "proxyuser";
+    private static final String APPLICATION_JSON_MIME = "application/json";
+    private static final String ERROR_EXCEPTION_JSON = "exception";
+    private static final String ERROR_MESSAGE_JSON = "message";
+    private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+    private static final ThreadLocal<UserGroupInformation> UGI_TL =
+            new ThreadLocal<UserGroupInformation>();
+    private SaslRpcServer.AuthMethod handlerAuthMethod;
 
-  public static final String DELEGATION_TOKEN_SECRET_MANAGER_ATTR =
-      "hadoop.http.delegation-token-secret-manager";
-
-  private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
-
-  private static final ThreadLocal<UserGroupInformation> UGI_TL =
-      new ThreadLocal<UserGroupInformation>();
-  public static final String PROXYUSER_PREFIX = "proxyuser";
-
-  private SaslRpcServer.AuthMethod handlerAuthMethod;
-
-  /**
-   * It delegates to
-   * {@link AuthenticationFilter#getConfiguration(String, FilterConfig)} and
-   * then overrides the {@link AuthenticationHandler} to use if authentication
-   * type is set to <code>simple</code> or <code>kerberos</code> in order to use
-   * the corresponding implementation with delegation token support.
-   *
-   * @param configPrefix parameter not used.
-   * @param filterConfig parameter not used.
-   * @return hadoop-auth de-prefixed configuration for the filter and handler.
-   */
-  @Override
-  protected Properties getConfiguration(String configPrefix,
-      FilterConfig filterConfig) throws ServletException {
-    Properties props = super.getConfiguration(configPrefix, filterConfig);
-    String authType = props.getProperty(AUTH_TYPE);
-    if (authType.equals(PseudoAuthenticationHandler.TYPE)) {
-      props.setProperty(AUTH_TYPE,
-          PseudoDelegationTokenAuthenticationHandler.class.getName());
-    } else if (authType.equals(KerberosAuthenticationHandler.TYPE)) {
-      props.setProperty(AUTH_TYPE,
-          KerberosDelegationTokenAuthenticationHandler.class.getName());
-    }
-    return props;
-  }
-
-  /**
-   * Returns the proxyuser configuration. All returned properties must start
-   * with <code>proxyuser.</code>'
-   * <p/>
-   * Subclasses may override this method if the proxyuser configuration is 
-   * read from other place than the filter init parameters.
-   *
-   * @param filterConfig filter configuration object
-   * @return the proxyuser configuration properties.
-   * @throws ServletException thrown if the configuration could not be created.
-   */
-  protected Configuration getProxyuserConfiguration(FilterConfig filterConfig)
-      throws ServletException {
-    // this filter class gets the configuration from the filter configs, we are
-    // creating an empty configuration and injecting the proxyuser settings in
-    // it. In the initialization of the filter, the returned configuration is
-    // passed to the ProxyUsers which only looks for 'proxyusers.' properties.
-    Configuration conf = new Configuration(false);
-    Enumeration<?> names = filterConfig.getInitParameterNames();
-    while (names.hasMoreElements()) {
-      String name = (String) names.nextElement();
-      if (name.startsWith(PROXYUSER_PREFIX + ".")) {
-        String value = filterConfig.getInitParameter(name);
-        conf.set(name, value);
-      }
-    }
-    return conf;
-  }
-
-
-  @Override
-  public void init(FilterConfig filterConfig) throws ServletException {
-    // A single CuratorFramework should be used for a ZK cluster.
-    // If the ZKSignerSecretProvider has already created it, it has to
-    // be set here... to be used by the ZKDelegationTokenSecretManager
-    ZKDelegationTokenSecretManager.setCurator((CuratorFramework)
-        filterConfig.getServletContext().getAttribute(ZKSignerSecretProvider.
-            ZOOKEEPER_SIGNER_SECRET_PROVIDER_CURATOR_CLIENT_ATTRIBUTE));
-    super.init(filterConfig);
-    ZKDelegationTokenSecretManager.setCurator(null);
-    AuthenticationHandler handler = getAuthenticationHandler();
-    AbstractDelegationTokenSecretManager dtSecretManager =
-        (AbstractDelegationTokenSecretManager) filterConfig.getServletContext().
-            getAttribute(DELEGATION_TOKEN_SECRET_MANAGER_ATTR);
-    if (dtSecretManager != null && handler
-        instanceof DelegationTokenAuthenticationHandler) {
-      DelegationTokenAuthenticationHandler dtHandler =
-          (DelegationTokenAuthenticationHandler) getAuthenticationHandler();
-      dtHandler.setExternalDelegationTokenSecretManager(dtSecretManager);
-    }
-    if (handler instanceof PseudoAuthenticationHandler ||
-        handler instanceof PseudoDelegationTokenAuthenticationHandler) {
-      setHandlerAuthMethod(SaslRpcServer.AuthMethod.SIMPLE);
-    }
-    if (handler instanceof KerberosAuthenticationHandler ||
-        handler instanceof KerberosDelegationTokenAuthenticationHandler) {
-      setHandlerAuthMethod(SaslRpcServer.AuthMethod.KERBEROS);
-    }
-
-    // proxyuser configuration
-    Configuration conf = getProxyuserConfiguration(filterConfig);
-    ProxyUsers.refreshSuperUserGroupsConfiguration(conf, PROXYUSER_PREFIX);
-  }
-
-  protected void setHandlerAuthMethod(SaslRpcServer.AuthMethod authMethod) {
-    this.handlerAuthMethod = authMethod;
-  }
-
-  @VisibleForTesting
-  static String getDoAs(HttpServletRequest request) {
-    List<NameValuePair> list = URLEncodedUtils.parse(request.getQueryString(),
-        UTF8_CHARSET);
-    if (list != null) {
-      for (NameValuePair nv : list) {
-        if (DelegationTokenAuthenticatedURL.DO_AS.
-            equalsIgnoreCase(nv.getName())) {
-          return nv.getValue();
+    @VisibleForTesting
+    static String getDoAs(HttpServletRequest request) {
+        List<NameValuePair> list = URLEncodedUtils.parse(request.getQueryString(),
+                UTF8_CHARSET);
+        if (list != null) {
+            for (NameValuePair nv : list) {
+                if (DelegationTokenAuthenticatedURL.DO_AS.
+                        equalsIgnoreCase(nv.getName())) {
+                    return nv.getValue();
+                }
+            }
         }
-      }
+        return null;
     }
-    return null;
-  }
 
-  static UserGroupInformation getHttpUserGroupInformationInContext() {
-    return UGI_TL.get();
-  }
+    static UserGroupInformation getHttpUserGroupInformationInContext() {
+        return UGI_TL.get();
+    }
 
-  @Override
-  protected void doFilter(FilterChain filterChain, HttpServletRequest request,
-      HttpServletResponse response) throws IOException, ServletException {
-    boolean requestCompleted = false;
-    UserGroupInformation ugi = null;
-    AuthenticationToken authToken = (AuthenticationToken)
-        request.getUserPrincipal();
-    if (authToken != null && authToken != AuthenticationToken.ANONYMOUS) {
-      // if the request was authenticated because of a delegation token,
-      // then we ignore proxyuser (this is the same as the RPC behavior).
-      ugi = (UserGroupInformation) request.getAttribute(
-          DelegationTokenAuthenticationHandler.DELEGATION_TOKEN_UGI_ATTRIBUTE);
-      if (ugi == null) {
-        String realUser = request.getUserPrincipal().getName();
-        ugi = UserGroupInformation.createRemoteUser(realUser,
-            handlerAuthMethod);
-        String doAsUser = getDoAs(request);
-        if (doAsUser != null) {
-          ugi = UserGroupInformation.createProxyUser(doAsUser, ugi);
-          try {
-            ProxyUsers.authorize(ugi, request.getRemoteHost());
-          } catch (AuthorizationException ex) {
-            HttpExceptionUtils.createServletExceptionResponse(response,
-                HttpServletResponse.SC_FORBIDDEN, ex);
-            requestCompleted = true;
-          }
+    /**
+     * It delegates to
+     * {@link AuthenticationFilter#getConfiguration(String, FilterConfig)} and
+     * then overrides the {@link AuthenticationHandler} to use if authentication
+     * type is set to <code>simple</code> or <code>kerberos</code> in order to use
+     * the corresponding implementation with delegation token support.
+     *
+     * @param configPrefix parameter not used.
+     * @param filterConfig parameter not used.
+     * @return hadoop-auth de-prefixed configuration for the filter and handler.
+     */
+    @Override
+    protected Properties getConfiguration(String configPrefix,
+                                          FilterConfig filterConfig) throws ServletException {
+        Properties props = super.getConfiguration(configPrefix, filterConfig);
+        String authType = props.getProperty(AUTH_TYPE);
+        if (authType.equals(PseudoAuthenticationHandler.TYPE)) {
+            props.setProperty(AUTH_TYPE,
+                    PseudoDelegationTokenAuthenticationHandler.class.getName());
+        } else if (authType.equals(KerberosAuthenticationHandler.TYPE)) {
+            props.setProperty(AUTH_TYPE,
+                    KerberosDelegationTokenAuthenticationHandler.class.getName());
         }
-      }
-      UGI_TL.set(ugi);
+        return props;
     }
-    if (!requestCompleted) {
-      final UserGroupInformation ugiF = ugi;
-      try {
-        request = new HttpServletRequestWrapper(request) {
 
-          @Override
-          public String getAuthType() {
-            return (ugiF != null) ? handlerAuthMethod.toString() : null;
-          }
-
-          @Override
-          public String getRemoteUser() {
-            return (ugiF != null) ? ugiF.getShortUserName() : null;
-          }
-
-          @Override
-          public Principal getUserPrincipal() {
-            return (ugiF != null) ? new Principal() {
-              @Override
-              public String getName() {
-                return ugiF.getUserName();
-              }
-            } : null;
-          }
-        };
-        super.doFilter(filterChain, request, response);
-      } finally {
-        UGI_TL.remove();
-      }
+    /**
+     * Returns the proxyuser configuration. All returned properties must start
+     * with <code>proxyuser.</code>'
+     * <p/>
+     * Subclasses may override this method if the proxyuser configuration is
+     * read from other place than the filter init parameters.
+     *
+     * @param filterConfig filter configuration object
+     * @return the proxyuser configuration properties.
+     * @throws ServletException thrown if the configuration could not be created.
+     */
+    protected Configuration getProxyuserConfiguration(FilterConfig filterConfig)
+            throws ServletException {
+        // this filter class gets the configuration from the filter configs, we are
+        // creating an empty configuration and injecting the proxyuser settings in
+        // it. In the initialization of the filter, the returned configuration is
+        // passed to the ProxyUsers which only looks for 'proxyusers.' properties.
+        Configuration conf = new Configuration(false);
+        Enumeration<?> names = filterConfig.getInitParameterNames();
+        while (names.hasMoreElements()) {
+            String name = (String) names.nextElement();
+            if (name.startsWith(PROXYUSER_PREFIX + ".")) {
+                String value = filterConfig.getInitParameter(name);
+                conf.set(name, value);
+            }
+        }
+        return conf;
     }
-  }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // A single CuratorFramework should be used for a ZK cluster.
+        // If the ZKSignerSecretProvider has already created it, it has to
+        // be set here... to be used by the ZKDelegationTokenSecretManager
+        ZKDelegationTokenSecretManager.setCurator((CuratorFramework)
+                filterConfig.getServletContext().getAttribute(ZKSignerSecretProvider.
+                        ZOOKEEPER_SIGNER_SECRET_PROVIDER_CURATOR_CLIENT_ATTRIBUTE));
+        super.init(filterConfig);
+        ZKDelegationTokenSecretManager.setCurator(null);
+        AuthenticationHandler handler = getAuthenticationHandler();
+        AbstractDelegationTokenSecretManager dtSecretManager =
+                (AbstractDelegationTokenSecretManager) filterConfig.getServletContext().
+                        getAttribute(DELEGATION_TOKEN_SECRET_MANAGER_ATTR);
+        if (dtSecretManager != null && handler
+                instanceof DelegationTokenAuthenticationHandler) {
+            DelegationTokenAuthenticationHandler dtHandler =
+                    (DelegationTokenAuthenticationHandler) getAuthenticationHandler();
+            dtHandler.setExternalDelegationTokenSecretManager(dtSecretManager);
+        }
+        if (handler instanceof PseudoAuthenticationHandler ||
+                handler instanceof PseudoDelegationTokenAuthenticationHandler) {
+            setHandlerAuthMethod(SaslRpcServer.AuthMethod.SIMPLE);
+        }
+        if (handler instanceof KerberosAuthenticationHandler ||
+                handler instanceof KerberosDelegationTokenAuthenticationHandler) {
+            setHandlerAuthMethod(SaslRpcServer.AuthMethod.KERBEROS);
+        }
+
+        // proxyuser configuration
+        Configuration conf = getProxyuserConfiguration(filterConfig);
+        ProxyUsers.refreshSuperUserGroupsConfiguration(conf, PROXYUSER_PREFIX);
+    }
+
+    protected void setHandlerAuthMethod(SaslRpcServer.AuthMethod authMethod) {
+        this.handlerAuthMethod = authMethod;
+    }
+
+    @Override
+    protected void doFilter(FilterChain filterChain, HttpServletRequest request,
+                            HttpServletResponse response) throws IOException, ServletException {
+        boolean requestCompleted = false;
+        UserGroupInformation ugi = null;
+        AuthenticationToken authToken = (AuthenticationToken)
+                request.getUserPrincipal();
+        if (authToken != null && authToken != AuthenticationToken.ANONYMOUS) {
+            // if the request was authenticated because of a delegation token,
+            // then we ignore proxyuser (this is the same as the RPC behavior).
+            ugi = (UserGroupInformation) request.getAttribute(
+                    DelegationTokenAuthenticationHandler.DELEGATION_TOKEN_UGI_ATTRIBUTE);
+            if (ugi == null) {
+                String realUser = request.getUserPrincipal().getName();
+                ugi = UserGroupInformation.createRemoteUser(realUser,
+                        handlerAuthMethod);
+                String doAsUser = getDoAs(request);
+                if (doAsUser != null) {
+                    ugi = UserGroupInformation.createProxyUser(doAsUser, ugi);
+                    try {
+                        ProxyUsers.authorize(ugi, request.getRemoteHost());
+                    } catch (AuthorizationException ex) {
+                        HttpExceptionUtils.createServletExceptionResponse(response,
+                                HttpServletResponse.SC_FORBIDDEN, ex);
+                        requestCompleted = true;
+                    }
+                }
+            }
+            UGI_TL.set(ugi);
+        }
+        if (!requestCompleted) {
+            final UserGroupInformation ugiF = ugi;
+            try {
+                request = new HttpServletRequestWrapper(request) {
+
+                    @Override
+                    public String getAuthType() {
+                        return (ugiF != null) ? handlerAuthMethod.toString() : null;
+                    }
+
+                    @Override
+                    public String getRemoteUser() {
+                        return (ugiF != null) ? ugiF.getShortUserName() : null;
+                    }
+
+                    @Override
+                    public Principal getUserPrincipal() {
+                        return (ugiF != null) ? new Principal() {
+                            @Override
+                            public String getName() {
+                                return ugiF.getUserName();
+                            }
+                        } : null;
+                    }
+                };
+                super.doFilter(filterChain, request, response);
+            } finally {
+                UGI_TL.remove();
+            }
+        }
+    }
 
 }

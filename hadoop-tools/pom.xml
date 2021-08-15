@@ -12,55 +12,55 @@
   See the License for the specific language governing permissions and
   limitations under the License. See accompanying LICENSE file.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-project</artifactId>
+        <version>2.6.5</version>
+        <relativePath>../hadoop-project</relativePath>
+    </parent>
     <groupId>org.apache.hadoop</groupId>
-    <artifactId>hadoop-project</artifactId>
+    <artifactId>hadoop-tools</artifactId>
     <version>2.6.5</version>
-    <relativePath>../hadoop-project</relativePath>
-  </parent>
-  <groupId>org.apache.hadoop</groupId>
-  <artifactId>hadoop-tools</artifactId>
-  <version>2.6.5</version>
-  <description>Apache Hadoop Tools</description>
-  <name>Apache Hadoop Tools</name>
-  <packaging>pom</packaging>
+    <description>Apache Hadoop Tools</description>
+    <name>Apache Hadoop Tools</name>
+    <packaging>pom</packaging>
 
-  <modules>
-    <module>hadoop-streaming</module>
-    <module>hadoop-distcp</module>
-    <module>hadoop-archives</module>
-    <module>hadoop-rumen</module>
-    <module>hadoop-gridmix</module>
-    <module>hadoop-datajoin</module>
-    <module>hadoop-ant</module>
-    <module>hadoop-tools-dist</module>
-    <module>hadoop-extras</module>
-    <module>hadoop-pipes</module>
-    <module>hadoop-openstack</module>
-    <module>hadoop-sls</module>
-    <module>hadoop-aws</module>
-  </modules>
+    <modules>
+        <module>hadoop-streaming</module>
+        <module>hadoop-distcp</module>
+        <module>hadoop-archives</module>
+        <module>hadoop-rumen</module>
+        <module>hadoop-gridmix</module>
+        <module>hadoop-datajoin</module>
+        <module>hadoop-ant</module>
+        <module>hadoop-tools-dist</module>
+        <module>hadoop-extras</module>
+        <module>hadoop-pipes</module>
+        <module>hadoop-openstack</module>
+        <module>hadoop-sls</module>
+        <module>hadoop-aws</module>
+    </modules>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <configuration>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <configuration>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

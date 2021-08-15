@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,8 +17,6 @@
  */
 package org.apache.hadoop.yarn.client.cli;
 
-import java.io.PrintStream;
-
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.conf.Configured;
@@ -26,43 +24,45 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 
+import java.io.PrintStream;
+
 @Private
 @Unstable
 public abstract class YarnCLI extends Configured implements Tool {
 
-  public static final String STATUS_CMD = "status";
-  public static final String LIST_CMD = "list";
-  public static final String KILL_CMD = "kill";
-  public static final String MOVE_TO_QUEUE_CMD = "movetoqueue";
-  public static final String HELP_CMD = "help";
-  protected PrintStream sysout;
-  protected PrintStream syserr;
-  protected YarnClient client;
+    public static final String STATUS_CMD = "status";
+    public static final String LIST_CMD = "list";
+    public static final String KILL_CMD = "kill";
+    public static final String MOVE_TO_QUEUE_CMD = "movetoqueue";
+    public static final String HELP_CMD = "help";
+    protected PrintStream sysout;
+    protected PrintStream syserr;
+    protected YarnClient client;
 
-  public YarnCLI() {
-    super(new YarnConfiguration());
-    client = YarnClient.createYarnClient();
-    client.init(getConf());
-    client.start();
-  }
+    public YarnCLI() {
+        super(new YarnConfiguration());
+        client = YarnClient.createYarnClient();
+        client.init(getConf());
+        client.start();
+    }
 
-  public void setSysOutPrintStream(PrintStream sysout) {
-    this.sysout = sysout;
-  }
+    public void setSysOutPrintStream(PrintStream sysout) {
+        this.sysout = sysout;
+    }
 
-  public void setSysErrPrintStream(PrintStream syserr) {
-    this.syserr = syserr;
-  }
+    public void setSysErrPrintStream(PrintStream syserr) {
+        this.syserr = syserr;
+    }
 
-  public YarnClient getClient() {
-    return client;
-  }
+    public YarnClient getClient() {
+        return client;
+    }
 
-  public void setClient(YarnClient client) {
-    this.client = client;
-  }
+    public void setClient(YarnClient client) {
+        this.client = client;
+    }
 
-  public void stop() {
-    this.client.stop();
-  }
+    public void stop() {
+        this.client.stop();
+    }
 }

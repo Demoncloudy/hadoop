@@ -18,47 +18,46 @@
 
 package org.apache.hadoop.hdfs;
 
-import java.io.IOException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fi.DataTransferTestUtil;
-import org.apache.hadoop.fi.PipelineTest;
 import org.apache.hadoop.fi.FiHFlushTestUtil.HFlushTest;
-import org.apache.hadoop.hdfs.DFSOutputStream;
+import org.apache.hadoop.fi.PipelineTest;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 
-public aspect HFlushAspects {
-  public static final Log LOG = LogFactory.getLog(HFlushAspects.class);
+import java.io.IOException;
 
-  pointcut hflushCall (DFSOutputStream outstream) :
-    execution(void DFSOutputStream.hflush(..))
-    && target (outstream); 
-  
-  /** This advise is suppose to initiate a call to the action (fiCallHFlush)
-   *  which will throw DiskErrorException if a pipeline has been created
-   *  and datanodes used are belong to that very pipeline
-   */
-  after (DFSOutputStream streamer) throws IOException : hflushCall(streamer) {
-    LOG.info("FI: hflush for any datanode");    
-    LOG.info("FI: hflush " + thisJoinPoint.getThis());
-    DatanodeInfo[] nodes = streamer.getPipeline();
-    if (nodes == null) {
-        LOG.info("No pipeline is built");
-        return;
-    }
-    PipelineTest pt = DataTransferTestUtil.getPipelineTest();
-    if (pt == null) {
-        LOG.info("No test has been initialized");    
-        return;
-    }
-    if (pt instanceof HFlushTest)
-      for (int i=0; i<nodes.length; i++) {
-        try {
-          ((HFlushTest)pt).fiCallHFlush.run(nodes[i]);
-        } catch (IOException ioe) {
-          ((HFlushTest)pt).fiErrorOnCallHFlush.run(i);
+public aspect HFlushAspects {
+    public static final Log LOG = LogFactory.getLog(HFlushAspects.class);
+
+    pointcut hflushCall(DFSOutputStream outstream):
+            execution(void DFSOutputStream.hflush(..))
+                    && target (outstream);
+
+    /** This advise is suppose to initiate a call to the action (fiCallHFlush)
+     *  which will throw DiskErrorException if a pipeline has been created
+     *  and datanodes used are belong to that very pipeline
+     */
+    after (DFSOutputStream streamer)throws IOException: hflushCall(streamer) {
+        LOG.info("FI: hflush for any datanode");
+        LOG.info("FI: hflush " + thisJoinPoint.getThis());
+        DatanodeInfo[] nodes = streamer.getPipeline();
+        if (nodes == null) {
+            LOG.info("No pipeline is built");
+            return;
         }
-      }
-  }
+        PipelineTest pt = DataTransferTestUtil.getPipelineTest();
+        if (pt == null) {
+            LOG.info("No test has been initialized");
+            return;
+        }
+        if (pt instanceof HFlushTest)
+            for (int i = 0; i < nodes.length; i++) {
+                try {
+                    ((HFlushTest) pt).fiCallHFlush.run(nodes[i]);
+                } catch (IOException ioe) {
+                    ((HFlushTest) pt).fiErrorOnCallHFlush.run(i);
+                }
+            }
+    }
 }

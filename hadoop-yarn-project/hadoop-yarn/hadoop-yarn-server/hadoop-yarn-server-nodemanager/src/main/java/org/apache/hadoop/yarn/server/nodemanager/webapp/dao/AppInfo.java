@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,57 +17,56 @@
  */
 package org.apache.hadoop.yarn.server.nodemanager.webapp.dao;
 
-import java.util.ArrayList;
-import java.util.Map;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.application.Application;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.container.Container;
 import org.apache.hadoop.yarn.util.ConverterUtils;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.Map;
+
 @XmlRootElement(name = "app")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AppInfo {
 
-  protected String id;
-  protected String state;
-  protected String user;
-  protected ArrayList<String> containerids;
+    protected String id;
+    protected String state;
+    protected String user;
+    protected ArrayList<String> containerids;
 
-  public AppInfo() {
-  } // JAXB needs this
+    public AppInfo() {
+    } // JAXB needs this
 
-  public AppInfo(final Application app) {
-    this.id = ConverterUtils.toString(app.getAppId());
-    this.state = app.getApplicationState().toString();
-    this.user = app.getUser();
+    public AppInfo(final Application app) {
+        this.id = ConverterUtils.toString(app.getAppId());
+        this.state = app.getApplicationState().toString();
+        this.user = app.getUser();
 
-    this.containerids = new ArrayList<String>();
-    Map<ContainerId, Container> appContainers = app.getContainers();
-    for (ContainerId containerId : appContainers.keySet()) {
-      String containerIdStr = ConverterUtils.toString(containerId);
-      containerids.add(containerIdStr);
+        this.containerids = new ArrayList<String>();
+        Map<ContainerId, Container> appContainers = app.getContainers();
+        for (ContainerId containerId : appContainers.keySet()) {
+            String containerIdStr = ConverterUtils.toString(containerId);
+            containerids.add(containerIdStr);
+        }
     }
-  }
 
-  public String getId() {
-    return this.id;
-  }
+    public String getId() {
+        return this.id;
+    }
 
-  public String getUser() {
-    return this.user;
-  }
+    public String getUser() {
+        return this.user;
+    }
 
-  public String getState() {
-    return this.state;
-  }
+    public String getState() {
+        return this.state;
+    }
 
-  public ArrayList<String> getContainers() {
-    return this.containerids;
-  }
+    public ArrayList<String> getContainers() {
+        return this.containerids;
+    }
 
 }

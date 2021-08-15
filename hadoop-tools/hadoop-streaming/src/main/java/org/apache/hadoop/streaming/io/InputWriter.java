@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,31 +18,31 @@
 
 package org.apache.hadoop.streaming.io;
 
-import java.io.IOException;
-
 import org.apache.hadoop.streaming.PipeMapRed;
+
+import java.io.IOException;
 
 /**
  * Abstract base for classes that write the client's input.
  */
 public abstract class InputWriter<K, V> {
-  
-  /**
-   * Initializes the InputWriter. This method has to be called before calling
-   * any of the other methods.
-   */
-  public void initialize(PipeMapRed pipeMapRed) throws IOException {
-    // nothing here yet, but that might change in the future
-  }
-  
-  /**
-   * Writes an input key.
-   */
-  public abstract void writeKey(K key) throws IOException;
 
-  /**
-   * Writes an input value.
-   */
-  public abstract void writeValue(V value) throws IOException;
+    /**
+     * Initializes the InputWriter. This method has to be called before calling
+     * any of the other methods.
+     */
+    public void initialize(PipeMapRed pipeMapRed) throws IOException {
+        // nothing here yet, but that might change in the future
+    }
+
+    /**
+     * Writes an input key.
+     */
+    public abstract void writeKey(K key) throws IOException;
+
+    /**
+     * Writes an input value.
+     */
+    public abstract void writeValue(V value) throws IOException;
 
 }

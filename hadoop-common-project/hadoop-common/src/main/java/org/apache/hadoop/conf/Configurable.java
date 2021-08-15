@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,14 +21,20 @@ package org.apache.hadoop.conf;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 
-/** Something that may be configured with a {@link Configuration}. */
+/**
+ * Something that may be configured with a {@link Configuration}.
+ */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
 public interface Configurable {
 
-  /** Set the configuration to be used by this object. */
-  void setConf(Configuration conf);
+    /**
+     * Return the configuration used by this object.
+     */
+    Configuration getConf();
 
-  /** Return the configuration used by this object. */
-  Configuration getConf();
+    /**
+     * Set the configuration to be used by this object.
+     */
+    void setConf(Configuration conf);
 }

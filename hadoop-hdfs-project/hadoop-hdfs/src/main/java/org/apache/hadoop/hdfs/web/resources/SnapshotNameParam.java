@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,20 +22,24 @@ package org.apache.hadoop.hdfs.web.resources;
  * Also used to indicate the new snapshot name for renameSnapshot operation.
  */
 public class SnapshotNameParam extends StringParam {
-  /** Parameter name. */
-  public static final String NAME = "snapshotname";
+    /**
+     * Parameter name.
+     */
+    public static final String NAME = "snapshotname";
 
-  /** Default parameter value. */
-  public static final String DEFAULT = "";
+    /**
+     * Default parameter value.
+     */
+    public static final String DEFAULT = "";
 
-  private static final Domain DOMAIN = new Domain(NAME, null);
-  
-  public SnapshotNameParam(final String str) {
-    super(DOMAIN, str != null && !str.equals(DEFAULT) ? str : null);
-  }
+    private static final Domain DOMAIN = new Domain(NAME, null);
 
-  @Override
-  public String getName() {
-    return NAME;
-  }
+    public SnapshotNameParam(final String str) {
+        super(DOMAIN, str != null && !str.equals(DEFAULT) ? str : null);
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
 }

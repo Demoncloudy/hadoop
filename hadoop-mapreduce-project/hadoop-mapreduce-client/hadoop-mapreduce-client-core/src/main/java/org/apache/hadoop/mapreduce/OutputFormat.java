@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,13 +18,13 @@
 
 package org.apache.hadoop.mapreduce;
 
-import java.io.IOException;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.fs.FileSystem;
 
-/** 
+import java.io.IOException;
+
+/**
  * <code>OutputFormat</code> describes the output-specification for a 
  * Map-Reduce job.
  *
@@ -40,49 +40,49 @@ import org.apache.hadoop.fs.FileSystem;
  *   {@link FileSystem}.
  *   </li>
  * </ol>
- * 
+ *
  * @see RecordWriter
  */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
 public abstract class OutputFormat<K, V> {
 
-  /** 
-   * Get the {@link RecordWriter} for the given task.
-   *
-   * @param context the information about the current task.
-   * @return a {@link RecordWriter} to write the output for the job.
-   * @throws IOException
-   */
-  public abstract RecordWriter<K, V> 
+    /**
+     * Get the {@link RecordWriter} for the given task.
+     *
+     * @param context the information about the current task.
+     * @return a {@link RecordWriter} to write the output for the job.
+     * @throws IOException
+     */
+    public abstract RecordWriter<K, V>
     getRecordWriter(TaskAttemptContext context
-                    ) throws IOException, InterruptedException;
+    ) throws IOException, InterruptedException;
 
-  /** 
-   * Check for validity of the output-specification for the job.
-   *  
-   * <p>This is to validate the output specification for the job when it is
-   * a job is submitted.  Typically checks that it does not already exist,
-   * throwing an exception when it already exists, so that output is not
-   * overwritten.</p>
-   *
-   * @param context information about the job
-   * @throws IOException when output should not be attempted
-   */
-  public abstract void checkOutputSpecs(JobContext context
-                                        ) throws IOException, 
-                                                 InterruptedException;
+    /**
+     * Check for validity of the output-specification for the job.
+     *
+     * <p>This is to validate the output specification for the job when it is
+     * a job is submitted.  Typically checks that it does not already exist,
+     * throwing an exception when it already exists, so that output is not
+     * overwritten.</p>
+     *
+     * @param context information about the job
+     * @throws IOException when output should not be attempted
+     */
+    public abstract void checkOutputSpecs(JobContext context
+    ) throws IOException,
+            InterruptedException;
 
-  /**
-   * Get the output committer for this output format. This is responsible
-   * for ensuring the output is committed correctly.
-   * @param context the task context
-   * @return an output committer
-   * @throws IOException
-   * @throws InterruptedException
-   */
-  public abstract 
-  OutputCommitter getOutputCommitter(TaskAttemptContext context
-                                     ) throws IOException, InterruptedException;
+    /**
+     * Get the output committer for this output format. This is responsible
+     * for ensuring the output is committed correctly.
+     *
+     * @param context the task context
+     * @return an output committer
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public abstract OutputCommitter getOutputCommitter(TaskAttemptContext context
+    ) throws IOException, InterruptedException;
 }
 

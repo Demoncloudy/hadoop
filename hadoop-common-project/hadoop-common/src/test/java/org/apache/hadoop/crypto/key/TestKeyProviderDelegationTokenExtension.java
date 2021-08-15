@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,11 +16,6 @@
  * limitations under the License.
  */
 package org.apache.hadoop.crypto.key;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.net.URI;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.crypto.key.KeyProviderDelegationTokenExtension.DelegationTokenExtension;
@@ -31,43 +26,48 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.net.URI;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class TestKeyProviderDelegationTokenExtension {
 
-  public static abstract class MockKeyProvider extends
-      KeyProvider implements DelegationTokenExtension {
+    @Test
+    public void testCreateExtension() throws Exception {
+        Configuration conf = new Configuration();
+        Credentials credentials = new Credentials();
+        KeyProvider kp =
+                new UserProvider.Factory().createProvider(new URI("user:///"), conf);
+        KeyProviderDelegationTokenExtension kpDTE1 =
+                KeyProviderDelegationTokenExtension
+                        .createKeyProviderDelegationTokenExtension(kp);
+        Assert.assertNotNull(kpDTE1);
+        // Default implementation should be a no-op and return null
+        Assert.assertNull(kpDTE1.addDelegationTokens("user", credentials));
 
-    public MockKeyProvider() {
-      super(new Configuration(false));
+        MockKeyProvider mock = mock(MockKeyProvider.class);
+        Mockito.when(mock.getConf()).thenReturn(new Configuration());
+        when(mock.addDelegationTokens("renewer", credentials)).thenReturn(
+                new Token<?>[]{new Token(null, null, new Text("kind"), new Text(
+                        "service"))}
+        );
+        KeyProviderDelegationTokenExtension kpDTE2 =
+                KeyProviderDelegationTokenExtension
+                        .createKeyProviderDelegationTokenExtension(mock);
+        Token<?>[] tokens =
+                kpDTE2.addDelegationTokens("renewer", credentials);
+        Assert.assertNotNull(tokens);
+        Assert.assertEquals("kind", tokens[0].getKind().toString());
+
     }
-  }
 
-  @Test
-  public void testCreateExtension() throws Exception {
-    Configuration conf = new Configuration();
-    Credentials credentials = new Credentials();
-    KeyProvider kp =
-        new UserProvider.Factory().createProvider(new URI("user:///"), conf);
-    KeyProviderDelegationTokenExtension kpDTE1 =
-        KeyProviderDelegationTokenExtension
-        .createKeyProviderDelegationTokenExtension(kp);
-    Assert.assertNotNull(kpDTE1);
-    // Default implementation should be a no-op and return null
-    Assert.assertNull(kpDTE1.addDelegationTokens("user", credentials));
+    public static abstract class MockKeyProvider extends
+            KeyProvider implements DelegationTokenExtension {
 
-    MockKeyProvider mock = mock(MockKeyProvider.class);
-    Mockito.when(mock.getConf()).thenReturn(new Configuration());
-    when(mock.addDelegationTokens("renewer", credentials)).thenReturn(
-        new Token<?>[]{new Token(null, null, new Text("kind"), new Text(
-            "service"))}
-    );
-    KeyProviderDelegationTokenExtension kpDTE2 =
-        KeyProviderDelegationTokenExtension
-        .createKeyProviderDelegationTokenExtension(mock);
-    Token<?>[] tokens =
-        kpDTE2.addDelegationTokens("renewer", credentials);
-    Assert.assertNotNull(tokens);
-    Assert.assertEquals("kind", tokens[0].getKind().toString());
-
-  }
+        public MockKeyProvider() {
+            super(new Configuration(false));
+        }
+    }
 
 }

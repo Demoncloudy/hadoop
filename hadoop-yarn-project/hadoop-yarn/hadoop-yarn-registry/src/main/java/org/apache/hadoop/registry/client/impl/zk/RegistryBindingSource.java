@@ -28,9 +28,10 @@ import org.apache.hadoop.classification.InterfaceStability;
 @InterfaceStability.Evolving
 public interface RegistryBindingSource {
 
-  /**
-   * Supply the binding information for this registry
-   * @return the binding information data
-   */
-  BindingInformation supplyBindingInformation();
+    /**
+     * Supply the binding information for this registry
+     *
+     * @return the binding information data
+     */
+    BindingInformation supplyBindingInformation();
 }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,11 +17,11 @@
  */
 package org.apache.hadoop.hdfs.protocol.datatransfer.sasl;
 
-import static org.apache.hadoop.hdfs.protocol.datatransfer.sasl.DataTransferSaslUtil.SASL_TRANSFER_MAGIC_NUMBER;
+import org.apache.hadoop.classification.InterfaceAudience;
 
 import java.io.IOException;
 
-import org.apache.hadoop.classification.InterfaceAudience;
+import static org.apache.hadoop.hdfs.protocol.datatransfer.sasl.DataTransferSaslUtil.SASL_TRANSFER_MAGIC_NUMBER;
 
 /**
  * Indicates that SASL protocol negotiation expected to read a pre-defined magic
@@ -30,15 +30,15 @@ import org.apache.hadoop.classification.InterfaceAudience;
 @InterfaceAudience.Private
 public class InvalidMagicNumberException extends IOException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  /**
-   * Creates a new InvalidMagicNumberException.
-   *
-   * @param magicNumber expected value
-   */
-  public InvalidMagicNumberException(int magicNumber) {
-    super(String.format("Received %x instead of %x from client.",
-        magicNumber, SASL_TRANSFER_MAGIC_NUMBER));
-  }
+    /**
+     * Creates a new InvalidMagicNumberException.
+     *
+     * @param magicNumber expected value
+     */
+    public InvalidMagicNumberException(int magicNumber) {
+        super(String.format("Received %x instead of %x from client.",
+                magicNumber, SASL_TRANSFER_MAGIC_NUMBER));
+    }
 }

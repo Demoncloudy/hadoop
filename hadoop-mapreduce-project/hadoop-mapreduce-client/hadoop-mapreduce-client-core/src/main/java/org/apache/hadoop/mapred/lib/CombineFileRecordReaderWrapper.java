@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,16 +18,12 @@
 
 package org.apache.hadoop.mapred.lib;
 
-import java.io.IOException;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.mapred.FileInputFormat;
-import org.apache.hadoop.mapred.FileSplit;
-import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.RecordReader;
-import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.mapred.*;
+
+import java.io.IOException;
 
 /**
  * A wrapper class for a record reader that handles a single file split. It
@@ -45,42 +41,42 @@ import org.apache.hadoop.mapred.Reporter;
  */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
-public abstract class CombineFileRecordReaderWrapper<K,V>
-  implements RecordReader<K,V> {
-  private final RecordReader<K,V> delegate;
+public abstract class CombineFileRecordReaderWrapper<K, V>
+        implements RecordReader<K, V> {
+    private final RecordReader<K, V> delegate;
 
-  protected CombineFileRecordReaderWrapper(FileInputFormat<K,V> inputFormat,
-    CombineFileSplit split, Configuration conf, Reporter reporter, Integer idx)
-    throws IOException {
-    FileSplit fileSplit = new FileSplit(split.getPath(idx),
-      split.getOffset(idx),
-      split.getLength(idx),
-      split.getLocations());
+    protected CombineFileRecordReaderWrapper(FileInputFormat<K, V> inputFormat,
+                                             CombineFileSplit split, Configuration conf, Reporter reporter, Integer idx)
+            throws IOException {
+        FileSplit fileSplit = new FileSplit(split.getPath(idx),
+                split.getOffset(idx),
+                split.getLength(idx),
+                split.getLocations());
 
-    delegate = inputFormat.getRecordReader(fileSplit, (JobConf)conf, reporter);
-  }
+        delegate = inputFormat.getRecordReader(fileSplit, (JobConf) conf, reporter);
+    }
 
-  public boolean next(K key, V value) throws IOException {
-    return delegate.next(key, value);
-  }
+    public boolean next(K key, V value) throws IOException {
+        return delegate.next(key, value);
+    }
 
-  public K createKey() {
-    return delegate.createKey();
-  }
+    public K createKey() {
+        return delegate.createKey();
+    }
 
-  public V createValue() {
-    return delegate.createValue();
-  }
+    public V createValue() {
+        return delegate.createValue();
+    }
 
-  public long getPos() throws IOException {
-    return delegate.getPos();
-  }
+    public long getPos() throws IOException {
+        return delegate.getPos();
+    }
 
-  public void close() throws IOException {
-    delegate.close();
-  }
+    public void close() throws IOException {
+        delegate.close();
+    }
 
-  public float getProgress() throws IOException {
-    return delegate.getProgress();
-  }
+    public float getProgress() throws IOException {
+        return delegate.getProgress();
+    }
 }

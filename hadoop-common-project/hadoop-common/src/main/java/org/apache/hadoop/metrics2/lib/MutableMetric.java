@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,35 +28,43 @@ import org.apache.hadoop.metrics2.MetricsRecordBuilder;
 @InterfaceAudience.Public
 @InterfaceStability.Evolving
 public abstract class MutableMetric {
-  private volatile boolean changed = true;
+    private volatile boolean changed = true;
 
-  /**
-   * Get a snapshot of the metric
-   * @param builder the metrics record builder
-   * @param all if true, snapshot unchanged metrics as well
-   */
-  public abstract void snapshot(MetricsRecordBuilder builder, boolean all);
+    /**
+     * Get a snapshot of the metric
+     *
+     * @param builder the metrics record builder
+     * @param all     if true, snapshot unchanged metrics as well
+     */
+    public abstract void snapshot(MetricsRecordBuilder builder, boolean all);
 
-  /**
-   * Get a snapshot of metric if changed
-   * @param builder the metrics record builder
-   */
-  public void snapshot(MetricsRecordBuilder builder) {
-    snapshot(builder, false);
-  }
+    /**
+     * Get a snapshot of metric if changed
+     *
+     * @param builder the metrics record builder
+     */
+    public void snapshot(MetricsRecordBuilder builder) {
+        snapshot(builder, false);
+    }
 
-  /**
-   * Set the changed flag in mutable operations
-   */
-  protected void setChanged() { changed = true; }
+    /**
+     * Set the changed flag in mutable operations
+     */
+    protected void setChanged() {
+        changed = true;
+    }
 
-  /**
-   * Clear the changed flag in the snapshot operations
-   */
-  protected void clearChanged() { changed = false; }
+    /**
+     * Clear the changed flag in the snapshot operations
+     */
+    protected void clearChanged() {
+        changed = false;
+    }
 
-  /**
-   * @return  true if metric is changed since last snapshot/snapshot
-   */
-  public boolean changed() { return changed; }
+    /**
+     * @return true if metric is changed since last snapshot/snapshot
+     */
+    public boolean changed() {
+        return changed;
+    }
 }

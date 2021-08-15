@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,24 +20,24 @@ package org.apache.hadoop.yarn.server.resourcemanager.scheduler.event;
 
 public enum SchedulerEventType {
 
-  // Source: Node
-  NODE_ADDED,
-  NODE_REMOVED,
-  NODE_UPDATE,
-  NODE_RESOURCE_UPDATE,
-  NODE_LABELS_UPDATE,
+    // Source: Node
+    NODE_ADDED,
+    NODE_REMOVED,
+    NODE_UPDATE,
+    NODE_RESOURCE_UPDATE,
+    NODE_LABELS_UPDATE,
 
-  // Source: RMApp
-  APP_ADDED,
-  APP_REMOVED,
+    // Source: RMApp
+    APP_ADDED,
+    APP_REMOVED,
 
-  // Source: RMAppAttempt
-  APP_ATTEMPT_ADDED,
-  APP_ATTEMPT_REMOVED,
+    // Source: RMAppAttempt
+    APP_ATTEMPT_ADDED,
+    APP_ATTEMPT_REMOVED,
 
-  // Source: ContainerAllocationExpirer
-  CONTAINER_EXPIRED,
+    // Source: ContainerAllocationExpirer
+    CONTAINER_EXPIRED,
 
-  // Source: RMContainer
-  CONTAINER_RESCHEDULED
+    // Source: RMContainer
+    CONTAINER_RESCHEDULED
 }

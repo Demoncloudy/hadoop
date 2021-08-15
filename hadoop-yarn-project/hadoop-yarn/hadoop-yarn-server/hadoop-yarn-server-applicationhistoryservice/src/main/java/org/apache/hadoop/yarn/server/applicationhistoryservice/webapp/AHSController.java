@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,38 +18,37 @@
 
 package org.apache.hadoop.yarn.server.applicationhistoryservice.webapp;
 
-import org.apache.hadoop.yarn.webapp.Controller;
-
 import com.google.inject.Inject;
+import org.apache.hadoop.yarn.webapp.Controller;
 
 public class AHSController extends Controller {
 
-  @Inject
-  AHSController(RequestContext ctx) {
-    super(ctx);
-  }
+    @Inject
+    AHSController(RequestContext ctx) {
+        super(ctx);
+    }
 
-  @Override
-  public void index() {
-    setTitle("Application History");
-  }
+    @Override
+    public void index() {
+        setTitle("Application History");
+    }
 
-  public void app() {
-    render(AppPage.class);
-  }
+    public void app() {
+        render(AppPage.class);
+    }
 
-  public void appattempt() {
-    render(AppAttemptPage.class);
-  }
+    public void appattempt() {
+        render(AppAttemptPage.class);
+    }
 
-  public void container() {
-    render(ContainerPage.class);
-  }
+    public void container() {
+        render(ContainerPage.class);
+    }
 
-  /**
-   * Render the logs page.
-   */
-  public void logs() {
-    render(AHSLogsPage.class);
-  }
+    /**
+     * Render the logs page.
+     */
+    public void logs() {
+        render(AHSLogsPage.class);
+    }
 }

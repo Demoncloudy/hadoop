@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,13 +18,13 @@
 
 package org.apache.hadoop.yarn.conf;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 @Private
 @Unstable
@@ -35,34 +35,35 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
  */
 public abstract class ConfigurationProvider {
 
-  public void init(Configuration bootstrapConf) throws Exception {
-    initInternal(bootstrapConf);
-  }
+    public void init(Configuration bootstrapConf) throws Exception {
+        initInternal(bootstrapConf);
+    }
 
-  public void close() throws Exception {
-    closeInternal();
-  }
+    public void close() throws Exception {
+        closeInternal();
+    }
 
-  /**
-   * Opens an InputStream at the indicated file
-   * @param bootstrapConf Configuration
-   * @param name The configuration file name
-   * @return configuration
-   * @throws YarnException
-   * @throws IOException
-   */
-  public abstract InputStream getConfigurationInputStream(
-      Configuration bootstrapConf, String name) throws YarnException,
-      IOException;
+    /**
+     * Opens an InputStream at the indicated file
+     *
+     * @param bootstrapConf Configuration
+     * @param name          The configuration file name
+     * @return configuration
+     * @throws YarnException
+     * @throws IOException
+     */
+    public abstract InputStream getConfigurationInputStream(
+            Configuration bootstrapConf, String name) throws YarnException,
+            IOException;
 
-  /**
-   * Derived classes initialize themselves using this method.
-   */
-  public abstract void initInternal(Configuration bootstrapConf)
-      throws Exception;
+    /**
+     * Derived classes initialize themselves using this method.
+     */
+    public abstract void initInternal(Configuration bootstrapConf)
+            throws Exception;
 
-  /**
-   * Derived classes close themselves using this method.
-   */
-  public abstract void closeInternal() throws Exception;
+    /**
+     * Derived classes close themselves using this method.
+     */
+    public abstract void closeInternal() throws Exception;
 }

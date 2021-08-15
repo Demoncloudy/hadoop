@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,14 +18,12 @@
 
 package org.apache.hadoop.contrib.utils.join;
 
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.Writable;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-
-import org.apache.hadoop.io.Writable;
-import org.apache.hadoop.io.Text;
-
-import org.apache.hadoop.contrib.utils.join.TaggedMapOutput;
 
 /**
  * This is a subclass of TaggedMapOutput that is used to
@@ -34,27 +32,27 @@ import org.apache.hadoop.contrib.utils.join.TaggedMapOutput;
  */
 public class SampleTaggedMapOutput extends TaggedMapOutput {
 
-  private Text data;
+    private Text data;
 
-  public SampleTaggedMapOutput() {
-    this.data = new Text("");
-  }
+    public SampleTaggedMapOutput() {
+        this.data = new Text("");
+    }
 
-  public SampleTaggedMapOutput(Text data) {
-    this.data = data;
-  }
+    public SampleTaggedMapOutput(Text data) {
+        this.data = data;
+    }
 
-  public Writable getData() {
-    return data;
-  }
+    public Writable getData() {
+        return data;
+    }
 
-  public void write(DataOutput out) throws IOException {
-    this.tag.write(out);
-    this.data.write(out);
-  }
+    public void write(DataOutput out) throws IOException {
+        this.tag.write(out);
+        this.data.write(out);
+    }
 
-  public void readFields(DataInput in) throws IOException {
-    this.tag.readFields(in);
-    this.data.readFields(in);
-  }
+    public void readFields(DataInput in) throws IOException {
+        this.tag.readFields(in);
+        this.data.readFields(in);
+    }
 }

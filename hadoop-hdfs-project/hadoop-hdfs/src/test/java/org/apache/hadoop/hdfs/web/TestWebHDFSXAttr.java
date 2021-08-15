@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,14 +23,14 @@ import org.apache.hadoop.hdfs.server.namenode.FSXAttrBaseTest;
  * Tests XAttr APIs via WebHDFS.
  */
 public class TestWebHDFSXAttr extends FSXAttrBaseTest {
-  /**
-   * Overridden to provide a WebHdfsFileSystem wrapper for the super-user.
-   *
-   * @return WebHdfsFileSystem for super-user
-   * @throws Exception if creation fails
-   */
-  @Override
-  protected WebHdfsFileSystem createFileSystem() throws Exception {
-    return WebHdfsTestUtil.getWebHdfsFileSystem(conf, WebHdfsFileSystem.SCHEME);
-  }
+    /**
+     * Overridden to provide a WebHdfsFileSystem wrapper for the super-user.
+     *
+     * @return WebHdfsFileSystem for super-user
+     * @throws Exception if creation fails
+     */
+    @Override
+    protected WebHdfsFileSystem createFileSystem() throws Exception {
+        return WebHdfsTestUtil.getWebHdfsFileSystem(conf, WebHdfsFileSystem.SCHEME);
+    }
 }

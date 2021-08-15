@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,40 +32,40 @@ import org.apache.hadoop.yarn.util.Records;
 @Unstable
 public abstract class Epoch {
 
-  public static Epoch newInstance(long sequenceNumber) {
-    Epoch epoch = Records.newRecord(Epoch.class);
-    epoch.setEpoch(sequenceNumber);
-    return epoch;
-  }
-
-  public abstract long getEpoch();
-
-  public abstract void setEpoch(long sequenceNumber);
-
-  public abstract EpochProto getProto();
-
-  public String toString() {
-    return String.valueOf(getEpoch());
-  }
-
-  @Override
-  public int hashCode() {
-    return (int) (getEpoch() ^ (getEpoch() >>> 32));
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Epoch other = (Epoch) obj;
-    if (this.getEpoch() == other.getEpoch()) {
-      return true;
-    } else {
-      return false;
+    public static Epoch newInstance(long sequenceNumber) {
+        Epoch epoch = Records.newRecord(Epoch.class);
+        epoch.setEpoch(sequenceNumber);
+        return epoch;
     }
-  }
+
+    public abstract long getEpoch();
+
+    public abstract void setEpoch(long sequenceNumber);
+
+    public abstract EpochProto getProto();
+
+    public String toString() {
+        return String.valueOf(getEpoch());
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (getEpoch() ^ (getEpoch() >>> 32));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Epoch other = (Epoch) obj;
+        if (this.getEpoch() == other.getEpoch()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

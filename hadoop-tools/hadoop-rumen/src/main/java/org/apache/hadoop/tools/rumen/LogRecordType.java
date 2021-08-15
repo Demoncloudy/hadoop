@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,55 +19,55 @@
 package org.apache.hadoop.tools.rumen;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 
 class LogRecordType {
-  static Map<String, LogRecordType> internees = new HashMap<String, LogRecordType>();
+    static Map<String, LogRecordType> internees = new HashMap<String, LogRecordType>();
 
-  final String name;
+    final String name;
 
-  final int index;
+    final int index;
 
-  private LogRecordType(String name) {
-    super();
+    private LogRecordType(String name) {
+        super();
 
-    this.name = name;
+        this.name = name;
 
-    index = internees.size();
-  }
-
-  static LogRecordType intern(String typeName) {
-    LogRecordType result = internees.get(typeName);
-
-    if (result == null) {
-      result = new LogRecordType(typeName);
-
-      internees.put(typeName, result);
+        index = internees.size();
     }
 
-    return result;
-  }
+    static LogRecordType intern(String typeName) {
+        LogRecordType result = internees.get(typeName);
 
-  static LogRecordType internSoft(String typeName) {
-    return internees.get(typeName);
-  }
+        if (result == null) {
+            result = new LogRecordType(typeName);
 
-  @Override
-  public String toString() {
-    return name;
-  }
+            internees.put(typeName, result);
+        }
 
-  static String[] lineTypes() {
-    Iterator<Map.Entry<String, LogRecordType>> iter = internees.entrySet()
-        .iterator();
-
-    String[] result = new String[internees.size()];
-
-    for (int i = 0; i < internees.size(); ++i) {
-      result[i] = iter.next().getKey();
+        return result;
     }
 
-    return result;
-  }
+    static LogRecordType internSoft(String typeName) {
+        return internees.get(typeName);
+    }
+
+    static String[] lineTypes() {
+        Iterator<Map.Entry<String, LogRecordType>> iter = internees.entrySet()
+                .iterator();
+
+        String[] result = new String[internees.size()];
+
+        for (int i = 0; i < internees.size(); ++i) {
+            result[i] = iter.next().getKey();
+        }
+
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

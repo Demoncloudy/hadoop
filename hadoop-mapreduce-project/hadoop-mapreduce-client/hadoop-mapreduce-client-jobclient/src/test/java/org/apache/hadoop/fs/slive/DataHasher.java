@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,20 +27,18 @@ import java.util.Random;
  */
 class DataHasher {
 
-  private Random rnd;
+    private Random rnd;
 
-  DataHasher(long mixIn) {
-    this.rnd = new Random(mixIn);
-  }
+    DataHasher(long mixIn) {
+        this.rnd = new Random(mixIn);
+    }
 
-  /**
-   * @param offSet
-   *          the byte offset into the file
-   * 
-   * @return the data to be expected at that offset
-   */
-  long generate(long offSet) {
-    return ((offSet * 47) ^ (rnd.nextLong() * 97)) * 37;
-  }
+    /**
+     * @param offSet the byte offset into the file
+     * @return the data to be expected at that offset
+     */
+    long generate(long offSet) {
+        return ((offSet * 47) ^ (rnd.nextLong() * 97)) * 37;
+    }
 
 }

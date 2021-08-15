@@ -19,7 +19,7 @@
 /**
  * This package contains the implementations of different types of
  * map-reduce counters.
- *
+ * <p>
  * cf. MAPREDUCE-901 for rationales.
  */
 @InterfaceAudience.Private

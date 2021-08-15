@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,11 +18,7 @@
 
 package org.apache.hadoop.yarn.server.resourcemanager.reservation;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -35,87 +31,90 @@ import org.apache.hadoop.yarn.util.UTCClock;
 import org.apache.hadoop.yarn.util.resource.ResourceCalculator;
 import org.apache.hadoop.yarn.util.resource.Resources;
 
-import com.google.common.annotations.VisibleForTesting;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This (re)planner scan a period of time from now to a maximum time window (or
  * the end of the last session, whichever comes first) checking the overall
  * capacity is not violated.
- * 
+ * <p>
  * It greedily removes sessions in reversed order of acceptance (latest accepted
  * is the first removed).
  */
 public class SimpleCapacityReplanner implements Planner {
 
-  private static final Log LOG = LogFactory
-      .getLog(SimpleCapacityReplanner.class);
+    private static final Log LOG = LogFactory
+            .getLog(SimpleCapacityReplanner.class);
 
-  private static final Resource ZERO_RESOURCE = Resource.newInstance(0, 0);
+    private static final Resource ZERO_RESOURCE = Resource.newInstance(0, 0);
 
-  private final Clock clock;
+    private final Clock clock;
 
-  // this allows to control to time-span of this replanning
-  // far into the future time instants might be worth replanning for
-  // later on
-  private long lengthOfCheckZone;
+    // this allows to control to time-span of this replanning
+    // far into the future time instants might be worth replanning for
+    // later on
+    private long lengthOfCheckZone;
 
-  public SimpleCapacityReplanner() {
-    this(new UTCClock());
-  }
-
-  @VisibleForTesting
-  SimpleCapacityReplanner(Clock clock) {
-    this.clock = clock;
-  }
-
-  @Override
-  public void init(String planQueueName, Configuration conf) {
-    if (!(conf instanceof CapacitySchedulerConfiguration)) {
-      throw new IllegalArgumentException("Unexpected conf type: "
-          + conf.getClass().getSimpleName() + " only supported conf is: "
-          + CapacitySchedulerConfiguration.class.getSimpleName());
-    }
-    this.lengthOfCheckZone =
-        ((CapacitySchedulerConfiguration) conf)
-            .getEnforcementWindow(planQueueName);
-  }
-
-  @Override
-  public void plan(Plan plan, List<ReservationDefinition> contracts)
-      throws PlanningException {
-
-    if (contracts != null) {
-      throw new RuntimeException(
-          "SimpleCapacityReplanner cannot handle new reservation contracts");
+    public SimpleCapacityReplanner() {
+        this(new UTCClock());
     }
 
-    ResourceCalculator resCalc = plan.getResourceCalculator();
-    Resource totCap = plan.getTotalCapacity();
-    long now = clock.getTime();
+    @VisibleForTesting
+    SimpleCapacityReplanner(Clock clock) {
+        this.clock = clock;
+    }
 
-    // loop on all moment in time from now to the end of the check Zone
-    // or the end of the planned sessions whichever comes first
-    for (long t = now; (t < plan.getLastEndTime() && t < (now + lengthOfCheckZone)); t +=
-        plan.getStep()) {
-      Resource excessCap =
-          Resources.subtract(plan.getTotalCommittedResources(t), totCap);
-      // if we are violating
-      if (Resources.greaterThan(resCalc, totCap, excessCap, ZERO_RESOURCE)) {
-        // sorted on reverse order of acceptance, so newest reservations first
-        Set<ReservationAllocation> curReservations =
-            new TreeSet<ReservationAllocation>(plan.getReservationsAtTime(t));
-        for (Iterator<ReservationAllocation> resIter =
-            curReservations.iterator(); resIter.hasNext()
-            && Resources.greaterThan(resCalc, totCap, excessCap, ZERO_RESOURCE);) {
-          ReservationAllocation reservation = resIter.next();
-          plan.deleteReservation(reservation.getReservationId());
-          excessCap =
-              Resources.subtract(excessCap, reservation.getResourcesAtTime(t));
-          LOG.info("Removing reservation " + reservation.getReservationId()
-              + " to repair physical-resource constraints in the plan: "
-              + plan.getQueueName());
+    @Override
+    public void init(String planQueueName, Configuration conf) {
+        if (!(conf instanceof CapacitySchedulerConfiguration)) {
+            throw new IllegalArgumentException("Unexpected conf type: "
+                    + conf.getClass().getSimpleName() + " only supported conf is: "
+                    + CapacitySchedulerConfiguration.class.getSimpleName());
         }
-      }
+        this.lengthOfCheckZone =
+                ((CapacitySchedulerConfiguration) conf)
+                        .getEnforcementWindow(planQueueName);
     }
-  }
+
+    @Override
+    public void plan(Plan plan, List<ReservationDefinition> contracts)
+            throws PlanningException {
+
+        if (contracts != null) {
+            throw new RuntimeException(
+                    "SimpleCapacityReplanner cannot handle new reservation contracts");
+        }
+
+        ResourceCalculator resCalc = plan.getResourceCalculator();
+        Resource totCap = plan.getTotalCapacity();
+        long now = clock.getTime();
+
+        // loop on all moment in time from now to the end of the check Zone
+        // or the end of the planned sessions whichever comes first
+        for (long t = now; (t < plan.getLastEndTime() && t < (now + lengthOfCheckZone)); t +=
+                plan.getStep()) {
+            Resource excessCap =
+                    Resources.subtract(plan.getTotalCommittedResources(t), totCap);
+            // if we are violating
+            if (Resources.greaterThan(resCalc, totCap, excessCap, ZERO_RESOURCE)) {
+                // sorted on reverse order of acceptance, so newest reservations first
+                Set<ReservationAllocation> curReservations =
+                        new TreeSet<ReservationAllocation>(plan.getReservationsAtTime(t));
+                for (Iterator<ReservationAllocation> resIter =
+                     curReservations.iterator(); resIter.hasNext()
+                             && Resources.greaterThan(resCalc, totCap, excessCap, ZERO_RESOURCE); ) {
+                    ReservationAllocation reservation = resIter.next();
+                    plan.deleteReservation(reservation.getReservationId());
+                    excessCap =
+                            Resources.subtract(excessCap, reservation.getResourcesAtTime(t));
+                    LOG.info("Removing reservation " + reservation.getReservationId()
+                            + " to repair physical-resource constraints in the plan: "
+                            + plan.getQueueName());
+                }
+            }
+        }
+    }
 }

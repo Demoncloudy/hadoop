@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,35 +23,35 @@ package org.apache.hadoop.tools.rumen;
  * trees during rumen unit tests. If the trees are not identical, this chain
  * will be converted to a string which describes the path from the root to the
  * fields that did not compare.
- * 
+ *
  */
 public class TreePath {
-  final TreePath parent;
+    final TreePath parent;
 
-  final String fieldName;
+    final String fieldName;
 
-  final int index;
+    final int index;
 
-  public TreePath(TreePath parent, String fieldName) {
-    super();
+    public TreePath(TreePath parent, String fieldName) {
+        super();
 
-    this.parent = parent;
-    this.fieldName = fieldName;
-    this.index = -1;
-  }
+        this.parent = parent;
+        this.fieldName = fieldName;
+        this.index = -1;
+    }
 
-  public TreePath(TreePath parent, String fieldName, int index) {
-    super();
+    public TreePath(TreePath parent, String fieldName, int index) {
+        super();
 
-    this.parent = parent;
-    this.fieldName = fieldName;
-    this.index = index;
-  }
+        this.parent = parent;
+        this.fieldName = fieldName;
+        this.index = index;
+    }
 
-  @Override
-  public String toString() {
-    String mySegment = fieldName + (index == -1 ? "" : ("[" + index + "]"));
+    @Override
+    public String toString() {
+        String mySegment = fieldName + (index == -1 ? "" : ("[" + index + "]"));
 
-    return ((parent == null) ? "" : parent.toString() + "-->") + mySegment;
-  }
+        return ((parent == null) ? "" : parent.toString() + "-->") + mySegment;
+    }
 }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,9 +18,9 @@
 
 package org.apache.hadoop.mapred;
 
-import java.io.IOException;
-
 import org.apache.hadoop.conf.Configuration;
+
+import java.io.IOException;
 
 /*
  * A simple interface for a client MR cluster used for testing. This interface
@@ -29,15 +29,15 @@ import org.apache.hadoop.conf.Configuration;
  */
 public interface MiniMRClientCluster {
 
-  public void start() throws IOException;
+    public void start() throws IOException;
 
-  /**
-   * Stop and start back the cluster using the same configuration.
-   */
-  public void restart() throws IOException;
+    /**
+     * Stop and start back the cluster using the same configuration.
+     */
+    public void restart() throws IOException;
 
-  public void stop() throws IOException;
+    public void stop() throws IOException;
 
-  public Configuration getConfig() throws IOException;
+    public Configuration getConfig() throws IOException;
 
 }

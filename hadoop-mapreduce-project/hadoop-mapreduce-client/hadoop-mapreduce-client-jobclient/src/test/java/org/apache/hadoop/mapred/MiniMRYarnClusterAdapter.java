@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,45 +32,44 @@ import org.apache.hadoop.yarn.conf.YarnConfiguration;
  */
 public class MiniMRYarnClusterAdapter implements MiniMRClientCluster {
 
-  private MiniMRYarnCluster miniMRYarnCluster;
+    private static final Log LOG = LogFactory.getLog(MiniMRYarnClusterAdapter.class);
+    private MiniMRYarnCluster miniMRYarnCluster;
 
-  private static final Log LOG = LogFactory.getLog(MiniMRYarnClusterAdapter.class);
-
-  public MiniMRYarnClusterAdapter(MiniMRYarnCluster miniMRYarnCluster) {
-    this.miniMRYarnCluster = miniMRYarnCluster;
-  }
-
-  @Override
-  public Configuration getConfig() {
-    return miniMRYarnCluster.getConfig();
-  }
-
-  @Override
-  public void start() {
-    miniMRYarnCluster.start();
-  }
-
-  @Override
-  public void stop() {
-    miniMRYarnCluster.stop();
-  }
-
-  @Override
-  public void restart() {
-    if (!miniMRYarnCluster.getServiceState().equals(STATE.STARTED)){
-      LOG.warn("Cannot restart the mini cluster, start it first");
-      return;
+    public MiniMRYarnClusterAdapter(MiniMRYarnCluster miniMRYarnCluster) {
+        this.miniMRYarnCluster = miniMRYarnCluster;
     }
-    Configuration oldConf = new Configuration(getConfig());
-    String callerName = oldConf.get("minimrclientcluster.caller.name",
-        this.getClass().getName());
-    int noOfNMs = oldConf.getInt("minimrclientcluster.nodemanagers.number", 1);
-    oldConf.setBoolean(YarnConfiguration.YARN_MINICLUSTER_FIXED_PORTS, true);
-    oldConf.setBoolean(JHAdminConfig.MR_HISTORY_MINICLUSTER_FIXED_PORTS, true);
-    stop();
-    miniMRYarnCluster = new MiniMRYarnCluster(callerName, noOfNMs);
-    miniMRYarnCluster.init(oldConf);
-    miniMRYarnCluster.start();
-  }
+
+    @Override
+    public Configuration getConfig() {
+        return miniMRYarnCluster.getConfig();
+    }
+
+    @Override
+    public void start() {
+        miniMRYarnCluster.start();
+    }
+
+    @Override
+    public void stop() {
+        miniMRYarnCluster.stop();
+    }
+
+    @Override
+    public void restart() {
+        if (!miniMRYarnCluster.getServiceState().equals(STATE.STARTED)) {
+            LOG.warn("Cannot restart the mini cluster, start it first");
+            return;
+        }
+        Configuration oldConf = new Configuration(getConfig());
+        String callerName = oldConf.get("minimrclientcluster.caller.name",
+                this.getClass().getName());
+        int noOfNMs = oldConf.getInt("minimrclientcluster.nodemanagers.number", 1);
+        oldConf.setBoolean(YarnConfiguration.YARN_MINICLUSTER_FIXED_PORTS, true);
+        oldConf.setBoolean(JHAdminConfig.MR_HISTORY_MINICLUSTER_FIXED_PORTS, true);
+        stop();
+        miniMRYarnCluster = new MiniMRYarnCluster(callerName, noOfNMs);
+        miniMRYarnCluster.init(oldConf);
+        miniMRYarnCluster.start();
+    }
 
 }

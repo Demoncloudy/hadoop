@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,28 +26,28 @@ import org.apache.hadoop.oncrpc.security.Verifier;
  * the response from NFSv3 handlers.
  */
 public class NFS3Response {
-  protected int status;
+    protected int status;
 
-  public NFS3Response(int status) {
-    this.status = status;
-  }
+    public NFS3Response(int status) {
+        this.status = status;
+    }
 
-  public int getStatus() {
-    return this.status;
-  }
+    public int getStatus() {
+        return this.status;
+    }
 
-  public void setStatus(int status) {
-    this.status = status;
-  }
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
-  /**
-   * Write the response, along with the rpc header (including verifier), to the
-   * XDR.
-   */
-  public XDR serialize(XDR out, int xid, Verifier verifier) {
-    RpcAcceptedReply reply = RpcAcceptedReply.getAcceptInstance(xid, verifier);
-    reply.write(out);
-    out.writeInt(this.getStatus());
-    return out;
-  }
+    /**
+     * Write the response, along with the rpc header (including verifier), to the
+     * XDR.
+     */
+    public XDR serialize(XDR out, int xid, Verifier verifier) {
+        RpcAcceptedReply reply = RpcAcceptedReply.getAcceptInstance(xid, verifier);
+        reply.write(out);
+        out.writeInt(this.getStatus());
+        return out;
+    }
 }

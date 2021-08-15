@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,13 +18,7 @@
 
 package org.apache.hadoop.fs;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import javax.security.auth.login.LoginException;
-
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.security.UserGroupInformation;
@@ -33,51 +27,54 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import javax.security.auth.login.LoginException;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 public class TestFcHdfsPermission extends FileContextPermissionBase {
-  
-  private static final FileContextTestHelper fileContextTestHelper =
-      new FileContextTestHelper("/tmp/TestFcHdfsPermission");
-  private static FileContext fc;
 
-  private static MiniDFSCluster cluster;
-  private static Path defaultWorkingDirectory;
-  
-  @Override
-  protected FileContextTestHelper getFileContextHelper() {
-    return fileContextTestHelper;
-  }
-  
-  @Override
-  protected FileContext getFileContext() {
-    return fc;
-  }
-  
-  @BeforeClass
-  public static void clusterSetupAtBegining()
-                                    throws IOException, LoginException, URISyntaxException  {
-    Configuration conf = new HdfsConfiguration();
-    cluster = new MiniDFSCluster.Builder(conf).numDataNodes(2).build();
-    fc = FileContext.getFileContext(cluster.getURI(0), conf);
-    defaultWorkingDirectory = fc.makeQualified( new Path("/user/" + 
-        UserGroupInformation.getCurrentUser().getShortUserName()));
-    fc.mkdir(defaultWorkingDirectory, FileContext.DEFAULT_PERM, true);
-  }
+    private static final FileContextTestHelper fileContextTestHelper =
+            new FileContextTestHelper("/tmp/TestFcHdfsPermission");
+    private static FileContext fc;
 
-      
-  @AfterClass
-  public static void ClusterShutdownAtEnd() throws Exception {
-    cluster.shutdown();   
-  }
-  
-  @Override
-  @Before
-  public void setUp() throws Exception {
-    super.setUp();
-  }
-  
-  @Override
-  @After
-  public void tearDown() throws Exception {
-    super.tearDown();
-  }
+    private static MiniDFSCluster cluster;
+    private static Path defaultWorkingDirectory;
+
+    @BeforeClass
+    public static void clusterSetupAtBegining()
+            throws IOException, LoginException, URISyntaxException {
+        Configuration conf = new HdfsConfiguration();
+        cluster = new MiniDFSCluster.Builder(conf).numDataNodes(2).build();
+        fc = FileContext.getFileContext(cluster.getURI(0), conf);
+        defaultWorkingDirectory = fc.makeQualified(new Path("/user/" +
+                UserGroupInformation.getCurrentUser().getShortUserName()));
+        fc.mkdir(defaultWorkingDirectory, FileContext.DEFAULT_PERM, true);
+    }
+
+    @AfterClass
+    public static void ClusterShutdownAtEnd() throws Exception {
+        cluster.shutdown();
+    }
+
+    @Override
+    protected FileContextTestHelper getFileContextHelper() {
+        return fileContextTestHelper;
+    }
+
+    @Override
+    protected FileContext getFileContext() {
+        return fc;
+    }
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    @Override
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
 }

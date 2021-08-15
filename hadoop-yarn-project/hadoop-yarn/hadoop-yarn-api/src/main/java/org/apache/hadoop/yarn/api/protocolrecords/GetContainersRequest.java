@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,39 +29,38 @@ import org.apache.hadoop.yarn.util.Records;
  * The request from clients to get a list of container reports, which belong to
  * an application attempt from the <code>ResourceManager</code>.
  * </p>
- * 
+ *
  * @see ApplicationHistoryProtocol#getContainers(GetContainersRequest)
  */
 @Public
 @Unstable
 public abstract class GetContainersRequest {
-  @Public
-  @Unstable
-  public static GetContainersRequest newInstance(
-      ApplicationAttemptId applicationAttemptId) {
-    GetContainersRequest request =
-        Records.newRecord(GetContainersRequest.class);
-    request.setApplicationAttemptId(applicationAttemptId);
-    return request;
-  }
+    @Public
+    @Unstable
+    public static GetContainersRequest newInstance(
+            ApplicationAttemptId applicationAttemptId) {
+        GetContainersRequest request =
+                Records.newRecord(GetContainersRequest.class);
+        request.setApplicationAttemptId(applicationAttemptId);
+        return request;
+    }
 
-  /**
-   * Get the <code>ApplicationAttemptId</code> of an application attempt.
-   * 
-   * @return <code>ApplicationAttemptId</code> of an application attempt
-   */
-  @Public
-  @Unstable
-  public abstract ApplicationAttemptId getApplicationAttemptId();
+    /**
+     * Get the <code>ApplicationAttemptId</code> of an application attempt.
+     *
+     * @return <code>ApplicationAttemptId</code> of an application attempt
+     */
+    @Public
+    @Unstable
+    public abstract ApplicationAttemptId getApplicationAttemptId();
 
-  /**
-   * Set the <code>ApplicationAttemptId</code> of an application attempt
-   * 
-   * @param applicationAttemptId
-   *          <code>ApplicationAttemptId</code> of an application attempt
-   */
-  @Public
-  @Unstable
-  public abstract void setApplicationAttemptId(
-      ApplicationAttemptId applicationAttemptId);
+    /**
+     * Set the <code>ApplicationAttemptId</code> of an application attempt
+     *
+     * @param applicationAttemptId <code>ApplicationAttemptId</code> of an application attempt
+     */
+    @Public
+    @Unstable
+    public abstract void setApplicationAttemptId(
+            ApplicationAttemptId applicationAttemptId);
 }

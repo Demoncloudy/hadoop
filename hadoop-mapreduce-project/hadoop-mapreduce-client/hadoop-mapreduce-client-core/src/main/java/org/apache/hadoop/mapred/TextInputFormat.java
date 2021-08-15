@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,53 +18,55 @@
 
 package org.apache.hadoop.mapred;
 
-import java.io.*;
-
+import com.google.common.base.Charsets;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
-import org.apache.hadoop.fs.*;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.compress.*;
+import org.apache.hadoop.io.compress.CompressionCodec;
+import org.apache.hadoop.io.compress.CompressionCodecFactory;
+import org.apache.hadoop.io.compress.SplittableCompressionCodec;
 
-import com.google.common.base.Charsets;
+import java.io.IOException;
 
-/** 
+/**
  * An {@link InputFormat} for plain text files.  Files are broken into lines.
  * Either linefeed or carriage-return are used to signal end of line.  Keys are
- * the position in the file, and values are the line of text.. 
+ * the position in the file, and values are the line of text..
  */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
 public class TextInputFormat extends FileInputFormat<LongWritable, Text>
-  implements JobConfigurable {
+        implements JobConfigurable {
 
-  private CompressionCodecFactory compressionCodecs = null;
-  
-  public void configure(JobConf conf) {
-    compressionCodecs = new CompressionCodecFactory(conf);
-  }
-  
-  protected boolean isSplitable(FileSystem fs, Path file) {
-    final CompressionCodec codec = compressionCodecs.getCodec(file);
-    if (null == codec) {
-      return true;
-    }
-    return codec instanceof SplittableCompressionCodec;
-  }
+    private CompressionCodecFactory compressionCodecs = null;
 
-  public RecordReader<LongWritable, Text> getRecordReader(
-                                          InputSplit genericSplit, JobConf job,
-                                          Reporter reporter)
-    throws IOException {
-    
-    reporter.setStatus(genericSplit.toString());
-    String delimiter = job.get("textinputformat.record.delimiter");
-    byte[] recordDelimiterBytes = null;
-    if (null != delimiter) {
-      recordDelimiterBytes = delimiter.getBytes(Charsets.UTF_8);
+    public void configure(JobConf conf) {
+        compressionCodecs = new CompressionCodecFactory(conf);
     }
-    return new LineRecordReader(job, (FileSplit) genericSplit,
-        recordDelimiterBytes);
-  }
+
+    protected boolean isSplitable(FileSystem fs, Path file) {
+        final CompressionCodec codec = compressionCodecs.getCodec(file);
+        if (null == codec) {
+            return true;
+        }
+        return codec instanceof SplittableCompressionCodec;
+    }
+
+    public RecordReader<LongWritable, Text> getRecordReader(
+            InputSplit genericSplit, JobConf job,
+            Reporter reporter)
+            throws IOException {
+
+        reporter.setStatus(genericSplit.toString());
+        String delimiter = job.get("textinputformat.record.delimiter");
+        byte[] recordDelimiterBytes = null;
+        if (null != delimiter) {
+            recordDelimiterBytes = delimiter.getBytes(Charsets.UTF_8);
+        }
+        return new LineRecordReader(job, (FileSplit) genericSplit,
+                recordDelimiterBytes);
+    }
 }

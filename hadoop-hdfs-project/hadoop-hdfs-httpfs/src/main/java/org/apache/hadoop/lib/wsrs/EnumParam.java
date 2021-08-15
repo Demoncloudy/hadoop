@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,21 +25,21 @@ import java.util.Arrays;
 
 @InterfaceAudience.Private
 public abstract class EnumParam<E extends Enum<E>> extends Param<E> {
-  Class<E> klass;
+    Class<E> klass;
 
-  public EnumParam(String name, Class<E> e, E defaultValue) {
-    super(name, defaultValue);
-    klass = e;
-  }
+    public EnumParam(String name, Class<E> e, E defaultValue) {
+        super(name, defaultValue);
+        klass = e;
+    }
 
-  @Override
-  protected E parse(String str) throws Exception {
-    return Enum.valueOf(klass, str.toUpperCase());
-  }
+    @Override
+    protected E parse(String str) throws Exception {
+        return Enum.valueOf(klass, str.toUpperCase());
+    }
 
-  @Override
-  protected String getDomain() {
-    return StringUtils.join(",", Arrays.asList(klass.getEnumConstants()));
-  }
+    @Override
+    protected String getDomain() {
+        return StringUtils.join(",", Arrays.asList(klass.getEnumConstants()));
+    }
 
 }

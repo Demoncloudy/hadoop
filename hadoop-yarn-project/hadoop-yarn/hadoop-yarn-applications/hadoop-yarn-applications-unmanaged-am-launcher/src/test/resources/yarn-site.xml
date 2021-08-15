@@ -15,7 +15,7 @@
 -->
 
 <configuration>
-  <!-- Dummy (invalid) config file to be overwriten by TestUnmanagedAMLauncher with MiniCluster configuration. -->
+    <!-- Dummy (invalid) config file to be overwriten by TestUnmanagedAMLauncher with MiniCluster configuration. -->
 </configuration>
 
 

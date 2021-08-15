@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,20 +18,20 @@
 
 package org.apache.hadoop.yarn.server.resourcemanager.scheduler.event;
 
+import org.apache.hadoop.yarn.api.records.NodeId;
+
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.hadoop.yarn.api.records.NodeId;
-
 public class NodeLabelsUpdateSchedulerEvent extends SchedulerEvent {
-  private Map<NodeId, Set<String>> nodeToLabels;
+    private Map<NodeId, Set<String>> nodeToLabels;
 
-  public NodeLabelsUpdateSchedulerEvent(Map<NodeId, Set<String>> nodeToLabels) {
-    super(SchedulerEventType.NODE_LABELS_UPDATE);
-    this.nodeToLabels = nodeToLabels;
-  }
-  
-  public Map<NodeId, Set<String>> getUpdatedNodeToLabels() {
-    return nodeToLabels;
-  }
+    public NodeLabelsUpdateSchedulerEvent(Map<NodeId, Set<String>> nodeToLabels) {
+        super(SchedulerEventType.NODE_LABELS_UPDATE);
+        this.nodeToLabels = nodeToLabels;
+    }
+
+    public Map<NodeId, Set<String>> getUpdatedNodeToLabels() {
+        return nodeToLabels;
+    }
 }

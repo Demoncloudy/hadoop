@@ -27,7 +27,7 @@
  * exceptions that may be raised if invalid (often null) arguments are passed
  * to a method call.
  * <p>
- *   All exceptions in this package are derived from
- *   {@link org.apache.hadoop.registry.client.exceptions.RegistryIOException}
+ * All exceptions in this package are derived from
+ * {@link org.apache.hadoop.registry.client.exceptions.RegistryIOException}
  */
 package org.apache.hadoop.registry.client.exceptions;

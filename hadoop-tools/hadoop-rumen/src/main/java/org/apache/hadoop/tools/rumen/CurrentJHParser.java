@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,13 +17,13 @@
  */
 package org.apache.hadoop.tools.rumen;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.hadoop.mapreduce.jobhistory.EventReader;
 import org.apache.hadoop.mapreduce.jobhistory.HistoryEvent;
 import org.apache.hadoop.mapreduce.v2.hs.JobHistory;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * {@link JobHistoryParser} that parses {@link JobHistory} files produced by
@@ -31,58 +31,58 @@ import org.apache.hadoop.mapreduce.v2.hs.JobHistory;
  * code tree as rumen.
  */
 public class CurrentJHParser implements JobHistoryParser {
-  private EventReader reader;
+    private EventReader reader;
 
-  private static class ForkedDataInputStream extends DataInputStream {
-    ForkedDataInputStream(InputStream input) {
-      super(input);
+    public CurrentJHParser(InputStream input) throws IOException {
+        reader = new EventReader(new DataInputStream(input));
+    }
+
+    /**
+     * Can this parser parse the input?
+     *
+     * @param input
+     * @return Whether this parser can parse the input.
+     * @throws IOException
+     */
+    public static boolean canParse(InputStream input) throws IOException {
+        final DataInputStream in = new ForkedDataInputStream(input);
+
+        try {
+            final EventReader reader = new EventReader(in);
+
+            try {
+                reader.getNextEvent();
+            } catch (IOException e) {
+                return false;
+            } finally {
+                reader.close();
+            }
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
-    public void close() {
-      // no code
+    public HistoryEvent nextEvent() throws IOException {
+        return reader.getNextEvent();
     }
-  }
 
-  /**
-   * Can this parser parse the input?
-   * 
-   * @param input
-   * @return Whether this parser can parse the input.
-   * @throws IOException
-   */
-  public static boolean canParse(InputStream input) throws IOException {
-    final DataInputStream in = new ForkedDataInputStream(input);
-
-    try {
-      final EventReader reader = new EventReader(in);
-
-      try {
-        reader.getNextEvent();
-      } catch (IOException e) {
-        return false;
-      } finally {
+    @Override
+    public void close() throws IOException {
         reader.close();
-      }
-    } catch (IOException e) {
-      return false;
     }
 
-    return true;
-  }
+    private static class ForkedDataInputStream extends DataInputStream {
+        ForkedDataInputStream(InputStream input) {
+            super(input);
+        }
 
-  public CurrentJHParser(InputStream input) throws IOException {
-    reader = new EventReader(new DataInputStream(input));
-  }
-
-  @Override
-  public HistoryEvent nextEvent() throws IOException {
-    return reader.getNextEvent();
-  }
-
-  @Override
-  public void close() throws IOException {
-    reader.close();
-  }
+        @Override
+        public void close() {
+            // no code
+        }
+    }
 
 }

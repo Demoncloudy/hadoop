@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,33 +25,33 @@ import java.util.Iterator;
  */
 class MetricsBuffer implements Iterable<MetricsBuffer.Entry> {
 
-  private final Iterable<Entry> mutable;
+    private final Iterable<Entry> mutable;
 
-  MetricsBuffer(Iterable<MetricsBuffer.Entry> mutable) {
-    this.mutable = mutable;
-  }
-
-  @Override
-  public Iterator<Entry> iterator() {
-    return mutable.iterator();
-  }
-
-  static class Entry {
-    private final String sourceName;
-    private final Iterable<MetricsRecordImpl> records;
-
-    Entry(String name, Iterable<MetricsRecordImpl> records) {
-      sourceName = name;
-      this.records = records;
+    MetricsBuffer(Iterable<MetricsBuffer.Entry> mutable) {
+        this.mutable = mutable;
     }
 
-    String name() {
-      return sourceName;
+    @Override
+    public Iterator<Entry> iterator() {
+        return mutable.iterator();
     }
 
-    Iterable<MetricsRecordImpl> records() {
-      return records;
+    static class Entry {
+        private final String sourceName;
+        private final Iterable<MetricsRecordImpl> records;
+
+        Entry(String name, Iterable<MetricsRecordImpl> records) {
+            sourceName = name;
+            this.records = records;
+        }
+
+        String name() {
+            return sourceName;
+        }
+
+        Iterable<MetricsRecordImpl> records() {
+            return records;
+        }
     }
-  }
 
 }

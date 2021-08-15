@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,14 +18,14 @@
 
 package org.apache.hadoop.mapreduce.security.token;
 
-import java.util.Collection;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.security.token.TokenIdentifier;
 import org.apache.hadoop.security.token.TokenSelector;
+
+import java.util.Collection;
 
 /**
  * Look through tokens to find the first job token that matches the service
@@ -35,19 +35,19 @@ import org.apache.hadoop.security.token.TokenSelector;
 @InterfaceStability.Unstable
 public class JobTokenSelector implements TokenSelector<JobTokenIdentifier> {
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public Token<JobTokenIdentifier> selectToken(Text service,
-      Collection<Token<? extends TokenIdentifier>> tokens) {
-    if (service == null) {
-      return null;
+    @SuppressWarnings("unchecked")
+    @Override
+    public Token<JobTokenIdentifier> selectToken(Text service,
+                                                 Collection<Token<? extends TokenIdentifier>> tokens) {
+        if (service == null) {
+            return null;
+        }
+        for (Token<? extends TokenIdentifier> token : tokens) {
+            if (JobTokenIdentifier.KIND_NAME.equals(token.getKind())
+                    && service.equals(token.getService())) {
+                return (Token<JobTokenIdentifier>) token;
+            }
+        }
+        return null;
     }
-    for (Token<? extends TokenIdentifier> token : tokens) {
-      if (JobTokenIdentifier.KIND_NAME.equals(token.getKind())
-          && service.equals(token.getService())) {
-        return (Token<JobTokenIdentifier>) token;
-      }
-    }
-    return null;
-  }
 }

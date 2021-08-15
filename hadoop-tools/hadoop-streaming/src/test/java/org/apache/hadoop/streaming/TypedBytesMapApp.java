@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,42 +18,42 @@
 
 package org.apache.hadoop.streaming;
 
+import org.apache.hadoop.typedbytes.TypedBytesInput;
+import org.apache.hadoop.typedbytes.TypedBytesOutput;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.apache.hadoop.typedbytes.TypedBytesInput;
-import org.apache.hadoop.typedbytes.TypedBytesOutput;
-
 public class TypedBytesMapApp {
 
-  private String find;
+    private String find;
 
-  public TypedBytesMapApp(String find) {
-    this.find = find;
-  }
-
-  public void go() throws IOException {
-    TypedBytesInput tbinput = new TypedBytesInput(new DataInputStream(System.in));
-    TypedBytesOutput tboutput = new TypedBytesOutput(new DataOutputStream(System.out));
-
-    Object key = tbinput.readRaw();
-    while (key != null) {
-      Object value = tbinput.read();
-      for (String part : value.toString().split(find)) {
-        tboutput.write(part);  // write key
-        tboutput.write(1);     // write value
-      }
-      System.err.println("reporter:counter:UserCounters,InputLines,1");
-      key = tbinput.readRaw();
+    public TypedBytesMapApp(String find) {
+        this.find = find;
     }
-    
-    System.out.flush();
-  }
-  
-  public static void main(String[] args) throws IOException {
-    TypedBytesMapApp app = new TypedBytesMapApp(args[0].replace(".","\\."));
-    app.go();
-  }
-  
+
+    public static void main(String[] args) throws IOException {
+        TypedBytesMapApp app = new TypedBytesMapApp(args[0].replace(".", "\\."));
+        app.go();
+    }
+
+    public void go() throws IOException {
+        TypedBytesInput tbinput = new TypedBytesInput(new DataInputStream(System.in));
+        TypedBytesOutput tboutput = new TypedBytesOutput(new DataOutputStream(System.out));
+
+        Object key = tbinput.readRaw();
+        while (key != null) {
+            Object value = tbinput.read();
+            for (String part : value.toString().split(find)) {
+                tboutput.write(part);  // write key
+                tboutput.write(1);     // write value
+            }
+            System.err.println("reporter:counter:UserCounters,InputLines,1");
+            key = tbinput.readRaw();
+        }
+
+        System.out.flush();
+    }
+
 }

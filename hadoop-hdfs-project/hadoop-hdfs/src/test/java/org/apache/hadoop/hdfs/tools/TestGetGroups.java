@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,9 +17,6 @@
  */
 package org.apache.hadoop.hdfs.tools;
 
-import java.io.IOException;
-import java.io.PrintStream;
-
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.tools.GetGroupsTestBase;
@@ -27,27 +24,30 @@ import org.apache.hadoop.util.Tool;
 import org.junit.After;
 import org.junit.Before;
 
+import java.io.IOException;
+import java.io.PrintStream;
+
 /**
  * Tests for the HDFS implementation of {@link GetGroups}
  */
 public class TestGetGroups extends GetGroupsTestBase {
-  
-  private MiniDFSCluster cluster;
 
-  @Before
-  public void setUpNameNode() throws IOException {
-    conf = new HdfsConfiguration();
-    cluster = new MiniDFSCluster.Builder(conf).numDataNodes(0).build();
-  }
-  
-  @After
-  public void tearDownNameNode() {
-    cluster.shutdown();
-  }
+    private MiniDFSCluster cluster;
 
-  @Override
-  protected Tool getTool(PrintStream o) {
-    return new GetGroups(conf, o);
-  }
+    @Before
+    public void setUpNameNode() throws IOException {
+        conf = new HdfsConfiguration();
+        cluster = new MiniDFSCluster.Builder(conf).numDataNodes(0).build();
+    }
+
+    @After
+    public void tearDownNameNode() {
+        cluster.shutdown();
+    }
+
+    @Override
+    protected Tool getTool(PrintStream o) {
+        return new GetGroups(conf, o);
+    }
 
 }

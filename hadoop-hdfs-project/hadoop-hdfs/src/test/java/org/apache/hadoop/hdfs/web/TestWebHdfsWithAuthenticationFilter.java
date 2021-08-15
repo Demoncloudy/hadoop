@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,18 +16,6 @@
  * limitations under the License.
  */
 package org.apache.hadoop.hdfs.web;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.URI;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -40,64 +28,69 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.URI;
+
 public class TestWebHdfsWithAuthenticationFilter {
-  private static boolean authorized = false;
+    private static boolean authorized = false;
+    private static Configuration conf;
+    private static MiniDFSCluster cluster;
+    private static FileSystem fs;
 
-  public static final class CustomizedFilter implements Filter {
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    @BeforeClass
+    public static void setUp() throws IOException {
+        conf = new Configuration();
+        conf.set(DFSConfigKeys.DFS_WEBHDFS_AUTHENTICATION_FILTER_KEY,
+                CustomizedFilter.class.getName());
+        conf.set(DFSConfigKeys.DFS_NAMENODE_HTTP_ADDRESS_KEY, "localhost:0");
+        cluster = new MiniDFSCluster.Builder(conf).numDataNodes(1).build();
+        InetSocketAddress addr = cluster.getNameNode().getHttpAddress();
+        fs = FileSystem.get(
+                URI.create("webhdfs://" + NetUtils.getHostPortString(addr)), conf);
+        cluster.waitActive();
     }
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-        FilterChain chain) throws IOException, ServletException {
-      if (authorized) {
-        chain.doFilter(request, response);
-      } else {
-        ((HttpServletResponse) response)
-            .sendError(HttpServletResponse.SC_FORBIDDEN);
-      }
+    @AfterClass
+    public static void tearDown() throws IOException {
+        fs.close();
+        cluster.shutdown();
     }
 
-    @Override
-    public void destroy() {
+    @Test
+    public void testWebHdfsAuthFilter() throws IOException {
+        // getFileStatus() is supposed to pass through with the default filter.
+        authorized = false;
+        try {
+            fs.getFileStatus(new Path("/"));
+            Assert.fail("The filter fails to block the request");
+        } catch (IOException e) {
+        }
+        authorized = true;
+        fs.getFileStatus(new Path("/"));
     }
 
-  }
+    public static final class CustomizedFilter implements Filter {
+        @Override
+        public void init(FilterConfig filterConfig) throws ServletException {
+        }
 
-  private static Configuration conf;
-  private static MiniDFSCluster cluster;
-  private static FileSystem fs;
+        @Override
+        public void doFilter(ServletRequest request, ServletResponse response,
+                             FilterChain chain) throws IOException, ServletException {
+            if (authorized) {
+                chain.doFilter(request, response);
+            } else {
+                ((HttpServletResponse) response)
+                        .sendError(HttpServletResponse.SC_FORBIDDEN);
+            }
+        }
 
-  @BeforeClass
-  public static void setUp() throws IOException {
-    conf = new Configuration();
-    conf.set(DFSConfigKeys.DFS_WEBHDFS_AUTHENTICATION_FILTER_KEY,
-        CustomizedFilter.class.getName());
-    conf.set(DFSConfigKeys.DFS_NAMENODE_HTTP_ADDRESS_KEY, "localhost:0");
-    cluster = new MiniDFSCluster.Builder(conf).numDataNodes(1).build();
-    InetSocketAddress addr = cluster.getNameNode().getHttpAddress();
-    fs = FileSystem.get(
-        URI.create("webhdfs://" + NetUtils.getHostPortString(addr)), conf);
-    cluster.waitActive();
-  }
+        @Override
+        public void destroy() {
+        }
 
-  @AfterClass
-  public static void tearDown() throws IOException {
-    fs.close();
-    cluster.shutdown();
-  }
-
-  @Test
-  public void testWebHdfsAuthFilter() throws IOException {
-    // getFileStatus() is supposed to pass through with the default filter.
-    authorized = false;
-    try {
-      fs.getFileStatus(new Path("/"));
-      Assert.fail("The filter fails to block the request");
-    } catch (IOException e) {
     }
-    authorized = true;
-    fs.getFileStatus(new Path("/"));
-  }
 }

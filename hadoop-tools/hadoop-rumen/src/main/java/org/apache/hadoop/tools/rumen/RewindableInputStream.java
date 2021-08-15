@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,53 +26,51 @@ import java.io.InputStream;
  * made more memory efficient by grow the internal buffer adaptively.
  */
 public class RewindableInputStream extends InputStream {
-  private InputStream input;
+    private InputStream input;
 
-  /**
-   * Constructor.
-   * 
-   * @param input
-   */
-  public RewindableInputStream(InputStream input) {
-    this(input, 1024 * 1024);
-  }
-
-  /**
-   * Constructor
-   * 
-   * @param input
-   *          input stream.
-   * @param maxBytesToRemember
-   *          Maximum number of bytes we need to remember at the beginning of
-   *          the stream. If {@link #rewind()} is called after so many bytes are
-   *          read from the stream, {@link #rewind()} would fail.
-   */
-  public RewindableInputStream(InputStream input, int maxBytesToRemember) {
-    this.input = new BufferedInputStream(input, maxBytesToRemember);
-    this.input.mark(maxBytesToRemember);
-  }
-
-  @Override
-  public int read() throws IOException {
-    return input.read();
-  }
-
-  @Override
-  public int read(byte[] buffer, int offset, int length) throws IOException {
-    return input.read(buffer, offset, length);
-  }
-
-  @Override
-  public void close() throws IOException {
-    input.close();
-  }
-
-  public InputStream rewind() throws IOException {
-    try {
-      input.reset();
-      return this;
-    } catch (IOException e) {
-      throw new IOException("Unable to rewind the stream", e);
+    /**
+     * Constructor.
+     *
+     * @param input
+     */
+    public RewindableInputStream(InputStream input) {
+        this(input, 1024 * 1024);
     }
-  }
+
+    /**
+     * Constructor
+     *
+     * @param input              input stream.
+     * @param maxBytesToRemember Maximum number of bytes we need to remember at the beginning of
+     *                           the stream. If {@link #rewind()} is called after so many bytes are
+     *                           read from the stream, {@link #rewind()} would fail.
+     */
+    public RewindableInputStream(InputStream input, int maxBytesToRemember) {
+        this.input = new BufferedInputStream(input, maxBytesToRemember);
+        this.input.mark(maxBytesToRemember);
+    }
+
+    @Override
+    public int read() throws IOException {
+        return input.read();
+    }
+
+    @Override
+    public int read(byte[] buffer, int offset, int length) throws IOException {
+        return input.read(buffer, offset, length);
+    }
+
+    @Override
+    public void close() throws IOException {
+        input.close();
+    }
+
+    public InputStream rewind() throws IOException {
+        try {
+            input.reset();
+            return this;
+        } catch (IOException e) {
+            throw new IOException("Unable to rewind the stream", e);
+        }
+    }
 }

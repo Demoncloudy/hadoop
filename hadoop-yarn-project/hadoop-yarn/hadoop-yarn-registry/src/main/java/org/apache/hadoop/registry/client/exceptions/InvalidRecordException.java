@@ -23,19 +23,18 @@ import org.apache.hadoop.classification.InterfaceStability;
 
 /**
  * Raised if an attempt to parse a record failed.
- *
  */
 @InterfaceAudience.Public
 @InterfaceStability.Evolving
 public class InvalidRecordException extends RegistryIOException {
 
-  public InvalidRecordException(String path, String error) {
-    super(path, error);
-  }
+    public InvalidRecordException(String path, String error) {
+        super(path, error);
+    }
 
-  public InvalidRecordException(String path,
-      String error,
-      Throwable cause) {
-    super(path, error, cause);
-  }
+    public InvalidRecordException(String path,
+                                  String error,
+                                  Throwable cause) {
+        super(path, error, cause);
+    }
 }

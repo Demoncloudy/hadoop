@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,42 +26,42 @@ import org.apache.hadoop.oncrpc.security.Verifier;
  * READLINK3 Response
  */
 public class READLINK3Response extends NFS3Response {
-  private final Nfs3FileAttributes postOpSymlinkAttr;
-  private final byte path[];
+    private final Nfs3FileAttributes postOpSymlinkAttr;
+    private final byte path[];
 
-  public READLINK3Response(int status) {
-    this(status, new Nfs3FileAttributes(), new byte[0]);
-  }
-
-  public READLINK3Response(int status, Nfs3FileAttributes postOpAttr,
-      byte path[]) {
-    super(status);
-    this.postOpSymlinkAttr = postOpAttr;
-    this.path = new byte[path.length];
-    System.arraycopy(path, 0, this.path, 0, path.length);
-  }
-
-  public static READLINK3Response deserialize(XDR xdr) {
-    int status = xdr.readInt();
-    xdr.readBoolean();
-    Nfs3FileAttributes postOpSymlinkAttr = Nfs3FileAttributes.deserialize(xdr);
-    byte path[] = new byte[0];
-
-    if (status == Nfs3Status.NFS3_OK) {
-      path = xdr.readVariableOpaque();
+    public READLINK3Response(int status) {
+        this(status, new Nfs3FileAttributes(), new byte[0]);
     }
 
-    return new READLINK3Response(status, postOpSymlinkAttr, path);
-  }
-
-  @Override
-  public XDR serialize(XDR out, int xid, Verifier verifier) {
-    super.serialize(out, xid, verifier);
-    out.writeBoolean(true); // Attribute follows
-    postOpSymlinkAttr.serialize(out);
-    if (getStatus() == Nfs3Status.NFS3_OK) {
-      out.writeVariableOpaque(path);
+    public READLINK3Response(int status, Nfs3FileAttributes postOpAttr,
+                             byte path[]) {
+        super(status);
+        this.postOpSymlinkAttr = postOpAttr;
+        this.path = new byte[path.length];
+        System.arraycopy(path, 0, this.path, 0, path.length);
     }
-    return out;
-  }
+
+    public static READLINK3Response deserialize(XDR xdr) {
+        int status = xdr.readInt();
+        xdr.readBoolean();
+        Nfs3FileAttributes postOpSymlinkAttr = Nfs3FileAttributes.deserialize(xdr);
+        byte path[] = new byte[0];
+
+        if (status == Nfs3Status.NFS3_OK) {
+            path = xdr.readVariableOpaque();
+        }
+
+        return new READLINK3Response(status, postOpSymlinkAttr, path);
+    }
+
+    @Override
+    public XDR serialize(XDR out, int xid, Verifier verifier) {
+        super.serialize(out, xid, verifier);
+        out.writeBoolean(true); // Attribute follows
+        postOpSymlinkAttr.serialize(out);
+        if (getStatus() == Nfs3Status.NFS3_OK) {
+            out.writeVariableOpaque(path);
+        }
+        return out;
+    }
 }

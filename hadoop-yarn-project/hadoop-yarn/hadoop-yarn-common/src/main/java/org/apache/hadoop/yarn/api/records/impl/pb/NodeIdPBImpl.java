@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,58 +19,57 @@
 package org.apache.hadoop.yarn.api.records.impl.pb;
 
 
+import com.google.common.base.Preconditions;
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.proto.YarnProtos.NodeIdProto;
 
-import com.google.common.base.Preconditions;
-
 @Private
 @Unstable
 public class NodeIdPBImpl extends NodeId {
-  NodeIdProto proto = null;
-  NodeIdProto.Builder builder = null;
-  
-  public NodeIdPBImpl() {
-    builder = NodeIdProto.newBuilder();
-  }
+    NodeIdProto proto = null;
+    NodeIdProto.Builder builder = null;
 
-  public NodeIdPBImpl(NodeIdProto proto) {
-    this.proto = proto;
-  }
+    public NodeIdPBImpl() {
+        builder = NodeIdProto.newBuilder();
+    }
 
-  public NodeIdProto getProto() {
-    return proto;
-  }
+    public NodeIdPBImpl(NodeIdProto proto) {
+        this.proto = proto;
+    }
 
-  @Override
-  public String getHost() {
-    Preconditions.checkNotNull(proto);
-    return proto.getHost();
-  }
+    public NodeIdProto getProto() {
+        return proto;
+    }
 
-  @Override
-  protected void setHost(String host) {
-    Preconditions.checkNotNull(builder);
-    builder.setHost(host);
-  }
+    @Override
+    public String getHost() {
+        Preconditions.checkNotNull(proto);
+        return proto.getHost();
+    }
 
-  @Override
-  public int getPort() {
-    Preconditions.checkNotNull(proto);
-    return proto.getPort();
-  }
+    @Override
+    protected void setHost(String host) {
+        Preconditions.checkNotNull(builder);
+        builder.setHost(host);
+    }
 
-  @Override
-  protected void setPort(int port) {
-    Preconditions.checkNotNull(builder);
-    builder.setPort(port);
-  }
+    @Override
+    public int getPort() {
+        Preconditions.checkNotNull(proto);
+        return proto.getPort();
+    }
 
-  @Override
-  protected void build() {
-    proto = builder.build();
-    builder = null;
-  }
+    @Override
+    protected void setPort(int port) {
+        Preconditions.checkNotNull(builder);
+        builder.setPort(port);
+    }
+
+    @Override
+    protected void build() {
+        proto = builder.build();
+        builder = null;
+    }
 }  

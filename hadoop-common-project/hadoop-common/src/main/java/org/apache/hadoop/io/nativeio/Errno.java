@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,44 +21,44 @@ package org.apache.hadoop.io.nativeio;
  * Enum representing POSIX errno values.
  */
 public enum Errno {
-  EPERM,
-  ENOENT,
-  ESRCH,
-  EINTR,
-  EIO,
-  ENXIO,
-  E2BIG,
-  ENOEXEC,
-  EBADF,
-  ECHILD,
-  EAGAIN,
-  ENOMEM,
-  EACCES,
-  EFAULT,
-  ENOTBLK,
-  EBUSY,
-  EEXIST,
-  EXDEV,
-  ENODEV,
-  ENOTDIR,
-  EISDIR,
-  EINVAL,
-  ENFILE,
-  EMFILE,
-  ENOTTY,
-  ETXTBSY,
-  EFBIG,
-  ENOSPC,
-  ESPIPE,
-  EROFS,
-  EMLINK,
-  EPIPE,
-  EDOM,
-  ERANGE,
-  ELOOP,
-  ENAMETOOLONG,
-  ENOTEMPTY,
-  EOVERFLOW,
+    EPERM,
+    ENOENT,
+    ESRCH,
+    EINTR,
+    EIO,
+    ENXIO,
+    E2BIG,
+    ENOEXEC,
+    EBADF,
+    ECHILD,
+    EAGAIN,
+    ENOMEM,
+    EACCES,
+    EFAULT,
+    ENOTBLK,
+    EBUSY,
+    EEXIST,
+    EXDEV,
+    ENODEV,
+    ENOTDIR,
+    EISDIR,
+    EINVAL,
+    ENFILE,
+    EMFILE,
+    ENOTTY,
+    ETXTBSY,
+    EFBIG,
+    ENOSPC,
+    ESPIPE,
+    EROFS,
+    EMLINK,
+    EPIPE,
+    EDOM,
+    ERANGE,
+    ELOOP,
+    ENAMETOOLONG,
+    ENOTEMPTY,
+    EOVERFLOW,
 
-  UNKNOWN;
+    UNKNOWN;
 }

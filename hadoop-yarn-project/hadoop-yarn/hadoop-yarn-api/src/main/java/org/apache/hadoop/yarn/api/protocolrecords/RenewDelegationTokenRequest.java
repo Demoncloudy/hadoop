@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,24 +30,25 @@ import org.apache.hadoop.yarn.util.Records;
 @Private
 @Unstable
 public abstract class RenewDelegationTokenRequest {
-  @Private
-  @Unstable
-  public static RenewDelegationTokenRequest newInstance(Token dToken) {
-    RenewDelegationTokenRequest request =
-        Records.newRecord(RenewDelegationTokenRequest.class);
-    request.setDelegationToken(dToken);
-    return request;
-  }
+    @Private
+    @Unstable
+    public static RenewDelegationTokenRequest newInstance(Token dToken) {
+        RenewDelegationTokenRequest request =
+                Records.newRecord(RenewDelegationTokenRequest.class);
+        request.setDelegationToken(dToken);
+        return request;
+    }
 
-  /**
-   * Get the delegation token requested to be renewed by the client.
-   * @return the delegation token requested to be renewed by the client.
-   */
-  @Private
-  @Unstable
-  public abstract Token getDelegationToken();
+    /**
+     * Get the delegation token requested to be renewed by the client.
+     *
+     * @return the delegation token requested to be renewed by the client.
+     */
+    @Private
+    @Unstable
+    public abstract Token getDelegationToken();
 
-  @Private
-  @Unstable
-  public abstract void setDelegationToken(Token dToken);
+    @Private
+    @Unstable
+    public abstract void setDelegationToken(Token dToken);
 }

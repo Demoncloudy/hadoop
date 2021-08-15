@@ -22,8 +22,6 @@ import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairSchedulerConfiguration;
-
-
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -37,56 +35,56 @@ import java.util.Collection;
 
 @RunWith(Parameterized.class)
 public abstract class ParameterizedSchedulerTestBase {
-  protected final static String TEST_DIR =
-      new File(System.getProperty("test.build.data", "/tmp")).getAbsolutePath();
-  private final static String FS_ALLOC_FILE =
-      new File(TEST_DIR, "test-fs-queues.xml").getAbsolutePath();
+    protected final static String TEST_DIR =
+            new File(System.getProperty("test.build.data", "/tmp")).getAbsolutePath();
+    private final static String FS_ALLOC_FILE =
+            new File(TEST_DIR, "test-fs-queues.xml").getAbsolutePath();
 
-  private SchedulerType schedulerType;
-  private YarnConfiguration conf = null;
+    private SchedulerType schedulerType;
+    private YarnConfiguration conf = null;
 
-  public enum SchedulerType {
-    CAPACITY, FAIR
-  }
-
-  public ParameterizedSchedulerTestBase(SchedulerType type) {
-    schedulerType = type;
-  }
-
-  public YarnConfiguration getConf() {
-    return conf;
-  }
-
-  @Parameterized.Parameters
-  public static Collection<SchedulerType[]> getParameters() {
-    return Arrays.asList(new SchedulerType[][]{
-        {SchedulerType.CAPACITY}, {SchedulerType.FAIR}});
-  }
-
-  @Before
-  public void configureScheduler() throws IOException {
-    conf = new YarnConfiguration();
-    switch (schedulerType) {
-      case CAPACITY:
-        conf.set(YarnConfiguration.RM_SCHEDULER,
-            CapacityScheduler.class.getName());
-        break;
-      case FAIR:
-        configureFairScheduler(conf);
-        break;
+    public ParameterizedSchedulerTestBase(SchedulerType type) {
+        schedulerType = type;
     }
-  }
 
-  private void configureFairScheduler(YarnConfiguration conf) throws IOException {
-    // Disable queueMaxAMShare limitation for fair scheduler
-    PrintWriter out = new PrintWriter(new FileWriter(FS_ALLOC_FILE));
-    out.println("<?xml version=\"1.0\"?>");
-    out.println("<allocations>");
-    out.println("<queueMaxAMShareDefault>-1.0</queueMaxAMShareDefault>");
-    out.println("</allocations>");
-    out.close();
+    @Parameterized.Parameters
+    public static Collection<SchedulerType[]> getParameters() {
+        return Arrays.asList(new SchedulerType[][]{
+                {SchedulerType.CAPACITY}, {SchedulerType.FAIR}});
+    }
 
-    conf.set(YarnConfiguration.RM_SCHEDULER, FairScheduler.class.getName());
-    conf.set(FairSchedulerConfiguration.ALLOCATION_FILE, FS_ALLOC_FILE);
-  }
+    public YarnConfiguration getConf() {
+        return conf;
+    }
+
+    @Before
+    public void configureScheduler() throws IOException {
+        conf = new YarnConfiguration();
+        switch (schedulerType) {
+            case CAPACITY:
+                conf.set(YarnConfiguration.RM_SCHEDULER,
+                        CapacityScheduler.class.getName());
+                break;
+            case FAIR:
+                configureFairScheduler(conf);
+                break;
+        }
+    }
+
+    private void configureFairScheduler(YarnConfiguration conf) throws IOException {
+        // Disable queueMaxAMShare limitation for fair scheduler
+        PrintWriter out = new PrintWriter(new FileWriter(FS_ALLOC_FILE));
+        out.println("<?xml version=\"1.0\"?>");
+        out.println("<allocations>");
+        out.println("<queueMaxAMShareDefault>-1.0</queueMaxAMShareDefault>");
+        out.println("</allocations>");
+        out.close();
+
+        conf.set(YarnConfiguration.RM_SCHEDULER, FairScheduler.class.getName());
+        conf.set(FairSchedulerConfiguration.ALLOCATION_FILE, FS_ALLOC_FILE);
+    }
+
+    public enum SchedulerType {
+        CAPACITY, FAIR
+    }
 }

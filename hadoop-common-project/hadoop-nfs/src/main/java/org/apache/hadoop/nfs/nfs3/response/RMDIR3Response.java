@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,31 +24,31 @@ import org.apache.hadoop.oncrpc.security.Verifier;
  * RMDIR3 Response
  */
 public class RMDIR3Response extends NFS3Response {
-  private final WccData dirWcc;
+    private final WccData dirWcc;
 
-  public RMDIR3Response(int status) {
-    this(status, new WccData(null, null));
-  }
+    public RMDIR3Response(int status) {
+        this(status, new WccData(null, null));
+    }
 
-  public RMDIR3Response(int status, WccData wccData) {
-    super(status);
-    this.dirWcc = wccData;
-  }
-  
-  public WccData getDirWcc() {
-    return dirWcc;
-  }
+    public RMDIR3Response(int status, WccData wccData) {
+        super(status);
+        this.dirWcc = wccData;
+    }
 
-  public static RMDIR3Response deserialize(XDR xdr) {
-    int status = xdr.readInt();
-    WccData dirWcc = WccData.deserialize(xdr);
-    return new RMDIR3Response(status, dirWcc);
-  }
+    public static RMDIR3Response deserialize(XDR xdr) {
+        int status = xdr.readInt();
+        WccData dirWcc = WccData.deserialize(xdr);
+        return new RMDIR3Response(status, dirWcc);
+    }
 
-  @Override
-  public XDR serialize(XDR out, int xid, Verifier verifier) {
-    super.serialize(out, xid, verifier);
-    dirWcc.serialize(out);
-    return out;
-  }
+    public WccData getDirWcc() {
+        return dirWcc;
+    }
+
+    @Override
+    public XDR serialize(XDR out, int xid, Verifier verifier) {
+        super.serialize(out, xid, verifier);
+        dirWcc.serialize(out);
+        return out;
+    }
 }

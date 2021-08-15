@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,14 +21,16 @@ package org.apache.hadoop.fs;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 
-/** Thrown for unexpected filesystem errors, presumed to reflect disk errors
- * in the native filesystem. */
+/**
+ * Thrown for unexpected filesystem errors, presumed to reflect disk errors
+ * in the native filesystem.
+ */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
 public class FSError extends Error {
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  FSError(Throwable cause) {
-    super(cause);
-  }
+    FSError(Throwable cause) {
+        super(cause);
+    }
 }

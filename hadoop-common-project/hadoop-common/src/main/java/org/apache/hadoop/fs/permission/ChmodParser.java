@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,11 +17,11 @@
  */
 package org.apache.hadoop.fs.permission;
 
-import java.util.regex.Pattern;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.fs.FileStatus;
+
+import java.util.regex.Pattern;
 
 /**
  * Parse a permission mode passed in from a chmod command and apply that
@@ -30,26 +30,27 @@ import org.apache.hadoop.fs.FileStatus;
 @InterfaceAudience.Private
 @InterfaceStability.Unstable
 public class ChmodParser extends PermissionParser {
-  private static Pattern chmodOctalPattern =
-    Pattern.compile("^\\s*[+]?([01]?)([0-7]{3})\\s*$");
-  private static Pattern chmodNormalPattern =
-    Pattern.compile("\\G\\s*([ugoa]*)([+=-]+)([rwxXt]+)([,\\s]*)\\s*");
-  
-  public ChmodParser(String modeStr) throws IllegalArgumentException {
-    super(modeStr, chmodNormalPattern, chmodOctalPattern);
-  }
+    private static Pattern chmodOctalPattern =
+            Pattern.compile("^\\s*[+]?([01]?)([0-7]{3})\\s*$");
+    private static Pattern chmodNormalPattern =
+            Pattern.compile("\\G\\s*([ugoa]*)([+=-]+)([rwxXt]+)([,\\s]*)\\s*");
 
-  /**
-   * Apply permission against specified file and determine what the
-   * new mode would be
-   * @param file File against which to apply mode
-   * @return File's new mode if applied.
-   */
-  public short applyNewPermission(FileStatus file) {
-    FsPermission perms = file.getPermission();
-    int existing = perms.toShort();
-    boolean exeOk = file.isDirectory() || (existing & 0111) != 0;
-    
-    return (short)combineModes(existing, exeOk);
-  }
+    public ChmodParser(String modeStr) throws IllegalArgumentException {
+        super(modeStr, chmodNormalPattern, chmodOctalPattern);
+    }
+
+    /**
+     * Apply permission against specified file and determine what the
+     * new mode would be
+     *
+     * @param file File against which to apply mode
+     * @return File's new mode if applied.
+     */
+    public short applyNewPermission(FileStatus file) {
+        FsPermission perms = file.getPermission();
+        int existing = perms.toShort();
+        boolean exeOk = file.isDirectory() || (existing & 0111) != 0;
+
+        return (short) combineModes(existing, exeOk);
+    }
 }

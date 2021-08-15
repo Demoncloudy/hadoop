@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,41 +34,41 @@ import java.util.List;
  */
 @InterfaceAudience.Private
 public class RMZKUtils {
-  private static final Log LOG = LogFactory.getLog(RMZKUtils.class);
+    private static final Log LOG = LogFactory.getLog(RMZKUtils.class);
 
-  /**
-   * Utility method to fetch the ZK ACLs from the configuration
-   */
-  public static List<ACL> getZKAcls(Configuration conf) throws Exception {
-    // Parse authentication from configuration.
-    String zkAclConf =
-        conf.get(YarnConfiguration.RM_ZK_ACL,
-            YarnConfiguration.DEFAULT_RM_ZK_ACL);
-    try {
-      zkAclConf = ZKUtil.resolveConfIndirection(zkAclConf);
-      return ZKUtil.parseACLs(zkAclConf);
-    } catch (Exception e) {
-      LOG.error("Couldn't read ACLs based on " + YarnConfiguration.RM_ZK_ACL);
-      throw e;
+    /**
+     * Utility method to fetch the ZK ACLs from the configuration
+     */
+    public static List<ACL> getZKAcls(Configuration conf) throws Exception {
+        // Parse authentication from configuration.
+        String zkAclConf =
+                conf.get(YarnConfiguration.RM_ZK_ACL,
+                        YarnConfiguration.DEFAULT_RM_ZK_ACL);
+        try {
+            zkAclConf = ZKUtil.resolveConfIndirection(zkAclConf);
+            return ZKUtil.parseACLs(zkAclConf);
+        } catch (Exception e) {
+            LOG.error("Couldn't read ACLs based on " + YarnConfiguration.RM_ZK_ACL);
+            throw e;
+        }
     }
-  }
 
-  /**
-   * Utility method to fetch ZK auth info from the configuration
-   */
-  public static List<ZKUtil.ZKAuthInfo> getZKAuths(Configuration conf)
-      throws Exception {
-    String zkAuthConf = conf.get(YarnConfiguration.RM_ZK_AUTH);
-    try {
-      zkAuthConf = ZKUtil.resolveConfIndirection(zkAuthConf);
-      if (zkAuthConf != null) {
-        return ZKUtil.parseAuth(zkAuthConf);
-      } else {
-        return Collections.emptyList();
-      }
-    } catch (Exception e) {
-      LOG.error("Couldn't read Auth based on " + YarnConfiguration.RM_ZK_AUTH);
-      throw e;
+    /**
+     * Utility method to fetch ZK auth info from the configuration
+     */
+    public static List<ZKUtil.ZKAuthInfo> getZKAuths(Configuration conf)
+            throws Exception {
+        String zkAuthConf = conf.get(YarnConfiguration.RM_ZK_AUTH);
+        try {
+            zkAuthConf = ZKUtil.resolveConfIndirection(zkAuthConf);
+            if (zkAuthConf != null) {
+                return ZKUtil.parseAuth(zkAuthConf);
+            } else {
+                return Collections.emptyList();
+            }
+        } catch (Exception e) {
+            LOG.error("Couldn't read Auth based on " + YarnConfiguration.RM_ZK_AUTH);
+            throw e;
+        }
     }
-  }
 }

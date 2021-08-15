@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,34 +28,34 @@ import org.apache.hadoop.yarn.api.records.Resource;
 @Private
 @Stable
 public class SchedulerNodeReport {
-  private final Resource used;
-  private final Resource avail;
-  private final int num;
-  
-  public SchedulerNodeReport(SchedulerNode node) {
-    this.used = node.getUsedResource();
-    this.avail = node.getAvailableResource();
-    this.num = node.getNumContainers();
-  }
-  
-  /**
-   * @return the amount of resources currently used by the node.
-   */
-  public Resource getUsedResource() {
-    return used;
-  }
+    private final Resource used;
+    private final Resource avail;
+    private final int num;
 
-  /**
-   * @return the amount of resources currently available on the node
-   */
-  public Resource getAvailableResource() {
-    return avail;
-  }
+    public SchedulerNodeReport(SchedulerNode node) {
+        this.used = node.getUsedResource();
+        this.avail = node.getAvailableResource();
+        this.num = node.getNumContainers();
+    }
 
-  /**
-   * @return the number of containers currently running on this node.
-   */
-  public int getNumContainers() {
-    return num;
-  }
+    /**
+     * @return the amount of resources currently used by the node.
+     */
+    public Resource getUsedResource() {
+        return used;
+    }
+
+    /**
+     * @return the amount of resources currently available on the node
+     */
+    public Resource getAvailableResource() {
+        return avail;
+    }
+
+    /**
+     * @return the number of containers currently running on this node.
+     */
+    public int getNumContainers() {
+        return num;
+    }
 }

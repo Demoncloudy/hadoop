@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,8 +18,6 @@
 
 package org.apache.hadoop.yarn.security.client;
 
-import java.util.Collection;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.io.Text;
@@ -27,28 +25,30 @@ import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.security.token.TokenIdentifier;
 import org.apache.hadoop.security.token.TokenSelector;
 
+import java.util.Collection;
+
 public class ClientToAMTokenSelector implements
-    TokenSelector<ClientToAMTokenIdentifier> {
+        TokenSelector<ClientToAMTokenIdentifier> {
 
-  private static final Log LOG = LogFactory
-      .getLog(ClientToAMTokenSelector.class);
+    private static final Log LOG = LogFactory
+            .getLog(ClientToAMTokenSelector.class);
 
-  @SuppressWarnings("unchecked")
-  public Token<ClientToAMTokenIdentifier> selectToken(Text service,
-      Collection<Token<? extends TokenIdentifier>> tokens) {
-    if (service == null) {
-      return null;
+    @SuppressWarnings("unchecked")
+    public Token<ClientToAMTokenIdentifier> selectToken(Text service,
+                                                        Collection<Token<? extends TokenIdentifier>> tokens) {
+        if (service == null) {
+            return null;
+        }
+        LOG.debug("Looking for a token with service " + service.toString());
+        for (Token<? extends TokenIdentifier> token : tokens) {
+            LOG.debug("Token kind is " + token.getKind().toString()
+                    + " and the token's service name is " + token.getService());
+            if (ClientToAMTokenIdentifier.KIND_NAME.equals(token.getKind())
+                    && service.equals(token.getService())) {
+                return (Token<ClientToAMTokenIdentifier>) token;
+            }
+        }
+        return null;
     }
-    LOG.debug("Looking for a token with service " + service.toString());
-    for (Token<? extends TokenIdentifier> token : tokens) {
-      LOG.debug("Token kind is " + token.getKind().toString()
-          + " and the token's service name is " + token.getService());
-      if (ClientToAMTokenIdentifier.KIND_NAME.equals(token.getKind())
-          && service.equals(token.getService())) {
-        return (Token<ClientToAMTokenIdentifier>) token;
-      }
-    }
-    return null;
-  }
 
 }

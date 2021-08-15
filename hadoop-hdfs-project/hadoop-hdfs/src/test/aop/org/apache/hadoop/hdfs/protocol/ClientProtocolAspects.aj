@@ -24,15 +24,15 @@ import org.apache.hadoop.fi.PipelineTest;
 
 /** Aspect for ClientProtocol */
 public aspect ClientProtocolAspects {
-  public static final Log LOG = LogFactory.getLog(ClientProtocolAspects.class);
+    public static final Log LOG = LogFactory.getLog(ClientProtocolAspects.class);
 
-  pointcut addBlock():
-    call(LocatedBlock ClientProtocol.addBlock(String, String,..));
+    pointcut addBlock():
+            call(LocatedBlock ClientProtocol.addBlock(String, String,..));
 
-  after() returning(LocatedBlock lb): addBlock() {
-    PipelineTest pipelineTest = DataTransferTestUtil.getPipelineTest();
-    if (pipelineTest != null)
-      LOG.info("FI: addBlock "
-          + pipelineTest.initPipeline(lb));
-  }
+    after() returning(LocatedBlock lb): addBlock() {
+        PipelineTest pipelineTest = DataTransferTestUtil.getPipelineTest();
+        if (pipelineTest != null)
+            LOG.info("FI: addBlock "
+                    + pipelineTest.initPipeline(lb));
+    }
 }

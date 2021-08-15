@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,40 +35,50 @@ import org.apache.hadoop.util.Progressable;
  * in the interface implementation.  
  */
 interface BufferSorter extends JobConfigurable {
-  
-  /** Pass the Progressable object so that sort can call progress while it is sorting
-   * @param reporter the Progressable object reference
-   */
-  public void setProgressable(Progressable reporter);
-    
-  /** When a key/value is added at a particular offset in the key/value buffer, 
-   * this method is invoked by the user class so that the impl of this sort 
-   * interface can update its datastructures. 
-   * @param recordOffset the offset of the key in the buffer
-   * @param keyLength the length of the key
-   * @param valLength the length of the val in the buffer
-   */
-  public void addKeyValue(int recordoffset, int keyLength, int valLength);
-  
-  /** The user class invokes this method to set the buffer that the specific 
-   * sort algorithm should "indirectly" sort (generally, sort algorithm impl 
-   * should access this buffer via comparators and sort offset-indices to the
-   * buffer).
-   * @param buffer the map output buffer
-   */
-  public void setInputBuffer(OutputBuffer buffer);
-  
-  /** The framework invokes this method to get the memory consumed so far
-   * by an implementation of this interface.
-   * @return memoryUsed in bytes 
-   */
-  public long getMemoryUtilized();
-  
-  /** Framework decides when to actually sort
-   */
-  public RawKeyValueIterator sort();
-  
-  /** Framework invokes this to signal the sorter to cleanup
-   */
-  public void close();
+
+    /**
+     * Pass the Progressable object so that sort can call progress while it is sorting
+     *
+     * @param reporter the Progressable object reference
+     */
+    public void setProgressable(Progressable reporter);
+
+    /**
+     * When a key/value is added at a particular offset in the key/value buffer,
+     * this method is invoked by the user class so that the impl of this sort
+     * interface can update its datastructures.
+     *
+     * @param recordOffset the offset of the key in the buffer
+     * @param keyLength    the length of the key
+     * @param valLength    the length of the val in the buffer
+     */
+    public void addKeyValue(int recordoffset, int keyLength, int valLength);
+
+    /**
+     * The user class invokes this method to set the buffer that the specific
+     * sort algorithm should "indirectly" sort (generally, sort algorithm impl
+     * should access this buffer via comparators and sort offset-indices to the
+     * buffer).
+     *
+     * @param buffer the map output buffer
+     */
+    public void setInputBuffer(OutputBuffer buffer);
+
+    /**
+     * The framework invokes this method to get the memory consumed so far
+     * by an implementation of this interface.
+     *
+     * @return memoryUsed in bytes
+     */
+    public long getMemoryUtilized();
+
+    /**
+     * Framework decides when to actually sort
+     */
+    public RawKeyValueIterator sort();
+
+    /**
+     * Framework invokes this to signal the sorter to cleanup
+     */
+    public void close();
 }

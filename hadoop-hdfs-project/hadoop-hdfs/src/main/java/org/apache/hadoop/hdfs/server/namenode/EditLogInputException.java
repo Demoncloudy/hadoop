@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,9 +17,9 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
-import java.io.IOException;
-
 import org.apache.hadoop.classification.InterfaceAudience;
+
+import java.io.IOException;
 
 /**
  * Thrown when there's a failure to read an edit log op from disk when loading
@@ -28,18 +28,18 @@ import org.apache.hadoop.classification.InterfaceAudience;
 @InterfaceAudience.Private
 public class EditLogInputException extends IOException {
 
-  private static final long serialVersionUID = 1L;
-  
-  private final long numEditsLoaded;
-  
-  public EditLogInputException(String message, Throwable cause,
-      long numEditsLoaded) {
-    super(message, cause);
-    this.numEditsLoaded = numEditsLoaded;
-  }
-  
-  public long getNumEditsLoaded() {
-    return numEditsLoaded;
-  }
+    private static final long serialVersionUID = 1L;
+
+    private final long numEditsLoaded;
+
+    public EditLogInputException(String message, Throwable cause,
+                                 long numEditsLoaded) {
+        super(message, cause);
+        this.numEditsLoaded = numEditsLoaded;
+    }
+
+    public long getNumEditsLoaded() {
+        return numEditsLoaded;
+    }
 
 }

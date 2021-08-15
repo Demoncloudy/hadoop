@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,20 +17,19 @@
  */
 package org.apache.hadoop.crypto.random;
 
-import java.util.Random;
-
+import com.google.common.base.Preconditions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.util.NativeCodeLoader;
 
-import com.google.common.base.Preconditions;
+import java.util.Random;
 
 /**
  * OpenSSL secure random using JNI.
  * This implementation is thread-safe.
  * <p/>
- * 
+ *
  * If using an Intel chipset with RDRAND, the high-performance hardware 
  * random number generator will be used and it's much faster than
  * {@link java.security.SecureRandom}. If RDRAND is unavailable, default
@@ -42,78 +41,81 @@ import com.google.common.base.Preconditions;
  */
 @InterfaceAudience.Private
 public class OpensslSecureRandom extends Random {
-  private static final long serialVersionUID = -7828193502768789584L;
-  private static final Log LOG =
-      LogFactory.getLog(OpensslSecureRandom.class.getName());
-  
-  /** If native SecureRandom unavailable, use java SecureRandom */
-  private java.security.SecureRandom fallback = null;
-  private static boolean nativeEnabled = false;
-  static {
-    if (NativeCodeLoader.isNativeCodeLoaded() &&
-        NativeCodeLoader.buildSupportsOpenssl()) {
-      try {
-        initSR();
-        nativeEnabled = true;
-      } catch (Throwable t) {
-        LOG.error("Failed to load Openssl SecureRandom", t);
-      }
+    private static final long serialVersionUID = -7828193502768789584L;
+    private static final Log LOG =
+            LogFactory.getLog(OpensslSecureRandom.class.getName());
+    private static boolean nativeEnabled = false;
+
+    static {
+        if (NativeCodeLoader.isNativeCodeLoaded() &&
+                NativeCodeLoader.buildSupportsOpenssl()) {
+            try {
+                initSR();
+                nativeEnabled = true;
+            } catch (Throwable t) {
+                LOG.error("Failed to load Openssl SecureRandom", t);
+            }
+        }
     }
-  }
-  
-  public static boolean isNativeCodeLoaded() {
-    return nativeEnabled;
-  }
-  
-  public OpensslSecureRandom() {
-    if (!nativeEnabled) {
-      fallback = new java.security.SecureRandom();
+
+    /**
+     * If native SecureRandom unavailable, use java SecureRandom
+     */
+    private java.security.SecureRandom fallback = null;
+
+    public OpensslSecureRandom() {
+        if (!nativeEnabled) {
+            fallback = new java.security.SecureRandom();
+        }
     }
-  }
-  
-  /**
-   * Generates a user-specified number of random bytes.
-   * It's thread-safe.
-   * 
-   * @param bytes the array to be filled in with random bytes.
-   */
-  @Override
-  public void nextBytes(byte[] bytes) {
-    if (!nativeEnabled || !nextRandBytes(bytes)) {
-      fallback.nextBytes(bytes);
+
+    public static boolean isNativeCodeLoaded() {
+        return nativeEnabled;
     }
-  }
-  
-  @Override
-  public void setSeed(long seed) {
-    // Self-seeding.
-  }
-  
-  /**
-   * Generates an integer containing the user-specified number of
-   * random bits (right justified, with leading zeros).
-   *
-   * @param numBits number of random bits to be generated, where
-   * 0 <= <code>numBits</code> <= 32.
-   *
-   * @return int an <code>int</code> containing the user-specified number
-   * of random bits (right justified, with leading zeros).
-   */
-  @Override
-  final protected int next(int numBits) {
-    Preconditions.checkArgument(numBits >= 0 && numBits <= 32);
-    int numBytes = (numBits + 7) / 8;
-    byte b[] = new byte[numBytes];
-    int next = 0;
-    
-    nextBytes(b);
-    for (int i = 0; i < numBytes; i++) {
-      next = (next << 8) + (b[i] & 0xFF);
+
+    private native static void initSR();
+
+    /**
+     * Generates a user-specified number of random bytes.
+     * It's thread-safe.
+     *
+     * @param bytes the array to be filled in with random bytes.
+     */
+    @Override
+    public void nextBytes(byte[] bytes) {
+        if (!nativeEnabled || !nextRandBytes(bytes)) {
+            fallback.nextBytes(bytes);
+        }
     }
-    
-    return next >>> (numBytes * 8 - numBits);
-  }
-  
-  private native static void initSR();
-  private native boolean nextRandBytes(byte[] bytes); 
+
+    @Override
+    public void setSeed(long seed) {
+        // Self-seeding.
+    }
+
+    /**
+     * Generates an integer containing the user-specified number of
+     * random bits (right justified, with leading zeros).
+     *
+     * @param numBits number of random bits to be generated, where
+     *                0 <= <code>numBits</code> <= 32.
+     * @return int an <code>int</code> containing the user-specified number
+     * of random bits (right justified, with leading zeros).
+     */
+    @Override
+    final protected int next(int numBits) {
+        Preconditions.checkArgument(numBits >= 0 && numBits <= 32);
+        int numBytes = (numBits + 7) / 8;
+        byte b[] = new byte[numBytes];
+        int next = 0;
+
+        nextBytes(b);
+        for (int i = 0; i < numBytes; i++) {
+            next = (next << 8) + (b[i] & 0xFF);
+        }
+
+        return next >>> (numBytes * 8 - numBits);
+    }
+
+    private native boolean nextRandBytes(byte[] bytes);
 }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,66 +18,68 @@
 
 package org.apache.hadoop.metrics2.impl;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+import org.apache.hadoop.classification.InterfaceAudience;
+import org.apache.hadoop.metrics2.MetricsCollector;
+import org.apache.hadoop.metrics2.MetricsFilter;
+import org.apache.hadoop.metrics2.MetricsInfo;
+
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-
-import org.apache.hadoop.classification.InterfaceAudience;
-import org.apache.hadoop.metrics2.MetricsInfo;
-import org.apache.hadoop.metrics2.MetricsCollector;
-import org.apache.hadoop.metrics2.MetricsFilter;
-import static org.apache.hadoop.metrics2.lib.Interns.*;
+import static org.apache.hadoop.metrics2.lib.Interns.info;
 
 @InterfaceAudience.Private
 @VisibleForTesting
 public class MetricsCollectorImpl implements MetricsCollector,
-    Iterable<MetricsRecordBuilderImpl> {
+        Iterable<MetricsRecordBuilderImpl> {
 
-  private final List<MetricsRecordBuilderImpl> rbs = Lists.newArrayList();
-  private MetricsFilter recordFilter, metricFilter;
+    private final List<MetricsRecordBuilderImpl> rbs = Lists.newArrayList();
+    private MetricsFilter recordFilter, metricFilter;
 
-  @Override
-  public MetricsRecordBuilderImpl addRecord(MetricsInfo info) {
-    boolean acceptable = recordFilter == null ||
-                         recordFilter.accepts(info.name());
-    MetricsRecordBuilderImpl rb = new MetricsRecordBuilderImpl(this, info,
-        recordFilter, metricFilter, acceptable);
-    if (acceptable) rbs.add(rb);
-    return rb;
-  }
-
-  @Override
-  public MetricsRecordBuilderImpl addRecord(String name) {
-    return addRecord(info(name, name +" record"));
-  }
-
-  public List<MetricsRecordImpl> getRecords() {
-    List<MetricsRecordImpl> recs = Lists.newArrayListWithCapacity(rbs.size());
-    for (MetricsRecordBuilderImpl rb : rbs) {
-      MetricsRecordImpl mr = rb.getRecord();
-      if (mr != null) {
-        recs.add(mr);
-      }
+    @Override
+    public MetricsRecordBuilderImpl addRecord(MetricsInfo info) {
+        boolean acceptable = recordFilter == null ||
+                recordFilter.accepts(info.name());
+        MetricsRecordBuilderImpl rb = new MetricsRecordBuilderImpl(this, info,
+                recordFilter, metricFilter, acceptable);
+        if (acceptable) rbs.add(rb);
+        return rb;
     }
-    return recs;
-  }
 
-  @Override
-  public Iterator<MetricsRecordBuilderImpl> iterator() {
-    return rbs.iterator();
-  }
+    @Override
+    public MetricsRecordBuilderImpl addRecord(String name) {
+        return addRecord(info(name, name + " record"));
+    }
 
-  void clear() { rbs.clear(); }
+    public List<MetricsRecordImpl> getRecords() {
+        List<MetricsRecordImpl> recs = Lists.newArrayListWithCapacity(rbs.size());
+        for (MetricsRecordBuilderImpl rb : rbs) {
+            MetricsRecordImpl mr = rb.getRecord();
+            if (mr != null) {
+                recs.add(mr);
+            }
+        }
+        return recs;
+    }
 
-  MetricsCollectorImpl setRecordFilter(MetricsFilter rf) {
-    recordFilter = rf;
-    return this;
-  }
+    @Override
+    public Iterator<MetricsRecordBuilderImpl> iterator() {
+        return rbs.iterator();
+    }
 
-  MetricsCollectorImpl setMetricFilter(MetricsFilter mf) {
-    metricFilter = mf;
-    return this;
-  }
+    void clear() {
+        rbs.clear();
+    }
+
+    MetricsCollectorImpl setRecordFilter(MetricsFilter rf) {
+        recordFilter = rf;
+        return this;
+    }
+
+    MetricsCollectorImpl setMetricFilter(MetricsFilter mf) {
+        metricFilter = mf;
+        return this;
+    }
 }

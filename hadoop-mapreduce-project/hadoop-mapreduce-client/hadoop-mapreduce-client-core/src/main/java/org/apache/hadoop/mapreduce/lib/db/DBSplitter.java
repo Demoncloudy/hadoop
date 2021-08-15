@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,14 +18,14 @@
 
 package org.apache.hadoop.mapreduce.lib.db;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.InputSplit;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * DBSplitter will generate DBInputSplits to use with DataDrivenDBInputFormat.
@@ -38,10 +38,10 @@ import org.apache.hadoop.mapreduce.InputSplit;
 @InterfaceAudience.Public
 @InterfaceStability.Evolving
 public interface DBSplitter {
-  /**
-   * Given a ResultSet containing one record (and already advanced to that record)
-   * with two columns (a low value, and a high value, both of the same type), determine
-   * a set of splits that span the given values.
-   */
-  List<InputSplit> split(Configuration conf, ResultSet results, String colName) throws SQLException;
+    /**
+     * Given a ResultSet containing one record (and already advanced to that record)
+     * with two columns (a low value, and a high value, both of the same type), determine
+     * a set of splits that span the given values.
+     */
+    List<InputSplit> split(Configuration conf, ResultSet results, String colName) throws SQLException;
 }

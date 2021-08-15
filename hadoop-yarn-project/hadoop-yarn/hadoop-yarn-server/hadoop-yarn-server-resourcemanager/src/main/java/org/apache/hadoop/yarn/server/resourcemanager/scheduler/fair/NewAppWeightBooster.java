@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,29 +32,29 @@ import org.apache.hadoop.conf.Configured;
 @Private
 @Unstable
 public class NewAppWeightBooster extends Configured implements WeightAdjuster {
-  private static final float DEFAULT_FACTOR = 3;
-  private static final long DEFAULT_DURATION = 5 * 60 * 1000;
+    private static final float DEFAULT_FACTOR = 3;
+    private static final long DEFAULT_DURATION = 5 * 60 * 1000;
 
-  private float factor;
-  private long duration;
+    private float factor;
+    private long duration;
 
-  public void setConf(Configuration conf) {
-    if (conf != null) {
-      factor = conf.getFloat("mapred.newjobweightbooster.factor",
-          DEFAULT_FACTOR);
-      duration = conf.getLong("mapred.newjobweightbooster.duration",
-          DEFAULT_DURATION);
+    public void setConf(Configuration conf) {
+        if (conf != null) {
+            factor = conf.getFloat("mapred.newjobweightbooster.factor",
+                    DEFAULT_FACTOR);
+            duration = conf.getLong("mapred.newjobweightbooster.duration",
+                    DEFAULT_DURATION);
+        }
+        super.setConf(conf);
     }
-    super.setConf(conf);
-  }
 
-  public double adjustWeight(FSAppAttempt app, double curWeight) {
-    long start = app.getStartTime();
-    long now = System.currentTimeMillis();
-    if (now - start < duration) {
-      return curWeight * factor;
-    } else {
-      return curWeight;
+    public double adjustWeight(FSAppAttempt app, double curWeight) {
+        long start = app.getStartTime();
+        long now = System.currentTimeMillis();
+        if (now - start < duration) {
+            return curWeight * factor;
+        } else {
+            return curWeight;
+        }
     }
-  }
 }

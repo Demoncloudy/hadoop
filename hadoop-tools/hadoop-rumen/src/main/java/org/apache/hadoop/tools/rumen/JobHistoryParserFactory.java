@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,48 +25,46 @@ import java.io.InputStream;
  * determine the version of job history and return a proper parser.
  */
 public class JobHistoryParserFactory {
-  public static JobHistoryParser getParser(RewindableInputStream ris)
-      throws IOException {
-    for (VersionDetector vd : VersionDetector.values()) {
-      boolean canParse = vd.canParse(ris);
-      ris.rewind();
-      if (canParse) {
-        return vd.newInstance(ris);
-      }
+    public static JobHistoryParser getParser(RewindableInputStream ris)
+            throws IOException {
+        for (VersionDetector vd : VersionDetector.values()) {
+            boolean canParse = vd.canParse(ris);
+            ris.rewind();
+            if (canParse) {
+                return vd.newInstance(ris);
+            }
+        }
+
+        throw new IOException("No suitable parser.");
     }
 
-    throw new IOException("No suitable parser.");
-  }
+    public enum VersionDetector {
+        Hadoop20() {
+            @Override
+            public boolean canParse(InputStream input) throws IOException {
+                return Hadoop20JHParser.canParse(input);
+            }
 
-  public enum VersionDetector {
-    Hadoop20() {
+            @Override
+            public JobHistoryParser newInstance(InputStream input) throws IOException {
+                return new Hadoop20JHParser(input);
+            }
+        },
 
-      @Override
-      public boolean canParse(InputStream input) throws IOException {
-        return Hadoop20JHParser.canParse(input);
-      }
+        Current() {
+            @Override
+            public boolean canParse(InputStream input) throws IOException {
+                return CurrentJHParser.canParse(input);
+            }
 
-      @Override
-      public JobHistoryParser newInstance(InputStream input) throws IOException {
-        return new Hadoop20JHParser(input);
-      }
-    },
+            @Override
+            public JobHistoryParser newInstance(InputStream input) throws IOException {
+                return new CurrentJHParser(input);
+            }
+        };
 
-    Current() {
+        abstract JobHistoryParser newInstance(InputStream input) throws IOException;
 
-      @Override
-      public boolean canParse(InputStream input) throws IOException {
-        return CurrentJHParser.canParse(input);
-      }
-
-      @Override
-      public JobHistoryParser newInstance(InputStream input) throws IOException {
-        return new CurrentJHParser(input);
-      }
-    };
-
-    abstract JobHistoryParser newInstance(InputStream input) throws IOException;
-
-    abstract boolean canParse(InputStream input) throws IOException;
-  }
+        abstract boolean canParse(InputStream input) throws IOException;
+    }
 }

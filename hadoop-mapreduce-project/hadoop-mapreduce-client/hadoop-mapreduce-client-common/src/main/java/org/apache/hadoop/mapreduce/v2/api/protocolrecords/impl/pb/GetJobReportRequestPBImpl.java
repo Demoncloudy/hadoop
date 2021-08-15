@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,82 +28,80 @@ import org.apache.hadoop.mapreduce.v2.proto.MRServiceProtos.GetJobReportRequestP
 import org.apache.hadoop.yarn.api.records.impl.pb.ProtoBase;
 
 
-    
 public class GetJobReportRequestPBImpl extends ProtoBase<GetJobReportRequestProto> implements GetJobReportRequest {
-  GetJobReportRequestProto proto = GetJobReportRequestProto.getDefaultInstance();
-  GetJobReportRequestProto.Builder builder = null;
-  boolean viaProto = false;
-  
-  private JobId jobId = null;
-  
-  
-  public GetJobReportRequestPBImpl() {
-    builder = GetJobReportRequestProto.newBuilder();
-  }
+    GetJobReportRequestProto proto = GetJobReportRequestProto.getDefaultInstance();
+    GetJobReportRequestProto.Builder builder = null;
+    boolean viaProto = false;
 
-  public GetJobReportRequestPBImpl(GetJobReportRequestProto proto) {
-    this.proto = proto;
-    viaProto = true;
-  }
-  
-  public GetJobReportRequestProto getProto() {
-      mergeLocalToProto();
-    proto = viaProto ? proto : builder.build();
-    viaProto = true;
-    return proto;
-  }
+    private JobId jobId = null;
 
-  private void mergeLocalToBuilder() {
-    if (this.jobId  != null) {
-      builder.setJobId(convertToProtoFormat(this.jobId));
+
+    public GetJobReportRequestPBImpl() {
+        builder = GetJobReportRequestProto.newBuilder();
     }
-  }
 
-  private void mergeLocalToProto() {
-    if (viaProto) 
-      maybeInitBuilder();
-    mergeLocalToBuilder();
-    proto = builder.build();
-    viaProto = true;
-  }
-
-  private void maybeInitBuilder() {
-    if (viaProto || builder == null) {
-      builder = GetJobReportRequestProto.newBuilder(proto);
+    public GetJobReportRequestPBImpl(GetJobReportRequestProto proto) {
+        this.proto = proto;
+        viaProto = true;
     }
-    viaProto = false;
-  }
-    
-  
-  @Override
-  public JobId getJobId() {
-    GetJobReportRequestProtoOrBuilder p = viaProto ? proto : builder;
-    if (this.jobId != null) {
-      return this.jobId;
+
+    public GetJobReportRequestProto getProto() {
+        mergeLocalToProto();
+        proto = viaProto ? proto : builder.build();
+        viaProto = true;
+        return proto;
     }
-    if (!p.hasJobId()) {
-      return null;
+
+    private void mergeLocalToBuilder() {
+        if (this.jobId != null) {
+            builder.setJobId(convertToProtoFormat(this.jobId));
+        }
     }
-    this.jobId = convertFromProtoFormat(p.getJobId());
-    return this.jobId;
-  }
 
-  @Override
-  public void setJobId(JobId jobId) {
-    maybeInitBuilder();
-    if (jobId == null) 
-      builder.clearJobId();
-    this.jobId = jobId;
-  }
+    private void mergeLocalToProto() {
+        if (viaProto)
+            maybeInitBuilder();
+        mergeLocalToBuilder();
+        proto = builder.build();
+        viaProto = true;
+    }
 
-  private JobIdPBImpl convertFromProtoFormat(JobIdProto p) {
-    return new JobIdPBImpl(p);
-  }
-
-  private JobIdProto convertToProtoFormat(JobId t) {
-    return ((JobIdPBImpl)t).getProto();
-  }
+    private void maybeInitBuilder() {
+        if (viaProto || builder == null) {
+            builder = GetJobReportRequestProto.newBuilder(proto);
+        }
+        viaProto = false;
+    }
 
 
+    @Override
+    public JobId getJobId() {
+        GetJobReportRequestProtoOrBuilder p = viaProto ? proto : builder;
+        if (this.jobId != null) {
+            return this.jobId;
+        }
+        if (!p.hasJobId()) {
+            return null;
+        }
+        this.jobId = convertFromProtoFormat(p.getJobId());
+        return this.jobId;
+    }
 
-}  
+    @Override
+    public void setJobId(JobId jobId) {
+        maybeInitBuilder();
+        if (jobId == null)
+            builder.clearJobId();
+        this.jobId = jobId;
+    }
+
+    private JobIdPBImpl convertFromProtoFormat(JobIdProto p) {
+        return new JobIdPBImpl(p);
+    }
+
+    private JobIdProto convertToProtoFormat(JobId t) {
+        return ((JobIdPBImpl) t).getProto();
+    }
+
+
+}

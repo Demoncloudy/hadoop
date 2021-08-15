@@ -15,24 +15,24 @@
    limitations under the License.
 -->
 <FindBugsFilter>
-  <!--
-    Caller is not supposed to modify returned values even though there's nothing
-    stopping them; we do this for performance reasons.
-  -->
-  <Match>
-    <Class name="org.apache.hadoop.security.authentication.util.RolloverSignerSecretProvider" />
-    <Method name="getAllSecrets" />
-    <Bug pattern="EI_EXPOSE_REP" />
-  </Match>
-  <Match>
-    <Class name="org.apache.hadoop.security.authentication.util.StringSignerSecretProvider" />
-    <Method name="getAllSecrets" />
-    <Bug pattern="EI_EXPOSE_REP" />
-  </Match>
-  <Match>
-    <Class name="org.apache.hadoop.security.authentication.util.StringSignerSecretProvider" />
-    <Method name="getCurrentSecret" />
-    <Bug pattern="EI_EXPOSE_REP" />
-  </Match>
+    <!--
+      Caller is not supposed to modify returned values even though there's nothing
+      stopping them; we do this for performance reasons.
+    -->
+    <Match>
+        <Class name="org.apache.hadoop.security.authentication.util.RolloverSignerSecretProvider"/>
+        <Method name="getAllSecrets"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Class name="org.apache.hadoop.security.authentication.util.StringSignerSecretProvider"/>
+        <Method name="getAllSecrets"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Class name="org.apache.hadoop.security.authentication.util.StringSignerSecretProvider"/>
+        <Method name="getCurrentSecret"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
 
 </FindBugsFilter>

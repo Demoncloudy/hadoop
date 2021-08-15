@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,31 +23,31 @@ import java.util.concurrent.locks.Condition;
  * Represents an object that you can wait for.
  */
 public class Waitable<T> {
-  private T val;
-  private final Condition cond;
+    private final Condition cond;
+    private T val;
 
-  public Waitable(Condition cond) {
-    this.val = null;
-    this.cond = cond;
-  }
-
-  public T await() throws InterruptedException {
-    while (this.val == null) {
-      this.cond.await();
+    public Waitable(Condition cond) {
+        this.val = null;
+        this.cond = cond;
     }
-    return this.val;
-  }
 
-  public void provide(T val) {
-    this.val = val;
-    this.cond.signalAll();
-  }
+    public T await() throws InterruptedException {
+        while (this.val == null) {
+            this.cond.await();
+        }
+        return this.val;
+    }
 
-  public boolean hasVal() {
-    return this.val != null;
-  }
+    public void provide(T val) {
+        this.val = val;
+        this.cond.signalAll();
+    }
 
-  public T getVal() {
-    return this.val;
-  }
+    public boolean hasVal() {
+        return this.val != null;
+    }
+
+    public T getVal() {
+        return this.val;
+    }
 }

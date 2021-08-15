@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,12 +17,7 @@
  */
 package org.apache.hadoop.yarn.api.records.impl.pb;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
+import com.google.protobuf.TextFormat;
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.yarn.api.records.PreemptionContainer;
@@ -33,221 +28,221 @@ import org.apache.hadoop.yarn.proto.YarnProtos.PreemptionContractProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.PreemptionContractProtoOrBuilder;
 import org.apache.hadoop.yarn.proto.YarnProtos.PreemptionResourceRequestProto;
 
-import com.google.protobuf.TextFormat;
+import java.util.*;
 
 @Private
 @Unstable
 public class PreemptionContractPBImpl extends PreemptionContract {
 
-  PreemptionContractProto proto = PreemptionContractProto.getDefaultInstance();
-  PreemptionContractProto.Builder builder = null;
+    PreemptionContractProto proto = PreemptionContractProto.getDefaultInstance();
+    PreemptionContractProto.Builder builder = null;
 
-  boolean viaProto = false;
-  private Set<PreemptionContainer> containers;
-  private List<PreemptionResourceRequest> resources;
+    boolean viaProto = false;
+    private Set<PreemptionContainer> containers;
+    private List<PreemptionResourceRequest> resources;
 
-  public PreemptionContractPBImpl() {
-    builder = PreemptionContractProto.newBuilder();
-  }
-
-  public PreemptionContractPBImpl(PreemptionContractProto proto) {
-    this.proto = proto;
-    viaProto = true;
-  }
-
-  public synchronized PreemptionContractProto getProto() {
-    mergeLocalToProto();
-    proto = viaProto ? proto : builder.build();
-    viaProto = true;
-    return proto;
-  }
-
-  @Override
-  public int hashCode() {
-    return getProto().hashCode();
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if (other == null)
-      return false;
-    if (other.getClass().isAssignableFrom(this.getClass())) {
-      return this.getProto().equals(this.getClass().cast(other).getProto());
+    public PreemptionContractPBImpl() {
+        builder = PreemptionContractProto.newBuilder();
     }
-    return false;
-  }
 
-  @Override
-  public String toString() {
-    return TextFormat.shortDebugString(getProto());
-  }
-
-  private void mergeLocalToProto() {
-    if (viaProto)
-      maybeInitBuilder();
-    mergeLocalToBuilder();
-    proto = builder.build();
-    viaProto = true;
-  }
-
-  private void mergeLocalToBuilder() {
-    if (this.resources != null) {
-      addResourcesToProto();
+    public PreemptionContractPBImpl(PreemptionContractProto proto) {
+        this.proto = proto;
+        viaProto = true;
     }
-    if (this.containers != null) {
-      addContainersToProto();
+
+    public synchronized PreemptionContractProto getProto() {
+        mergeLocalToProto();
+        proto = viaProto ? proto : builder.build();
+        viaProto = true;
+        return proto;
     }
-  }
 
-  private void maybeInitBuilder() {
-    if (viaProto || builder == null) {
-      builder = PreemptionContractProto.newBuilder(proto);
+    @Override
+    public int hashCode() {
+        return getProto().hashCode();
     }
-    viaProto = false;
-  }
 
-  @Override
-  public synchronized Set<PreemptionContainer> getContainers() {
-    initPreemptionContainers();
-    return containers;
-  }
-
-  @Override
-  public synchronized void setContainers(
-      final Set<PreemptionContainer> containers) {
-    if (null == containers) {
-      builder.clearContainer();
+    @Override
+    public boolean equals(Object other) {
+        if (other == null)
+            return false;
+        if (other.getClass().isAssignableFrom(this.getClass())) {
+            return this.getProto().equals(this.getClass().cast(other).getProto());
+        }
+        return false;
     }
-    this.containers = containers;
-  }
 
-  @Override
-  public synchronized List<PreemptionResourceRequest> getResourceRequest() {
-    initPreemptionResourceRequests();
-    return resources;
-  }
-
-  @Override
-  public synchronized void setResourceRequest(
-      final List<PreemptionResourceRequest> req) {
-    if (null == resources) {
-      builder.clearResource();
+    @Override
+    public String toString() {
+        return TextFormat.shortDebugString(getProto());
     }
-    this.resources = req;
-  }
 
-  private void initPreemptionResourceRequests() {
-    if (resources != null) {
-      return;
+    private void mergeLocalToProto() {
+        if (viaProto)
+            maybeInitBuilder();
+        mergeLocalToBuilder();
+        proto = builder.build();
+        viaProto = true;
     }
-    PreemptionContractProtoOrBuilder p = viaProto ? proto : builder;
-    List<PreemptionResourceRequestProto> list = p.getResourceList();
-    resources = new ArrayList<PreemptionResourceRequest>();
 
-    for (PreemptionResourceRequestProto rr : list) {
-      resources.add(convertFromProtoFormat(rr));
+    private void mergeLocalToBuilder() {
+        if (this.resources != null) {
+            addResourcesToProto();
+        }
+        if (this.containers != null) {
+            addContainersToProto();
+        }
     }
-  }
 
-  private void addResourcesToProto() {
-    maybeInitBuilder();
-    builder.clearResource();
-    if (null == resources) {
-      return;
+    private void maybeInitBuilder() {
+        if (viaProto || builder == null) {
+            builder = PreemptionContractProto.newBuilder(proto);
+        }
+        viaProto = false;
     }
-    Iterable<PreemptionResourceRequestProto> iterable =
-      new Iterable<PreemptionResourceRequestProto>() {
-      @Override
-      public Iterator<PreemptionResourceRequestProto> iterator() {
-        return new Iterator<PreemptionResourceRequestProto>() {
 
-          Iterator<PreemptionResourceRequest> iter = resources.iterator();
-
-          @Override
-          public boolean hasNext() {
-            return iter.hasNext();
-          }
-
-          @Override
-          public PreemptionResourceRequestProto next() {
-            return convertToProtoFormat(iter.next());
-          }
-
-          @Override
-          public void remove() {
-            throw new UnsupportedOperationException();
-
-          }
-        };
-
-      }
-    };
-    builder.addAllResource(iterable);
-  }
-
-  private void initPreemptionContainers() {
-    if (containers != null) {
-      return;
+    @Override
+    public synchronized Set<PreemptionContainer> getContainers() {
+        initPreemptionContainers();
+        return containers;
     }
-    PreemptionContractProtoOrBuilder p = viaProto ? proto : builder;
-    List<PreemptionContainerProto> list = p.getContainerList();
-    containers = new HashSet<PreemptionContainer>();
 
-    for (PreemptionContainerProto c : list) {
-      containers.add(convertFromProtoFormat(c));
+    @Override
+    public synchronized void setContainers(
+            final Set<PreemptionContainer> containers) {
+        if (null == containers) {
+            builder.clearContainer();
+        }
+        this.containers = containers;
     }
-  }
 
-  private void addContainersToProto() {
-    maybeInitBuilder();
-    builder.clearContainer();
-    if (null == containers) {
-      return;
+    @Override
+    public synchronized List<PreemptionResourceRequest> getResourceRequest() {
+        initPreemptionResourceRequests();
+        return resources;
     }
-    Iterable<PreemptionContainerProto> iterable =
-      new Iterable<PreemptionContainerProto>() {
-      @Override
-      public Iterator<PreemptionContainerProto> iterator() {
-        return new Iterator<PreemptionContainerProto>() {
 
-          Iterator<PreemptionContainer> iter = containers.iterator();
+    @Override
+    public synchronized void setResourceRequest(
+            final List<PreemptionResourceRequest> req) {
+        if (null == resources) {
+            builder.clearResource();
+        }
+        this.resources = req;
+    }
 
-          @Override
-          public boolean hasNext() {
-            return iter.hasNext();
-          }
+    private void initPreemptionResourceRequests() {
+        if (resources != null) {
+            return;
+        }
+        PreemptionContractProtoOrBuilder p = viaProto ? proto : builder;
+        List<PreemptionResourceRequestProto> list = p.getResourceList();
+        resources = new ArrayList<PreemptionResourceRequest>();
 
-          @Override
-          public PreemptionContainerProto next() {
-            return convertToProtoFormat(iter.next());
-          }
+        for (PreemptionResourceRequestProto rr : list) {
+            resources.add(convertFromProtoFormat(rr));
+        }
+    }
 
-          @Override
-          public void remove() {
-            throw new UnsupportedOperationException();
+    private void addResourcesToProto() {
+        maybeInitBuilder();
+        builder.clearResource();
+        if (null == resources) {
+            return;
+        }
+        Iterable<PreemptionResourceRequestProto> iterable =
+                new Iterable<PreemptionResourceRequestProto>() {
+                    @Override
+                    public Iterator<PreemptionResourceRequestProto> iterator() {
+                        return new Iterator<PreemptionResourceRequestProto>() {
 
-          }
-        };
+                            Iterator<PreemptionResourceRequest> iter = resources.iterator();
 
-      }
-    };
-    builder.addAllContainer(iterable);
-  }
+                            @Override
+                            public boolean hasNext() {
+                                return iter.hasNext();
+                            }
 
-  private PreemptionContainerPBImpl convertFromProtoFormat(PreemptionContainerProto p) {
-    return new PreemptionContainerPBImpl(p);
-  }
+                            @Override
+                            public PreemptionResourceRequestProto next() {
+                                return convertToProtoFormat(iter.next());
+                            }
 
-  private PreemptionContainerProto convertToProtoFormat(PreemptionContainer t) {
-    return ((PreemptionContainerPBImpl)t).getProto();
-  }
+                            @Override
+                            public void remove() {
+                                throw new UnsupportedOperationException();
 
-  private PreemptionResourceRequestPBImpl convertFromProtoFormat(PreemptionResourceRequestProto p) {
-    return new PreemptionResourceRequestPBImpl(p);
-  }
+                            }
+                        };
 
-  private PreemptionResourceRequestProto convertToProtoFormat(PreemptionResourceRequest t) {
-    return ((PreemptionResourceRequestPBImpl)t).getProto();
-  }
+                    }
+                };
+        builder.addAllResource(iterable);
+    }
+
+    private void initPreemptionContainers() {
+        if (containers != null) {
+            return;
+        }
+        PreemptionContractProtoOrBuilder p = viaProto ? proto : builder;
+        List<PreemptionContainerProto> list = p.getContainerList();
+        containers = new HashSet<PreemptionContainer>();
+
+        for (PreemptionContainerProto c : list) {
+            containers.add(convertFromProtoFormat(c));
+        }
+    }
+
+    private void addContainersToProto() {
+        maybeInitBuilder();
+        builder.clearContainer();
+        if (null == containers) {
+            return;
+        }
+        Iterable<PreemptionContainerProto> iterable =
+                new Iterable<PreemptionContainerProto>() {
+                    @Override
+                    public Iterator<PreemptionContainerProto> iterator() {
+                        return new Iterator<PreemptionContainerProto>() {
+
+                            Iterator<PreemptionContainer> iter = containers.iterator();
+
+                            @Override
+                            public boolean hasNext() {
+                                return iter.hasNext();
+                            }
+
+                            @Override
+                            public PreemptionContainerProto next() {
+                                return convertToProtoFormat(iter.next());
+                            }
+
+                            @Override
+                            public void remove() {
+                                throw new UnsupportedOperationException();
+
+                            }
+                        };
+
+                    }
+                };
+        builder.addAllContainer(iterable);
+    }
+
+    private PreemptionContainerPBImpl convertFromProtoFormat(PreemptionContainerProto p) {
+        return new PreemptionContainerPBImpl(p);
+    }
+
+    private PreemptionContainerProto convertToProtoFormat(PreemptionContainer t) {
+        return ((PreemptionContainerPBImpl) t).getProto();
+    }
+
+    private PreemptionResourceRequestPBImpl convertFromProtoFormat(PreemptionResourceRequestProto p) {
+        return new PreemptionResourceRequestPBImpl(p);
+    }
+
+    private PreemptionResourceRequestProto convertToProtoFormat(PreemptionResourceRequest t) {
+        return ((PreemptionResourceRequestPBImpl) t).getProto();
+    }
 
 }

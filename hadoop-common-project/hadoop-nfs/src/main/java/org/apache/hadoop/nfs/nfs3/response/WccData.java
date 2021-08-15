@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,43 +24,43 @@ import org.apache.hadoop.oncrpc.XDR;
  * WccData saved information used by client for weak cache consistency
  */
 public class WccData {
-  private WccAttr preOpAttr;
-  private Nfs3FileAttributes postOpAttr;
+    private WccAttr preOpAttr;
+    private Nfs3FileAttributes postOpAttr;
 
-  public WccAttr getPreOpAttr() {
-    return preOpAttr;
-  }
+    public WccData(WccAttr preOpAttr, Nfs3FileAttributes postOpAttr) {
+        this.preOpAttr = (preOpAttr == null) ? new WccAttr() : preOpAttr;
+        this.postOpAttr = (postOpAttr == null) ? new Nfs3FileAttributes()
+                : postOpAttr;
+    }
 
-  public void setPreOpAttr(WccAttr preOpAttr) {
-    this.preOpAttr = preOpAttr;
-  }
+    public static WccData deserialize(XDR xdr) {
+        xdr.readBoolean();
+        WccAttr preOpAttr = WccAttr.deserialize(xdr);
+        xdr.readBoolean();
+        Nfs3FileAttributes postOpAttr = Nfs3FileAttributes.deserialize(xdr);
+        return new WccData(preOpAttr, postOpAttr);
+    }
 
-  public Nfs3FileAttributes getPostOpAttr() {
-    return postOpAttr;
-  }
+    public WccAttr getPreOpAttr() {
+        return preOpAttr;
+    }
 
-  public void setPostOpAttr(Nfs3FileAttributes postOpAttr) {
-    this.postOpAttr = postOpAttr;
-  }
+    public void setPreOpAttr(WccAttr preOpAttr) {
+        this.preOpAttr = preOpAttr;
+    }
 
-  public WccData(WccAttr preOpAttr, Nfs3FileAttributes postOpAttr) {
-    this.preOpAttr = (preOpAttr == null) ? new WccAttr() : preOpAttr;
-    this.postOpAttr = (postOpAttr == null) ? new Nfs3FileAttributes()
-        : postOpAttr;
-  }
+    public Nfs3FileAttributes getPostOpAttr() {
+        return postOpAttr;
+    }
 
-  public static WccData deserialize(XDR xdr) {
-    xdr.readBoolean();
-    WccAttr preOpAttr = WccAttr.deserialize(xdr);
-    xdr.readBoolean();
-    Nfs3FileAttributes postOpAttr = Nfs3FileAttributes.deserialize(xdr);
-    return new WccData(preOpAttr, postOpAttr);
-  }
+    public void setPostOpAttr(Nfs3FileAttributes postOpAttr) {
+        this.postOpAttr = postOpAttr;
+    }
 
-  public void serialize(XDR out) {
-    out.writeBoolean(true); // attributes follow
-    preOpAttr.serialize(out);
-    out.writeBoolean(true); // attributes follow
-    postOpAttr.serialize(out);
-  }
+    public void serialize(XDR out) {
+        out.writeBoolean(true); // attributes follow
+        preOpAttr.serialize(out);
+        out.writeBoolean(true); // attributes follow
+        postOpAttr.serialize(out);
+    }
 }

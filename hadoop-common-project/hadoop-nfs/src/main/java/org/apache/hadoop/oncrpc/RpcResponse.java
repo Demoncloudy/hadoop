@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,9 +17,9 @@
  */
 package org.apache.hadoop.oncrpc;
 
-import java.net.SocketAddress;
-
 import org.jboss.netty.buffer.ChannelBuffer;
+
+import java.net.SocketAddress;
 
 /**
  * RpcResponse encapsulates a response to a RPC request. It contains the data
@@ -27,19 +27,19 @@ import org.jboss.netty.buffer.ChannelBuffer;
  * peer.
  */
 public class RpcResponse {
-  private final ChannelBuffer data;
-  private final SocketAddress remoteAddress;
+    private final ChannelBuffer data;
+    private final SocketAddress remoteAddress;
 
-  public RpcResponse(ChannelBuffer data, SocketAddress remoteAddress) {
-    this.data = data;
-    this.remoteAddress = remoteAddress;
-  }
+    public RpcResponse(ChannelBuffer data, SocketAddress remoteAddress) {
+        this.data = data;
+        this.remoteAddress = remoteAddress;
+    }
 
-  public ChannelBuffer data() {
-    return data;
-  }
+    public ChannelBuffer data() {
+        return data;
+    }
 
-  public SocketAddress remoteAddress() {
-    return remoteAddress;
-  }
+    public SocketAddress remoteAddress() {
+        return remoteAddress;
+    }
 }

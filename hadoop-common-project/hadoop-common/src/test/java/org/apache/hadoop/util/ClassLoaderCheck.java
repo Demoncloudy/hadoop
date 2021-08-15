@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,16 +18,16 @@
 package org.apache.hadoop.util;
 
 public class ClassLoaderCheck {
-  /**
-   * Verifies the class is loaded by the right classloader.
-   */
-  public static void checkClassLoader(Class cls,
-      boolean shouldBeLoadedByAppClassLoader) {
-    boolean loadedByAppClassLoader =
-        cls.getClassLoader() instanceof ApplicationClassLoader;
-    if ((shouldBeLoadedByAppClassLoader && !loadedByAppClassLoader) ||
-        (!shouldBeLoadedByAppClassLoader && loadedByAppClassLoader)) {
-      throw new RuntimeException("incorrect classloader used");
+    /**
+     * Verifies the class is loaded by the right classloader.
+     */
+    public static void checkClassLoader(Class cls,
+                                        boolean shouldBeLoadedByAppClassLoader) {
+        boolean loadedByAppClassLoader =
+                cls.getClassLoader() instanceof ApplicationClassLoader;
+        if ((shouldBeLoadedByAppClassLoader && !loadedByAppClassLoader) ||
+                (!shouldBeLoadedByAppClassLoader && loadedByAppClassLoader)) {
+            throw new RuntimeException("incorrect classloader used");
+        }
     }
-  }
 }

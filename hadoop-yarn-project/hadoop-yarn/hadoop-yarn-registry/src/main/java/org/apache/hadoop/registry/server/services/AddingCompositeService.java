@@ -33,24 +33,23 @@ import org.apache.hadoop.service.Service;
  * on with that of the parent services. Specifically, do not add an uninited
  * service to a parent that is already inited —as the <code>start</code>
  * operation will then fail
- *
  */
 @InterfaceAudience.Public
 @InterfaceStability.Evolving
 public class AddingCompositeService extends CompositeService {
 
 
-  public AddingCompositeService(String name) {
-    super(name);
-  }
+    public AddingCompositeService(String name) {
+        super(name);
+    }
 
-  @Override
-  public void addService(Service service) {
-    super.addService(service);
-  }
+    @Override
+    public void addService(Service service) {
+        super.addService(service);
+    }
 
-  @Override
-  public boolean removeService(Service service) {
-    return super.removeService(service);
-  }
+    @Override
+    public boolean removeService(Service service) {
+        return super.removeService(service);
+    }
 }

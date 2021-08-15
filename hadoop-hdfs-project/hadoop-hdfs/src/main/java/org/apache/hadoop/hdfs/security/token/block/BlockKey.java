@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,10 +18,10 @@
 
 package org.apache.hadoop.hdfs.security.token.block;
 
-import javax.crypto.SecretKey;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.security.token.delegation.DelegationKey;
+
+import javax.crypto.SecretKey;
 
 /**
  * Key used for generating and verifying block tokens
@@ -29,15 +29,15 @@ import org.apache.hadoop.security.token.delegation.DelegationKey;
 @InterfaceAudience.Private
 public class BlockKey extends DelegationKey {
 
-  public BlockKey() {
-    super();
-  }
+    public BlockKey() {
+        super();
+    }
 
-  public BlockKey(int keyId, long expiryDate, SecretKey key) {
-    super(keyId, expiryDate, key);
-  }
-  
-  public BlockKey(int keyId, long expiryDate, byte[] encodedKey) {
-    super(keyId, expiryDate, encodedKey);
-  }
+    public BlockKey(int keyId, long expiryDate, SecretKey key) {
+        super(keyId, expiryDate, key);
+    }
+
+    public BlockKey(int keyId, long expiryDate, byte[] encodedKey) {
+        super(keyId, expiryDate, encodedKey);
+    }
 }

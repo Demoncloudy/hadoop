@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,57 +17,56 @@
  */
 package org.apache.hadoop.hdfs.server.datanode.fsdataset;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.hadoop.hdfs.StorageType;
 import org.apache.hadoop.util.DiskChecker.DiskOutOfSpaceException;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Choose volumes in round-robin order.
  */
 public class RoundRobinVolumeChoosingPolicy<V extends FsVolumeSpi>
-    implements VolumeChoosingPolicy<V> {
-  public static final Log LOG = LogFactory.getLog(RoundRobinVolumeChoosingPolicy.class);
+        implements VolumeChoosingPolicy<V> {
+    public static final Log LOG = LogFactory.getLog(RoundRobinVolumeChoosingPolicy.class);
 
-  private int curVolume = 0;
+    private int curVolume = 0;
 
-  @Override
-  public synchronized V chooseVolume(final List<V> volumes, long blockSize)
-      throws IOException {
+    @Override
+    public synchronized V chooseVolume(final List<V> volumes, long blockSize)
+            throws IOException {
 
-    if(volumes.size() < 1) {
-      throw new DiskOutOfSpaceException("No more available volumes");
+        if (volumes.size() < 1) {
+            throw new DiskOutOfSpaceException("No more available volumes");
+        }
+
+        // since volumes could've been removed because of the failure
+        // make sure we are not out of bounds
+        if (curVolume >= volumes.size()) {
+            curVolume = 0;
+        }
+
+        int startVolume = curVolume;
+        long maxAvailable = 0;
+
+        while (true) {
+            final V volume = volumes.get(curVolume);
+            curVolume = (curVolume + 1) % volumes.size();
+            long availableVolumeSize = volume.getAvailable();
+            if (availableVolumeSize > blockSize) {
+                return volume;
+            }
+
+            if (availableVolumeSize > maxAvailable) {
+                maxAvailable = availableVolumeSize;
+            }
+
+            if (curVolume == startVolume) {
+                throw new DiskOutOfSpaceException("Out of space: "
+                        + "The volume with the most available space (=" + maxAvailable
+                        + " B) is less than the block size (=" + blockSize + " B).");
+            }
+        }
     }
-    
-    // since volumes could've been removed because of the failure
-    // make sure we are not out of bounds
-    if(curVolume >= volumes.size()) {
-      curVolume = 0;
-    }
-    
-    int startVolume = curVolume;
-    long maxAvailable = 0;
-    
-    while (true) {
-      final V volume = volumes.get(curVolume);
-      curVolume = (curVolume + 1) % volumes.size();
-      long availableVolumeSize = volume.getAvailable();
-      if (availableVolumeSize > blockSize) {
-        return volume;
-      }
-      
-      if (availableVolumeSize > maxAvailable) {
-        maxAvailable = availableVolumeSize;
-      }
-      
-      if (curVolume == startVolume) {
-        throw new DiskOutOfSpaceException("Out of space: "
-            + "The volume with the most available space (=" + maxAvailable
-            + " B) is less than the block size (=" + blockSize + " B).");
-      }
-    }
-  }
 }

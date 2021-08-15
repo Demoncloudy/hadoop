@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,10 +17,10 @@
  */
 package org.apache.hadoop.hdfs.server.datanode.fsdataset;
 
+import org.apache.hadoop.classification.InterfaceAudience;
+
 import java.io.IOException;
 import java.util.List;
-
-import org.apache.hadoop.classification.InterfaceAudience;
 
 /**
  * This interface specifies the policy for choosing volumes to store replicas.
@@ -28,16 +28,16 @@ import org.apache.hadoop.classification.InterfaceAudience;
 @InterfaceAudience.Private
 public interface VolumeChoosingPolicy<V extends FsVolumeSpi> {
 
-  /**
-   * Choose a volume to place a replica,
-   * given a list of volumes and the replica size sought for storage.
-   * 
-   * The implementations of this interface must be thread-safe.
-   * 
-   * @param volumes - a list of available volumes.
-   * @param replicaSize - the size of the replica for which a volume is sought.
-   * @return the chosen volume.
-   * @throws IOException when disks are unavailable or are full.
-   */
-  public V chooseVolume(List<V> volumes, long replicaSize) throws IOException;
+    /**
+     * Choose a volume to place a replica,
+     * given a list of volumes and the replica size sought for storage.
+     * <p>
+     * The implementations of this interface must be thread-safe.
+     *
+     * @param volumes     - a list of available volumes.
+     * @param replicaSize - the size of the replica for which a volume is sought.
+     * @return the chosen volume.
+     * @throws IOException when disks are unavailable or are full.
+     */
+    public V chooseVolume(List<V> volumes, long replicaSize) throws IOException;
 }

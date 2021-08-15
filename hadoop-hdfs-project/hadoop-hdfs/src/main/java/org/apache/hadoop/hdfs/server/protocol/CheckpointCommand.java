@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,35 +39,35 @@ import org.apache.hadoop.hdfs.server.namenode.CheckpointSignature;
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
 public class CheckpointCommand extends NamenodeCommand {
-  private final CheckpointSignature cSig;
-  private final boolean needToReturnImage;
+    private final CheckpointSignature cSig;
+    private final boolean needToReturnImage;
 
-  public CheckpointCommand() {
-    this(null, false);
-  }
+    public CheckpointCommand() {
+        this(null, false);
+    }
 
-  public CheckpointCommand(CheckpointSignature sig,
-                           boolean needToReturnImg) {
-    super(NamenodeProtocol.ACT_CHECKPOINT);
-    this.cSig = sig;
-    this.needToReturnImage = needToReturnImg;
-  }
+    public CheckpointCommand(CheckpointSignature sig,
+                             boolean needToReturnImg) {
+        super(NamenodeProtocol.ACT_CHECKPOINT);
+        this.cSig = sig;
+        this.needToReturnImage = needToReturnImg;
+    }
 
-  /**
-   * Checkpoint signature is used to ensure 
-   * that nodes are talking about the same checkpoint.
-   */
-  public CheckpointSignature getSignature() {
-    return cSig;
-  }
+    /**
+     * Checkpoint signature is used to ensure
+     * that nodes are talking about the same checkpoint.
+     */
+    public CheckpointSignature getSignature() {
+        return cSig;
+    }
 
-  /**
-   * Indicates whether the new checkpoint image needs to be transfered 
-   * back to the name-node after the checkpoint is done.
-   * 
-   * @return true if the checkpoint should be returned back.
-   */
-  public boolean needToReturnImage() {
-    return needToReturnImage;
-  }
+    /**
+     * Indicates whether the new checkpoint image needs to be transfered
+     * back to the name-node after the checkpoint is done.
+     *
+     * @return true if the checkpoint should be returned back.
+     */
+    public boolean needToReturnImage() {
+        return needToReturnImage;
+    }
 }

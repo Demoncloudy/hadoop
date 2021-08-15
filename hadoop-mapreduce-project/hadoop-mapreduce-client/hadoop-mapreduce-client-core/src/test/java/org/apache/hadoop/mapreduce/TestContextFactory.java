@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,37 +27,37 @@ import org.junit.Test;
 
 public class TestContextFactory {
 
-  JobID jobId;
-  Configuration conf;
-  JobContext jobContext;
-  
-  @Before
-  public void setUp() throws Exception {
-    conf = new Configuration();
-    jobId = new JobID("test", 1);
-    jobContext = new JobContextImpl(conf, jobId);
-  }
-  
-  @Test
-  public void testCloneContext() throws Exception {
-    ContextFactory.cloneContext(jobContext, conf);
-  }
+    JobID jobId;
+    Configuration conf;
+    JobContext jobContext;
 
-  @Test
-  public void testCloneMapContext() throws Exception {
-    TaskID taskId = new TaskID(jobId, TaskType.MAP, 0);
-    TaskAttemptID taskAttemptid = new TaskAttemptID(taskId, 0);
-    MapContext<IntWritable, IntWritable, IntWritable, IntWritable> mapContext =
-    new MapContextImpl<IntWritable, IntWritable, IntWritable, IntWritable>(
-        conf, taskAttemptid, null, null, null, null, null);
-    Mapper<IntWritable, IntWritable, IntWritable, IntWritable>.Context mapperContext = 
-      new WrappedMapper<IntWritable, IntWritable, IntWritable, IntWritable>().getMapContext(
-          mapContext);
-    ContextFactory.cloneMapContext(mapperContext, conf, null, null);
-  }
+    @Before
+    public void setUp() throws Exception {
+        conf = new Configuration();
+        jobId = new JobID("test", 1);
+        jobContext = new JobContextImpl(conf, jobId);
+    }
 
-  @Before
-  public void tearDown() throws Exception {
-    
-  }
+    @Test
+    public void testCloneContext() throws Exception {
+        ContextFactory.cloneContext(jobContext, conf);
+    }
+
+    @Test
+    public void testCloneMapContext() throws Exception {
+        TaskID taskId = new TaskID(jobId, TaskType.MAP, 0);
+        TaskAttemptID taskAttemptid = new TaskAttemptID(taskId, 0);
+        MapContext<IntWritable, IntWritable, IntWritable, IntWritable> mapContext =
+                new MapContextImpl<IntWritable, IntWritable, IntWritable, IntWritable>(
+                        conf, taskAttemptid, null, null, null, null, null);
+        Mapper<IntWritable, IntWritable, IntWritable, IntWritable>.Context mapperContext =
+                new WrappedMapper<IntWritable, IntWritable, IntWritable, IntWritable>().getMapContext(
+                        mapContext);
+        ContextFactory.cloneMapContext(mapperContext, conf, null, null);
+    }
+
+    @Before
+    public void tearDown() throws Exception {
+
+    }
 }

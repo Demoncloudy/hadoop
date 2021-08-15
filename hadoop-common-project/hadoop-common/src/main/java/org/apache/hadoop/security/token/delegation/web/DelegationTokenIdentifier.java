@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,35 +30,36 @@ import org.apache.hadoop.security.token.delegation.AbstractDelegationTokenIdenti
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
 public class DelegationTokenIdentifier
-    extends AbstractDelegationTokenIdentifier {
+        extends AbstractDelegationTokenIdentifier {
 
-  private Text kind;
+    private Text kind;
 
-  public DelegationTokenIdentifier(Text kind) {
-    this.kind = kind;
-  }
+    public DelegationTokenIdentifier(Text kind) {
+        this.kind = kind;
+    }
 
-  /**
-   * Create a new delegation token identifier
-   *
-   * @param kind token kind
-   * @param owner the effective username of the token owner
-   * @param renewer the username of the renewer
-   * @param realUser the real username of the token owner
-   */
-  public DelegationTokenIdentifier(Text kind, Text owner, Text renewer,
-      Text realUser) {
-    super(owner, renewer, realUser);
-    this.kind = kind;
-  }
+    /**
+     * Create a new delegation token identifier
+     *
+     * @param kind     token kind
+     * @param owner    the effective username of the token owner
+     * @param renewer  the username of the renewer
+     * @param realUser the real username of the token owner
+     */
+    public DelegationTokenIdentifier(Text kind, Text owner, Text renewer,
+                                     Text realUser) {
+        super(owner, renewer, realUser);
+        this.kind = kind;
+    }
 
-  /**
-   * Return the delegation token kind
-   * @return returns the delegation token kind
-   */
-  @Override
-  public Text getKind() {
-    return kind;
-  }
+    /**
+     * Return the delegation token kind
+     *
+     * @return returns the delegation token kind
+     */
+    @Override
+    public Text getKind() {
+        return kind;
+    }
 
 }

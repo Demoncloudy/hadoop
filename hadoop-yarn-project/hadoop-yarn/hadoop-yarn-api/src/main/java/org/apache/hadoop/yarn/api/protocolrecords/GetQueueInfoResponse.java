@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,7 @@ import org.apache.hadoop.yarn.util.Records;
  * <p>The response includes a {@link QueueInfo} which has details such as
  * queue name, used/total capacities, running applications, child queues etc
  * .</p>
- * 
+ *
  * @see QueueInfo
  * @see ApplicationClientProtocol#getQueueInfo(GetQueueInfoRequest)
  */
@@ -41,23 +41,24 @@ import org.apache.hadoop.yarn.util.Records;
 @Stable
 public abstract class GetQueueInfoResponse {
 
-  @Private
-  @Unstable
-  public static GetQueueInfoResponse newInstance(QueueInfo queueInfo) {
-    GetQueueInfoResponse response = Records.newRecord(GetQueueInfoResponse.class);
-    response.setQueueInfo(queueInfo);
-    return response;
-  }
+    @Private
+    @Unstable
+    public static GetQueueInfoResponse newInstance(QueueInfo queueInfo) {
+        GetQueueInfoResponse response = Records.newRecord(GetQueueInfoResponse.class);
+        response.setQueueInfo(queueInfo);
+        return response;
+    }
 
-  /**
-   * Get the <code>QueueInfo</code> for the specified queue.
-   * @return <code>QueueInfo</code> for the specified queue
-   */
-  @Public
-  @Stable
-  public abstract QueueInfo getQueueInfo();
-  
-  @Private
-  @Unstable
-  public abstract void setQueueInfo(QueueInfo queueInfo);
+    /**
+     * Get the <code>QueueInfo</code> for the specified queue.
+     *
+     * @return <code>QueueInfo</code> for the specified queue
+     */
+    @Public
+    @Stable
+    public abstract QueueInfo getQueueInfo();
+
+    @Private
+    @Unstable
+    public abstract void setQueueInfo(QueueInfo queueInfo);
 }

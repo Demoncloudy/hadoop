@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,31 +34,30 @@ import org.apache.hadoop.yarn.util.Records;
 @Unstable
 public abstract class GetContainerReportRequest {
 
-  @Public
-  @Unstable
-  public static GetContainerReportRequest newInstance(ContainerId containerId) {
-    GetContainerReportRequest request =
-        Records.newRecord(GetContainerReportRequest.class);
-    request.setContainerId(containerId);
-    return request;
-  }
+    @Public
+    @Unstable
+    public static GetContainerReportRequest newInstance(ContainerId containerId) {
+        GetContainerReportRequest request =
+                Records.newRecord(GetContainerReportRequest.class);
+        request.setContainerId(containerId);
+        return request;
+    }
 
-  /**
-   * Get the <code>ContainerId</code> of the Container.
-   * 
-   * @return <code>ContainerId</code> of the Container
-   */
-  @Public
-  @Unstable
-  public abstract ContainerId getContainerId();
+    /**
+     * Get the <code>ContainerId</code> of the Container.
+     *
+     * @return <code>ContainerId</code> of the Container
+     */
+    @Public
+    @Unstable
+    public abstract ContainerId getContainerId();
 
-  /**
-   * Set the <code>ContainerId</code> of the container
-   * 
-   * @param containerId
-   *          <code>ContainerId</code> of the container
-   */
-  @Public
-  @Unstable
-  public abstract void setContainerId(ContainerId containerId);
+    /**
+     * Set the <code>ContainerId</code> of the container
+     *
+     * @param containerId <code>ContainerId</code> of the container
+     */
+    @Public
+    @Unstable
+    public abstract void setContainerId(ContainerId containerId);
 }

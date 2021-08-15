@@ -10,55 +10,55 @@
 ~~ See the License for the specific language governing permissions and
 ~~ limitations under the License. See accompanying LICENSE file.
 
-  ---
-  Apache Hadoop NextGen MapReduce
-  ---
-  ---
-  ${maven.build.timestamp}
-  
+---
+Apache Hadoop NextGen MapReduce
+---
+---
+${maven.build.timestamp}
+
 MapReduce NextGen aka YARN aka MRv2
 
-  The new architecture introduced in hadoop-0.23, divides the two major 
-  functions of the JobTracker: resource management and job life-cycle management 
-  into separate components.
+The new architecture introduced in hadoop-0.23, divides the two major
+functions of the JobTracker: resource management and job life-cycle management
+into separate components.
 
-  The new ResourceManager manages the global assignment of compute resources to 
-  applications and the per-application ApplicationMaster manages the 
-  application’s scheduling and coordination. 
-  
-  An application is either a single job in the sense of classic MapReduce jobs 
-  or a DAG of such jobs. 
-  
-  The ResourceManager and per-machine NodeManager daemon, which manages the 
-  user processes on that machine, form the computation fabric. 
-  
-  The per-application ApplicationMaster is, in effect, a framework specific 
-  library and is tasked with negotiating resources from the ResourceManager and 
-  working with the NodeManager(s) to execute and monitor the tasks.
+The new ResourceManager manages the global assignment of compute resources to
+applications and the per-application ApplicationMaster manages the
+application’s scheduling and coordination.
 
-  More details are available in the {{{./YARN.html}YARN}}
-  document.
+An application is either a single job in the sense of classic MapReduce jobs
+or a DAG of such jobs.
+
+The ResourceManager and per-machine NodeManager daemon, which manages the
+user processes on that machine, form the computation fabric.
+
+The per-application ApplicationMaster is, in effect, a framework specific
+library and is tasked with negotiating resources from the ResourceManager and
+working with the NodeManager(s) to execute and monitor the tasks.
+
+More details are available in the {{{./YARN.html}YARN}}
+document.
 
 * Documentation
 
-  * {{{./YARN.html}NextGen MapReduce}}
-  
-  * {{{./WritingYarnApplications.html}Writing YARN Applications}}
+* {{{./YARN.html}NextGen MapReduce}}
 
-  * {{{./CapacityScheduler.html}Capacity Scheduler}}
+* {{{./WritingYarnApplications.html}Writing YARN Applications}}
 
-  * {{{./FairScheduler.html}Fair Scheduler}}
+* {{{./CapacityScheduler.html}Capacity Scheduler}}
 
-  * {{{./WebApplicationProxy.html}Web Application Proxy}}
+* {{{./FairScheduler.html}Fair Scheduler}}
 
-  * {{{./TimelineServer.html}YARN Timeline Server}}
-  
-  * {{{./SecureContainer.html}YARN Secure Containers}}
+* {{{./WebApplicationProxy.html}Web Application Proxy}}
 
-  * {{{../../hadoop-project-dist/hadoop-common/CLIMiniCluster.html}CLI MiniCluster}}
+* {{{./TimelineServer.html}YARN Timeline Server}}
 
-  * {{{../../hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduce_Compatibility_Hadoop1_Hadoop2.html}Backward Compatibility between Apache Hadoop 1.x and 2.x for MapReduce}}
+* {{{./SecureContainer.html}YARN Secure Containers}}
 
-  * {{{../../hadoop-mapreduce-client/hadoop-mapreduce-client-core/EncryptedShuffle.html}Encrypted Shuffle}}
+* {{{../../hadoop-project-dist/hadoop-common/CLIMiniCluster.html}CLI MiniCluster}}
 
-  * {{{./registry/index.html}Registry}}
+* {{{../../hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduce_Compatibility_Hadoop1_Hadoop2.html}Backward Compatibility between Apache Hadoop 1.x and 2.x for MapReduce}}
+
+* {{{../../hadoop-mapreduce-client/hadoop-mapreduce-client-core/EncryptedShuffle.html}Encrypted Shuffle}}
+
+* {{{./registry/index.html}Registry}}

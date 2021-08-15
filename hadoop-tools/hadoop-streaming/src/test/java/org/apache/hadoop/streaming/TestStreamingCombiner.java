@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,37 +18,37 @@
 
 package org.apache.hadoop.streaming;
 
+import org.apache.hadoop.mapred.Counters;
+import org.junit.Test;
+
 import java.io.IOException;
 
-import org.apache.hadoop.mapred.Counters;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class TestStreamingCombiner extends TestStreaming {
 
-  protected String combine = UtilTest.makeJavaCommand(
-      UniqApp.class, new String[]{""});
-  
-  public TestStreamingCombiner() throws IOException {
-    super();
-  }
-  
-  protected String[] genArgs() {
-    args.add("-combiner");
-    args.add(combine);
-    return super.genArgs();
-  }
+    protected String combine = UtilTest.makeJavaCommand(
+            UniqApp.class, new String[]{""});
 
-  @Test
-  public void testCommandLine() throws Exception {
-    super.testCommandLine();
-    // validate combiner counters
-    String counterGrp = "org.apache.hadoop.mapred.Task$Counter";
-    Counters counters = job.running_.getCounters();
-    assertTrue(counters.findCounter(
-               counterGrp, "COMBINE_INPUT_RECORDS").getValue() != 0);
-    assertTrue(counters.findCounter(
-               counterGrp, "COMBINE_OUTPUT_RECORDS").getValue() != 0);
-  }
+    public TestStreamingCombiner() throws IOException {
+        super();
+    }
+
+    protected String[] genArgs() {
+        args.add("-combiner");
+        args.add(combine);
+        return super.genArgs();
+    }
+
+    @Test
+    public void testCommandLine() throws Exception {
+        super.testCommandLine();
+        // validate combiner counters
+        String counterGrp = "org.apache.hadoop.mapred.Task$Counter";
+        Counters counters = job.running_.getCounters();
+        assertTrue(counters.findCounter(
+                counterGrp, "COMBINE_INPUT_RECORDS").getValue() != 0);
+        assertTrue(counters.findCounter(
+                counterGrp, "COMBINE_OUTPUT_RECORDS").getValue() != 0);
+    }
 }

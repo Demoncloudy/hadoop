@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,23 +18,23 @@
 
 package org.apache.hadoop.hdfs;
 
-import static org.junit.Assert.assertTrue;
-
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
+
 public class TestDeprecatedKeys {
- 
-  //Tests a deprecated key
-  @Test
-  public void testDeprecatedKeys() throws Exception {
-    Configuration conf = new HdfsConfiguration();
-    conf.set("topology.script.file.name", "xyz");
-    String scriptFile = conf.get(DFSConfigKeys.NET_TOPOLOGY_SCRIPT_FILE_NAME_KEY);
-    assertTrue(scriptFile.equals("xyz")) ;
-    conf.setInt("dfs.replication.interval", 1);
-    String alpha = DFSConfigKeys.DFS_NAMENODE_REPLICATION_INTERVAL_KEY;
-    int repInterval = conf.getInt(DFSConfigKeys.DFS_NAMENODE_REPLICATION_INTERVAL_KEY, 3) ;
-    assertTrue(repInterval == 1) ;
-  }
+
+    //Tests a deprecated key
+    @Test
+    public void testDeprecatedKeys() throws Exception {
+        Configuration conf = new HdfsConfiguration();
+        conf.set("topology.script.file.name", "xyz");
+        String scriptFile = conf.get(DFSConfigKeys.NET_TOPOLOGY_SCRIPT_FILE_NAME_KEY);
+        assertTrue(scriptFile.equals("xyz"));
+        conf.setInt("dfs.replication.interval", 1);
+        String alpha = DFSConfigKeys.DFS_NAMENODE_REPLICATION_INTERVAL_KEY;
+        int repInterval = conf.getInt(DFSConfigKeys.DFS_NAMENODE_REPLICATION_INTERVAL_KEY, 3);
+        assertTrue(repInterval == 1);
+    }
 }

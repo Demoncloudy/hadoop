@@ -13,8 +13,8 @@
   limitations under the License.
 -->
 <configuration>
-  <property>
-    <name>testserver.a</name>
-    <value>default</value>
-  </property>
+    <property>
+        <name>testserver.a</name>
+        <value>default</value>
+    </property>
 </configuration>

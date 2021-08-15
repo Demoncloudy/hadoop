@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,34 +23,34 @@ import org.apache.hadoop.fs.FsShell;
  * Class to define Test Command along with its type
  */
 public class CLITestCmd implements CLICommand {
-  private final CLICommandTypes type;
-  private final String cmd;
+    private final CLICommandTypes type;
+    private final String cmd;
 
-  public CLITestCmd(String str, CLICommandTypes type) {
-    cmd = str;
-    this.type = type;
-  }
+    public CLITestCmd(String str, CLICommandTypes type) {
+        cmd = str;
+        this.type = type;
+    }
 
-  @Override
-  public CommandExecutor getExecutor(String tag) throws IllegalArgumentException {
-    if (getType() instanceof CLICommandFS)
-      return new FSCmdExecutor(tag, new FsShell());
-    throw new
-        IllegalArgumentException("Unknown type of test command: " + getType());
-  }
+    @Override
+    public CommandExecutor getExecutor(String tag) throws IllegalArgumentException {
+        if (getType() instanceof CLICommandFS)
+            return new FSCmdExecutor(tag, new FsShell());
+        throw new
+                IllegalArgumentException("Unknown type of test command: " + getType());
+    }
 
-  @Override
-  public CLICommandTypes getType() {
-    return type;
-  }
-  
-  @Override
-  public String getCmd() {
-    return cmd;
-  }
-  
-  @Override
-  public String toString() {
-    return cmd;
-  }
+    @Override
+    public CLICommandTypes getType() {
+        return type;
+    }
+
+    @Override
+    public String getCmd() {
+        return cmd;
+    }
+
+    @Override
+    public String toString() {
+        return cmd;
+    }
 }

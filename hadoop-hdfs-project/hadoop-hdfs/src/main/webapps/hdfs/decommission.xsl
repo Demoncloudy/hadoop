@@ -18,122 +18,122 @@
  */
 -->
 
-<xsl:stylesheet version="1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                version="1.0">
 
-  <xsl:include href="dfsclusterhealth_utils.xsl" />
+    <xsl:include href="dfsclusterhealth_utils.xsl"/>
 
-  <xsl:output method="html" encoding="UTF-8" />
+    <xsl:output method="html" encoding="UTF-8"/>
 
-  <xsl:template match="/">
-    <html>
-      <head>
-        <link rel="stylesheet" type="text/css" href="static/hadoop.css" />
-        <title>
-          Hadoop cluster
-          <xsl:value-of select="cluster/@clusterId" />
-        </title>
-      </head>
-      <body>
+    <xsl:template match="/">
+        <html>
+            <head>
+                <link rel="stylesheet" type="text/css" href="static/hadoop.css"/>
+                <title>
+                    Hadoop cluster
+                    <xsl:value-of select="cluster/@clusterId"/>
+                </title>
+            </head>
+            <body>
 
-        <h1>
-          Cluster '
-          <xsl:value-of select="cluster/@clusterId" />
-          '
-        </h1>
+                <h1>
+                    Cluster '
+                    <xsl:value-of select="cluster/@clusterId"/>
+                    '
+                </h1>
 
-        <h2>Decommissioning Status</h2>
+                <h2>Decommissioning Status</h2>
 
-        <xsl:if test="count(cluster/decommissioningReport/item)">
-          <div id="dfstable">
-            <table>
-              <tbody>
-                <xsl:for-each select="cluster/decommissioningReport/item">
-                  <tr class="rowNormal">
-                    <td id="col1">
-                      <xsl:value-of select="@label" />
-                    </td>
-                    <td id="col2">:</td>
-                    <td id="col3">
-                      <xsl:value-of select="@value" />
-                    </td>
-                  </tr>
-                </xsl:for-each>
-              </tbody>
-            </table>
-          </div>
+                <xsl:if test="count(cluster/decommissioningReport/item)">
+                    <div id="dfstable">
+                        <table>
+                            <tbody>
+                                <xsl:for-each select="cluster/decommissioningReport/item">
+                                    <tr class="rowNormal">
+                                        <td id="col1">
+                                            <xsl:value-of select="@label"/>
+                                        </td>
+                                        <td id="col2">:</td>
+                                        <td id="col3">
+                                            <xsl:value-of select="@value"/>
+                                        </td>
+                                    </tr>
+                                </xsl:for-each>
+                            </tbody>
+                        </table>
+                    </div>
 
-          <br />
-        </xsl:if>
+                    <br/>
+                </xsl:if>
 
-        <xsl:if test="count(cluster/datanodes/node)">
+                <xsl:if test="count(cluster/datanodes/node)">
 
-          <div id="dfstable">
-            <table border="1" cellpadding="10" cellspacing="0">
-              <thead>
-                <xsl:for-each select="cluster/datanodes/node[1]/item">
-                  <th>
-                    <xsl:value-of select="@label" />
-                  </th>
-                </xsl:for-each>
-              </thead>
-              <tbody>
-                <xsl:for-each select="cluster/datanodes/node">
-                  <tr>
-                    <xsl:for-each select="item">
-                      <td>
+                    <div id="dfstable">
+                        <table border="1" cellpadding="10" cellspacing="0">
+                            <thead>
+                                <xsl:for-each select="cluster/datanodes/node[1]/item">
+                                    <th>
+                                        <xsl:value-of select="@label"/>
+                                    </th>
+                                </xsl:for-each>
+                            </thead>
+                            <tbody>
+                                <xsl:for-each select="cluster/datanodes/node">
+                                    <tr>
+                                        <xsl:for-each select="item">
+                                            <td>
 
-                        <xsl:call-template name="displayValue">
-                          <xsl:with-param name="value">
-                            <xsl:value-of select="@value" />
-                          </xsl:with-param>
-                          <xsl:with-param name="unit">
-                            <xsl:value-of select="@unit" />
-                          </xsl:with-param>
-                          <xsl:with-param name="link">
-                            <xsl:value-of select="@link" />
+                                                <xsl:call-template name="displayValue">
+                                                    <xsl:with-param name="value">
+                                                        <xsl:value-of select="@value"/>
+                                                    </xsl:with-param>
+                                                    <xsl:with-param name="unit">
+                                                        <xsl:value-of select="@unit"/>
+                                                    </xsl:with-param>
+                                                    <xsl:with-param name="link">
+                                                        <xsl:value-of select="@link"/>
 
-                          </xsl:with-param>
-                        </xsl:call-template>
-                      </td>
+                                                    </xsl:with-param>
+                                                </xsl:call-template>
+                                            </td>
+                                        </xsl:for-each>
+                                    </tr>
+                                </xsl:for-each>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </xsl:if>
+
+                <xsl:if test="count(cluster/unreportedNamenodes/node)">
+                    <h2>Unreported Namenodes</h2>
+                    <div id="dfstable">
+                        <table border="1" cellpadding="10" cellspacing="0">
+                            <tbody>
+                                <xsl:for-each select="cluster/unreportedNamenodes/node">
+                                    <tr class="rowNormal">
+                                        <td id="col1">
+                                            <xsl:value-of select="@name"/>
+                                        </td>
+                                        <td id="col2">
+                                            <xsl:value-of select="@exception"/>
+                                        </td>
+                                    </tr>
+                                </xsl:for-each>
+                            </tbody>
+                        </table>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="count(cluster/message/item)">
+                    <h4>Exception</h4>
+                    <xsl:for-each select="cluster/message/item">
+                        <xsl:value-of select="@msg"/>
                     </xsl:for-each>
-                  </tr>
-                </xsl:for-each>
-              </tbody>
-            </table>
-          </div>
+                </xsl:if>
 
-        </xsl:if>
-
-        <xsl:if test="count(cluster/unreportedNamenodes/node)">
-          <h2>Unreported Namenodes</h2>
-          <div id="dfstable">
-            <table border="1" cellpadding="10" cellspacing="0">
-              <tbody>
-                <xsl:for-each select="cluster/unreportedNamenodes/node">
-                  <tr class="rowNormal">
-                    <td id="col1">
-                      <xsl:value-of select="@name" />
-                    </td>
-                    <td id="col2">
-                      <xsl:value-of select="@exception" />
-                    </td>
-                  </tr>
-                </xsl:for-each>
-              </tbody>
-            </table>
-          </div>
-        </xsl:if>
-
-        <xsl:if test="count(cluster/message/item)">
-          <h4>Exception</h4>
-          <xsl:for-each select="cluster/message/item">
-            <xsl:value-of select="@msg" />
-          </xsl:for-each>
-        </xsl:if>
-
-      </body>
-    </html>
-  </xsl:template>
+            </body>
+        </html>
+    </xsl:template>
 </xsl:stylesheet> 
 

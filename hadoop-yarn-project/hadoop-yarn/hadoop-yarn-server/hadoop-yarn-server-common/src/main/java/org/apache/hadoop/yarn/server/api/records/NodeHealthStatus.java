@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,7 +39,7 @@ import org.apache.hadoop.yarn.util.Records;
  *     <li>A diagnostic report on the health status.</li>
  *   </ul>
  * </p>
- * 
+ *
  * @see NodeReport
  * @see ApplicationClientProtocol#getClusterNodes(org.apache.hadoop.yarn.api.protocolrecords.GetClusterNodesRequest)
  */
@@ -47,49 +47,52 @@ import org.apache.hadoop.yarn.util.Records;
 @Stable
 public abstract class NodeHealthStatus {
 
-  @Private
-  public static NodeHealthStatus newInstance(boolean isNodeHealthy,
-      String healthReport, long lastHealthReport) {
-    NodeHealthStatus status = Records.newRecord(NodeHealthStatus.class);
-    status.setIsNodeHealthy(isNodeHealthy);
-    status.setHealthReport(healthReport);
-    status.setLastHealthReportTime(lastHealthReport);
-    return status;
-  }
+    @Private
+    public static NodeHealthStatus newInstance(boolean isNodeHealthy,
+                                               String healthReport, long lastHealthReport) {
+        NodeHealthStatus status = Records.newRecord(NodeHealthStatus.class);
+        status.setIsNodeHealthy(isNodeHealthy);
+        status.setHealthReport(healthReport);
+        status.setLastHealthReportTime(lastHealthReport);
+        return status;
+    }
 
-  /**
-   * Is the node healthy?
-   * @return <code>true</code> if the node is healthy, else <code>false</code>
-   */
-  @Public
-  @Stable
-  public abstract boolean getIsNodeHealthy();
+    /**
+     * Is the node healthy?
+     *
+     * @return <code>true</code> if the node is healthy, else <code>false</code>
+     */
+    @Public
+    @Stable
+    public abstract boolean getIsNodeHealthy();
 
-  @Private
-  @Unstable
-  public abstract void setIsNodeHealthy(boolean isNodeHealthy);
+    @Private
+    @Unstable
+    public abstract void setIsNodeHealthy(boolean isNodeHealthy);
 
-  /**
-   * Get the <em>diagnostic health report</em> of the node.
-   * @return <em>diagnostic health report</em> of the node
-   */
-  @Public
-  @Stable
-  public abstract String getHealthReport();
+    /**
+     * Get the <em>diagnostic health report</em> of the node.
+     *
+     * @return <em>diagnostic health report</em> of the node
+     */
+    @Public
+    @Stable
+    public abstract String getHealthReport();
 
-  @Private
-  @Unstable
-  public abstract void setHealthReport(String healthReport);
+    @Private
+    @Unstable
+    public abstract void setHealthReport(String healthReport);
 
-  /**
-   * Get the <em>last timestamp</em> at which the health report was received.
-   * @return <em>last timestamp</em> at which the health report was received
-   */
-  @Public
-  @Stable
-  public abstract long getLastHealthReportTime();
+    /**
+     * Get the <em>last timestamp</em> at which the health report was received.
+     *
+     * @return <em>last timestamp</em> at which the health report was received
+     */
+    @Public
+    @Stable
+    public abstract long getLastHealthReportTime();
 
-  @Private
-  @Unstable
-  public abstract void setLastHealthReportTime(long lastHealthReport);
+    @Private
+    @Unstable
+    public abstract void setLastHealthReportTime(long lastHealthReport);
 }

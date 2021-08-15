@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,43 +28,43 @@ import java.util.Map;
 @InterfaceAudience.Public
 @InterfaceStability.Stable
 public class ReconfigurationTaskStatus {
-  long startTime;
-  long endTime;
-  final Map<ReconfigurationUtil.PropertyChange, Optional<String>> status;
+    final Map<ReconfigurationUtil.PropertyChange, Optional<String>> status;
+    long startTime;
+    long endTime;
 
-  public ReconfigurationTaskStatus(long startTime, long endTime,
-      Map<ReconfigurationUtil.PropertyChange, Optional<String>> status) {
-    this.startTime = startTime;
-    this.endTime = endTime;
-    this.status = status;
-  }
+    public ReconfigurationTaskStatus(long startTime, long endTime,
+                                     Map<ReconfigurationUtil.PropertyChange, Optional<String>> status) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.status = status;
+    }
 
-  /**
-   * Return true if
-   *   - A reconfiguration task has finished or
-   *   - an active reconfiguration task is running
-   */
-  public boolean hasTask() {
-    return startTime > 0;
-  }
+    /**
+     * Return true if
+     * - A reconfiguration task has finished or
+     * - an active reconfiguration task is running
+     */
+    public boolean hasTask() {
+        return startTime > 0;
+    }
 
-  /**
-   * Return true if the latest reconfiguration task has finished and there is
-   * no another active task running.
-   */
-  public boolean stopped() {
-    return endTime > 0;
-  }
+    /**
+     * Return true if the latest reconfiguration task has finished and there is
+     * no another active task running.
+     */
+    public boolean stopped() {
+        return endTime > 0;
+    }
 
-  public long getStartTime() {
-    return startTime;
-  }
+    public long getStartTime() {
+        return startTime;
+    }
 
-  public long getEndTime() {
-    return endTime;
-  }
+    public long getEndTime() {
+        return endTime;
+    }
 
-  public final Map<PropertyChange, Optional<String>> getStatus() {
-    return status;
-  }
+    public final Map<PropertyChange, Optional<String>> getStatus() {
+        return status;
+    }
 }

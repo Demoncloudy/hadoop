@@ -15,27 +15,27 @@
    limitations under the License.
 -->
 <FindBugsFilter>
-  <!--
-    Findbug is complaining about System.out being NULL
-  -->
-  <Match>
-    <Class name="org.apache.hadoop.crypto.key.kms.server.KMSWebApp"/>
-    <Bug pattern="NP_ALWAYS_NULL"/>
-  </Match>
-  <!--
-    KMSWebApp is a webapp singleton managed by the servlet container via
-    ServletContextListener.
-  -->
-  <Match>
-    <Class name="org.apache.hadoop.crypto.key.kms.server.KMSWebApp"/>
-    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
-  </Match>
-  <!--
-    KMSWebApp does an exit to kill the servlet container if the initialization
-    fails.
-  -->
-  <Match>
-    <Class name="org.apache.hadoop.crypto.key.kms.server.KMSWebApp"/>
-    <Bug pattern="DM_EXIT"/>
-  </Match>
+    <!--
+      Findbug is complaining about System.out being NULL
+    -->
+    <Match>
+        <Class name="org.apache.hadoop.crypto.key.kms.server.KMSWebApp"/>
+        <Bug pattern="NP_ALWAYS_NULL"/>
+    </Match>
+    <!--
+      KMSWebApp is a webapp singleton managed by the servlet container via
+      ServletContextListener.
+    -->
+    <Match>
+        <Class name="org.apache.hadoop.crypto.key.kms.server.KMSWebApp"/>
+        <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+    </Match>
+    <!--
+      KMSWebApp does an exit to kill the servlet container if the initialization
+      fails.
+    -->
+    <Match>
+        <Class name="org.apache.hadoop.crypto.key.kms.server.KMSWebApp"/>
+        <Bug pattern="DM_EXIT"/>
+    </Match>
 </FindBugsFilter>

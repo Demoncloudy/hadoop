@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?><%!
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file 
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+    /*
+     * Licensed to the Apache Software Foundation (ASF) under one
+     * or more contributor license agreements.  See the NOTICE file
+     * distributed with this work for additional information
+     * regarding copyright ownership.  The ASF licenses this file
+     * to you under the Apache License, Version 2.0 (the
+     * "License"); you may not use this file except in compliance
+     * with the License.  You may obtain a copy of the License at
+     *
+     *     http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
  
  /*
  
@@ -55,33 +55,33 @@
       readable error message
  
 */
- 
+
 %>
 <%@ page
-  contentType="application/xml"
-  import="org.apache.hadoop.hdfs.server.namenode.NamenodeJspHelper.XMLBlockInfo"
-  import="org.apache.hadoop.hdfs.server.common.JspHelper"
-  import="org.znerd.xmlenc.*"
+        contentType="application/xml"
+        import="org.apache.hadoop.hdfs.server.common.JspHelper"
+        import="org.apache.hadoop.hdfs.server.namenode.NamenodeJspHelper.XMLBlockInfo"
+        import="org.znerd.xmlenc.XMLOutputter"
 %>
 <%!
-  //for java.io.Serializable
-  private static final long serialVersionUID = 1L;  
+    //for java.io.Serializable
+    private static final long serialVersionUID = 1L;
 %>
 <%
-NameNode nn = NameNodeHttpServer.getNameNodeFromContext(application);
-String namenodeRole = nn.getRole().toString();
-FSNamesystem fsn = nn.getNamesystem();
+    NameNode nn = NameNodeHttpServer.getNameNodeFromContext(application);
+    String namenodeRole = nn.getRole().toString();
+    FSNamesystem fsn = nn.getNamesystem();
 
-Long blockId = null;
-try {
-  blockId = JspHelper.validateLong(request.getParameter("blockId"));
-} catch(NumberFormatException e) {
-  blockId = null;
-}
+    Long blockId = null;
+    try {
+        blockId = JspHelper.validateLong(request.getParameter("blockId"));
+    } catch (NumberFormatException e) {
+        blockId = null;
+    }
 
 
-XMLBlockInfo bi = new XMLBlockInfo(fsn, blockId);
-XMLOutputter doc = new XMLOutputter(out, "UTF-8");
-bi.toXML(doc);
+    XMLBlockInfo bi = new XMLBlockInfo(fsn, blockId);
+    XMLOutputter doc = new XMLOutputter(out, "UTF-8");
+    bi.toXML(doc);
 
 %>

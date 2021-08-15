@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,24 +21,26 @@ package org.apache.hadoop.hdfs.server.protocol;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.ha.HAServiceProtocol;
 import org.apache.hadoop.hdfs.protocol.ClientProtocol;
-import org.apache.hadoop.security.authorize.RefreshAuthorizationPolicyProtocol;
-import org.apache.hadoop.security.RefreshUserMappingsProtocol;
-import org.apache.hadoop.ipc.RefreshCallQueueProtocol;
 import org.apache.hadoop.ipc.GenericRefreshProtocol;
+import org.apache.hadoop.ipc.RefreshCallQueueProtocol;
+import org.apache.hadoop.security.RefreshUserMappingsProtocol;
+import org.apache.hadoop.security.authorize.RefreshAuthorizationPolicyProtocol;
 import org.apache.hadoop.tools.GetUserMappingsProtocol;
 import org.apache.hadoop.tracing.TraceAdminProtocol;
 
-/** The full set of RPC methods implemented by the Namenode.  */
+/**
+ * The full set of RPC methods implemented by the Namenode.
+ */
 @InterfaceAudience.Private
 public interface NamenodeProtocols
-  extends ClientProtocol,
-          DatanodeProtocol,
-          NamenodeProtocol,
-          RefreshAuthorizationPolicyProtocol,
-          RefreshUserMappingsProtocol,
-          RefreshCallQueueProtocol,
-          GenericRefreshProtocol,
-          GetUserMappingsProtocol,
-          HAServiceProtocol,
-          TraceAdminProtocol {
+        extends ClientProtocol,
+        DatanodeProtocol,
+        NamenodeProtocol,
+        RefreshAuthorizationPolicyProtocol,
+        RefreshUserMappingsProtocol,
+        RefreshCallQueueProtocol,
+        GenericRefreshProtocol,
+        GetUserMappingsProtocol,
+        HAServiceProtocol,
+        TraceAdminProtocol {
 }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,34 +17,37 @@
  */
 package org.apache.hadoop.mapreduce.v2.hs.webapp;
 
-import static org.apache.hadoop.yarn.webapp.YarnWebParams.CONTAINER_ID;
-import static org.apache.hadoop.yarn.webapp.YarnWebParams.ENTITY_STRING;
-
 import org.apache.hadoop.yarn.webapp.SubView;
 import org.apache.hadoop.yarn.webapp.log.AggregatedLogsBlock;
 
+import static org.apache.hadoop.yarn.webapp.YarnWebParams.CONTAINER_ID;
+import static org.apache.hadoop.yarn.webapp.YarnWebParams.ENTITY_STRING;
+
 public class HsLogsPage extends HsView {
 
-  /*
-   * (non-Javadoc)
-   * @see org.apache.hadoop.mapreduce.v2.hs.webapp.HsView#preHead(org.apache.hadoop.yarn.webapp.hamlet.Hamlet.HTML)
-   */
-  @Override protected void preHead(Page.HTML<_> html) {
-    String logEntity = $(ENTITY_STRING);
-    if (logEntity == null || logEntity.isEmpty()) {
-      logEntity = $(CONTAINER_ID);
+    /*
+     * (non-Javadoc)
+     * @see org.apache.hadoop.mapreduce.v2.hs.webapp.HsView#preHead(org.apache.hadoop.yarn.webapp.hamlet.Hamlet.HTML)
+     */
+    @Override
+    protected void preHead(Page.HTML<_> html) {
+        String logEntity = $(ENTITY_STRING);
+        if (logEntity == null || logEntity.isEmpty()) {
+            logEntity = $(CONTAINER_ID);
+        }
+        if (logEntity == null || logEntity.isEmpty()) {
+            logEntity = "UNKNOWN";
+        }
+        commonPreHead(html);
     }
-    if (logEntity == null || logEntity.isEmpty()) {
-      logEntity = "UNKNOWN";
-    }
-    commonPreHead(html);
-  }
 
-  /**
-   * The content of this page is the JobBlock
-   * @return HsJobBlock.class
-   */
-  @Override protected Class<? extends SubView> content() {
-    return AggregatedLogsBlock.class;
-  }
+    /**
+     * The content of this page is the JobBlock
+     *
+     * @return HsJobBlock.class
+     */
+    @Override
+    protected Class<? extends SubView> content() {
+        return AggregatedLogsBlock.class;
+    }
 }

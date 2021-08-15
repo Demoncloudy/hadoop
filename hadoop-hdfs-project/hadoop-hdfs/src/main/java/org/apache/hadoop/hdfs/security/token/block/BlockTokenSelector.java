@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,13 +17,13 @@
  */
 package org.apache.hadoop.hdfs.security.token.block;
 
-import java.util.Collection;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.security.token.TokenIdentifier;
 import org.apache.hadoop.security.token.TokenSelector;
+
+import java.util.Collection;
 
 /**
  * A block token selector for HDFS
@@ -31,18 +31,18 @@ import org.apache.hadoop.security.token.TokenSelector;
 @InterfaceAudience.Private
 public class BlockTokenSelector implements TokenSelector<BlockTokenIdentifier> {
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public Token<BlockTokenIdentifier> selectToken(Text service,
-      Collection<Token<? extends TokenIdentifier>> tokens) {
-    if (service == null) {
-      return null;
+    @Override
+    @SuppressWarnings("unchecked")
+    public Token<BlockTokenIdentifier> selectToken(Text service,
+                                                   Collection<Token<? extends TokenIdentifier>> tokens) {
+        if (service == null) {
+            return null;
+        }
+        for (Token<? extends TokenIdentifier> token : tokens) {
+            if (BlockTokenIdentifier.KIND_NAME.equals(token.getKind())) {
+                return (Token<BlockTokenIdentifier>) token;
+            }
+        }
+        return null;
     }
-    for (Token<? extends TokenIdentifier> token : tokens) {
-      if (BlockTokenIdentifier.KIND_NAME.equals(token.getKind())) {
-        return (Token<BlockTokenIdentifier>) token;
-      }
-    }
-    return null;
-  }
 }

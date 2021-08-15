@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,36 +32,36 @@ import org.apache.hadoop.yarn.server.resourcemanager.reservation.exceptions.Plan
 @Unstable
 public interface SharingPolicy {
 
-  /**
-   * Initialize this policy
-   * 
-   * @param planQueuePath the name of the queue for this plan
-   * @param conf the system configuration
-   */
-  public void init(String planQueuePath, Configuration conf);
+    /**
+     * Initialize this policy
+     *
+     * @param planQueuePath the name of the queue for this plan
+     * @param conf          the system configuration
+     */
+    public void init(String planQueuePath, Configuration conf);
 
-  /**
-   * This method runs the policy validation logic, and return true/false on
-   * whether the {@link ReservationAllocation} is acceptable according to this
-   * sharing policy.
-   * 
-   * @param plan the {@link Plan} we validate against
-   * @param newAllocation the allocation proposed to be added to the
-   *          {@link Plan}
-   * @throws PlanningException if the policy is respected if we add this
-   *           {@link ReservationAllocation} to the {@link Plan}
-   */
-  public void validate(Plan plan, ReservationAllocation newAllocation)
-      throws PlanningException;
+    /**
+     * This method runs the policy validation logic, and return true/false on
+     * whether the {@link ReservationAllocation} is acceptable according to this
+     * sharing policy.
+     *
+     * @param plan          the {@link Plan} we validate against
+     * @param newAllocation the allocation proposed to be added to the
+     *                      {@link Plan}
+     * @throws PlanningException if the policy is respected if we add this
+     *                           {@link ReservationAllocation} to the {@link Plan}
+     */
+    public void validate(Plan plan, ReservationAllocation newAllocation)
+            throws PlanningException;
 
-  /**
-   * Returns the time range before and after the current reservation considered
-   * by this policy. In particular, this informs the archival process for the
-   * {@link Plan}, i.e., reservations regarding times before (now - validWindow)
-   * can be deleted.
-   * 
-   * @return validWindow the window of validity considered by the policy.
-   */
-  public long getValidWindow();
+    /**
+     * Returns the time range before and after the current reservation considered
+     * by this policy. In particular, this informs the archival process for the
+     * {@link Plan}, i.e., reservations regarding times before (now - validWindow)
+     * can be deleted.
+     *
+     * @return validWindow the window of validity considered by the policy.
+     */
+    public long getValidWindow();
 
 }

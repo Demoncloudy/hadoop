@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,44 +17,54 @@
  */
 package org.apache.hadoop.hdfs.web.resources;
 
+import org.apache.hadoop.conf.Configuration;
+
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_BLOCK_SIZE_DEFAULT;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_BLOCK_SIZE_KEY;
 
-import org.apache.hadoop.conf.Configuration;
-
-/** Block size parameter. */
+/**
+ * Block size parameter.
+ */
 public class BlockSizeParam extends LongParam {
-  /** Parameter name. */
-  public static final String NAME = "blocksize";
-  /** Default parameter value. */
-  public static final String DEFAULT = NULL;
+    /**
+     * Parameter name.
+     */
+    public static final String NAME = "blocksize";
+    /**
+     * Default parameter value.
+     */
+    public static final String DEFAULT = NULL;
 
-  private static final Domain DOMAIN = new Domain(NAME);
+    private static final Domain DOMAIN = new Domain(NAME);
 
-  /**
-   * Constructor.
-   * @param value the parameter value.
-   */
-  public BlockSizeParam(final Long value) {
-    super(DOMAIN, value, 1L, null);
-  }
+    /**
+     * Constructor.
+     *
+     * @param value the parameter value.
+     */
+    public BlockSizeParam(final Long value) {
+        super(DOMAIN, value, 1L, null);
+    }
 
-  /**
-   * Constructor.
-   * @param str a string representation of the parameter value.
-   */
-  public BlockSizeParam(final String str) {
-    this(DOMAIN.parse(str));
-  }
+    /**
+     * Constructor.
+     *
+     * @param str a string representation of the parameter value.
+     */
+    public BlockSizeParam(final String str) {
+        this(DOMAIN.parse(str));
+    }
 
-  @Override
-  public String getName() {
-    return NAME;
-  }
+    @Override
+    public String getName() {
+        return NAME;
+    }
 
-  /** @return the value or, if it is null, return the default from conf. */
-  public long getValue(final Configuration conf) {
-    return getValue() != null? getValue()
-        : conf.getLongBytes(DFS_BLOCK_SIZE_KEY, DFS_BLOCK_SIZE_DEFAULT);
-  }
+    /**
+     * @return the value or, if it is null, return the default from conf.
+     */
+    public long getValue(final Configuration conf) {
+        return getValue() != null ? getValue()
+                : conf.getLongBytes(DFS_BLOCK_SIZE_KEY, DFS_BLOCK_SIZE_DEFAULT);
+    }
 }

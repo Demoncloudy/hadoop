@@ -20,38 +20,38 @@ package org.apache.hadoop.fs.swift.util;
 
 public class Duration {
 
-  private final long started;
-  private long finished;
+    private final long started;
+    private long finished;
 
-  public Duration() {
-    started = time();
-    finished = started;
-  }
+    public Duration() {
+        started = time();
+        finished = started;
+    }
 
-  private long time() {
-    return System.currentTimeMillis();
-  }
+    public static String humanTime(long time) {
+        long seconds = (time / 1000);
+        long minutes = (seconds / 60);
+        return String.format("%d:%02d:%03d", minutes, seconds % 60, time % 1000);
+    }
 
-  public void finished() {
-    finished = time();
-  }
+    private long time() {
+        return System.currentTimeMillis();
+    }
 
-  public String getDurationString() {
-    return humanTime(value());
-  }
+    public void finished() {
+        finished = time();
+    }
 
-  public static String humanTime(long time) {
-    long seconds = (time / 1000);
-    long minutes = (seconds / 60);
-    return String.format("%d:%02d:%03d", minutes, seconds % 60, time % 1000);
-  }
+    public String getDurationString() {
+        return humanTime(value());
+    }
 
-  @Override
-  public String toString() {
-    return getDurationString();
-  }
+    @Override
+    public String toString() {
+        return getDurationString();
+    }
 
-  public long value() {
-    return finished -started;
-  }
+    public long value() {
+        return finished - started;
+    }
 }

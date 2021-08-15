@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,12 +17,12 @@
  */
 package org.apache.hadoop.fs;
 
-import java.io.*;
-import java.nio.ByteBuffer;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
-import org.apache.hadoop.fs.ZeroCopyUnavailableException;
+
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /****************************************************************
  * FSInputStream is a generic old InputStream with a little bit
@@ -32,60 +32,60 @@ import org.apache.hadoop.fs.ZeroCopyUnavailableException;
 @InterfaceAudience.LimitedPrivate({"HDFS"})
 @InterfaceStability.Unstable
 public abstract class FSInputStream extends InputStream
-    implements Seekable, PositionedReadable {
-  /**
-   * Seek to the given offset from the start of the file.
-   * The next read() will be from that location.  Can't
-   * seek past the end of the file.
-   */
-  @Override
-  public abstract void seek(long pos) throws IOException;
+        implements Seekable, PositionedReadable {
+    /**
+     * Seek to the given offset from the start of the file.
+     * The next read() will be from that location.  Can't
+     * seek past the end of the file.
+     */
+    @Override
+    public abstract void seek(long pos) throws IOException;
 
-  /**
-   * Return the current offset from the start of the file
-   */
-  @Override
-  public abstract long getPos() throws IOException;
+    /**
+     * Return the current offset from the start of the file
+     */
+    @Override
+    public abstract long getPos() throws IOException;
 
-  /**
-   * Seeks a different copy of the data.  Returns true if 
-   * found a new source, false otherwise.
-   */
-  @Override
-  public abstract boolean seekToNewSource(long targetPos) throws IOException;
+    /**
+     * Seeks a different copy of the data.  Returns true if
+     * found a new source, false otherwise.
+     */
+    @Override
+    public abstract boolean seekToNewSource(long targetPos) throws IOException;
 
-  @Override
-  public int read(long position, byte[] buffer, int offset, int length)
-    throws IOException {
-    synchronized (this) {
-      long oldPos = getPos();
-      int nread = -1;
-      try {
-        seek(position);
-        nread = read(buffer, offset, length);
-      } finally {
-        seek(oldPos);
-      }
-      return nread;
+    @Override
+    public int read(long position, byte[] buffer, int offset, int length)
+            throws IOException {
+        synchronized (this) {
+            long oldPos = getPos();
+            int nread = -1;
+            try {
+                seek(position);
+                nread = read(buffer, offset, length);
+            } finally {
+                seek(oldPos);
+            }
+            return nread;
+        }
     }
-  }
-    
-  @Override
-  public void readFully(long position, byte[] buffer, int offset, int length)
-    throws IOException {
-    int nread = 0;
-    while (nread < length) {
-      int nbytes = read(position+nread, buffer, offset+nread, length-nread);
-      if (nbytes < 0) {
-        throw new EOFException("End of file reached before reading fully.");
-      }
-      nread += nbytes;
+
+    @Override
+    public void readFully(long position, byte[] buffer, int offset, int length)
+            throws IOException {
+        int nread = 0;
+        while (nread < length) {
+            int nbytes = read(position + nread, buffer, offset + nread, length - nread);
+            if (nbytes < 0) {
+                throw new EOFException("End of file reached before reading fully.");
+            }
+            nread += nbytes;
+        }
     }
-  }
-    
-  @Override
-  public void readFully(long position, byte[] buffer)
-    throws IOException {
-    readFully(position, buffer, 0, buffer.length);
-  }
+
+    @Override
+    public void readFully(long position, byte[] buffer)
+            throws IOException {
+        readFully(position, buffer, 0, buffer.length);
+    }
 }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,56 +25,56 @@ import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
  * An immutable key which identifies a block.
  */
 final public class ExtendedBlockId {
-  /**
-   * The block ID for this block.
-   */
-  private final long blockId;
+    /**
+     * The block ID for this block.
+     */
+    private final long blockId;
 
-  /**
-   * The block pool ID for this block.
-   */
-  private final String bpId;
+    /**
+     * The block pool ID for this block.
+     */
+    private final String bpId;
 
-  public static ExtendedBlockId fromExtendedBlock(ExtendedBlock block) {
-    return new ExtendedBlockId(block.getBlockId(), block.getBlockPoolId());
-  }
-  
-  public ExtendedBlockId(long blockId, String bpId) {
-    this.blockId = blockId;
-    this.bpId = bpId;
-  }
-
-  public long getBlockId() {
-    return this.blockId;
-  }
-
-  public String getBlockPoolId() {
-    return this.bpId;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if ((o == null) || (o.getClass() != this.getClass())) {
-      return false;
+    public ExtendedBlockId(long blockId, String bpId) {
+        this.blockId = blockId;
+        this.bpId = bpId;
     }
-    ExtendedBlockId other = (ExtendedBlockId)o;
-    return new EqualsBuilder().
-        append(blockId, other.blockId).
-        append(bpId, other.bpId).
-        isEquals();
-  }
 
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder().
-        append(this.blockId).
-        append(this.bpId).
-        toHashCode();
-  }
+    public static ExtendedBlockId fromExtendedBlock(ExtendedBlock block) {
+        return new ExtendedBlockId(block.getBlockId(), block.getBlockPoolId());
+    }
 
-  @Override
-  public String toString() {
-    return new StringBuilder().append(blockId).
-        append("_").append(bpId).toString();
-  }
+    public long getBlockId() {
+        return this.blockId;
+    }
+
+    public String getBlockPoolId() {
+        return this.bpId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if ((o == null) || (o.getClass() != this.getClass())) {
+            return false;
+        }
+        ExtendedBlockId other = (ExtendedBlockId) o;
+        return new EqualsBuilder().
+                append(blockId, other.blockId).
+                append(bpId, other.bpId).
+                isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().
+                append(this.blockId).
+                append(this.bpId).
+                toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder().append(blockId).
+                append("_").append(bpId).toString();
+    }
 }

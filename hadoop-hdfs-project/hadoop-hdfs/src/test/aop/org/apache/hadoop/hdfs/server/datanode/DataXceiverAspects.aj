@@ -25,17 +25,17 @@ import org.apache.commons.logging.LogFactory;
  * class 
  */
 privileged public aspect DataXceiverAspects {
-  public static final Log LOG = LogFactory.getLog(DataXceiverAspects.class);
+    public static final Log LOG = LogFactory.getLog(DataXceiverAspects.class);
 
-  pointcut runXceiverThread(DataXceiver xceiver) :
-    execution (* run(..)) && target(xceiver);
+    pointcut runXceiverThread(DataXceiver xceiver):
+            execution (* run(..)) && target(xceiver);
 
-  void around (DataXceiver xceiver) : runXceiverThread(xceiver) {
-    if ("true".equals(System.getProperty("fi.enabledOOM"))) {
-      LOG.info("fi.enabledOOM is enabled");
-      throw new OutOfMemoryError("Pretend there's no more memory");
-    } else {
-    	proceed(xceiver);
+    void around (DataXceiver xceiver): runXceiverThread(xceiver) {
+        if ("true".equals(System.getProperty("fi.enabledOOM"))) {
+            LOG.info("fi.enabledOOM is enabled");
+            throw new OutOfMemoryError("Pretend there's no more memory");
+        } else {
+            proceed(xceiver);
+        }
     }
-  }
 }

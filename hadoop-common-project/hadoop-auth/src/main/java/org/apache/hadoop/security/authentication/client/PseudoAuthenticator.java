@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,66 +25,65 @@ import java.net.URL;
  */
 public class PseudoAuthenticator implements Authenticator {
 
-  /**
-   * Name of the additional parameter that carries the 'user.name' value.
-   */
-  public static final String USER_NAME = "user.name";
+    /**
+     * Name of the additional parameter that carries the 'user.name' value.
+     */
+    public static final String USER_NAME = "user.name";
 
-  private static final String USER_NAME_EQ = USER_NAME + "=";
+    private static final String USER_NAME_EQ = USER_NAME + "=";
 
-  private ConnectionConfigurator connConfigurator;
+    private ConnectionConfigurator connConfigurator;
 
-  /**
-   * Sets a {@link ConnectionConfigurator} instance to use for
-   * configuring connections.
-   *
-   * @param configurator the {@link ConnectionConfigurator} instance.
-   */
-  @Override
-  public void setConnectionConfigurator(ConnectionConfigurator configurator) {
-    connConfigurator = configurator;
-  }
-
-  /**
-   * Performs simple authentication against the specified URL.
-   * <p>
-   * If a token is given it does a NOP and returns the given token.
-   * <p>
-   * If no token is given, it will perform an HTTP <code>OPTIONS</code> request injecting an additional
-   * parameter {@link #USER_NAME} in the query string with the value returned by the {@link #getUserName()}
-   * method.
-   * <p>
-   * If the response is successful it will update the authentication token.
-   *
-   * @param url the URl to authenticate against.
-   * @param token the authencation token being used for the user.
-   *
-   * @throws IOException if an IO error occurred.
-   * @throws AuthenticationException if an authentication error occurred.
-   */
-  @Override
-  public void authenticate(URL url, AuthenticatedURL.Token token) throws IOException, AuthenticationException {
-    String strUrl = url.toString();
-    String paramSeparator = (strUrl.contains("?")) ? "&" : "?";
-    strUrl += paramSeparator + USER_NAME_EQ + getUserName();
-    url = new URL(strUrl);
-    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-    if (connConfigurator != null) {
-      conn = connConfigurator.configure(conn);
+    /**
+     * Sets a {@link ConnectionConfigurator} instance to use for
+     * configuring connections.
+     *
+     * @param configurator the {@link ConnectionConfigurator} instance.
+     */
+    @Override
+    public void setConnectionConfigurator(ConnectionConfigurator configurator) {
+        connConfigurator = configurator;
     }
-    conn.setRequestMethod("OPTIONS");
-    conn.connect();
-    AuthenticatedURL.extractToken(conn, token);
-  }
 
-  /**
-   * Returns the current user name.
-   * <p>
-   * This implementation returns the value of the Java system property 'user.name'
-   *
-   * @return the current user name.
-   */
-  protected String getUserName() {
-    return System.getProperty("user.name");
-  }
+    /**
+     * Performs simple authentication against the specified URL.
+     * <p>
+     * If a token is given it does a NOP and returns the given token.
+     * <p>
+     * If no token is given, it will perform an HTTP <code>OPTIONS</code> request injecting an additional
+     * parameter {@link #USER_NAME} in the query string with the value returned by the {@link #getUserName()}
+     * method.
+     * <p>
+     * If the response is successful it will update the authentication token.
+     *
+     * @param url   the URl to authenticate against.
+     * @param token the authencation token being used for the user.
+     * @throws IOException             if an IO error occurred.
+     * @throws AuthenticationException if an authentication error occurred.
+     */
+    @Override
+    public void authenticate(URL url, AuthenticatedURL.Token token) throws IOException, AuthenticationException {
+        String strUrl = url.toString();
+        String paramSeparator = (strUrl.contains("?")) ? "&" : "?";
+        strUrl += paramSeparator + USER_NAME_EQ + getUserName();
+        url = new URL(strUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        if (connConfigurator != null) {
+            conn = connConfigurator.configure(conn);
+        }
+        conn.setRequestMethod("OPTIONS");
+        conn.connect();
+        AuthenticatedURL.extractToken(conn, token);
+    }
+
+    /**
+     * Returns the current user name.
+     * <p>
+     * This implementation returns the value of the Java system property 'user.name'
+     *
+     * @return the current user name.
+     */
+    protected String getUserName() {
+        return System.getProperty("user.name");
+    }
 }

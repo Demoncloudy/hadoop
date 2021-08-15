@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,52 +28,47 @@ import org.apache.hadoop.yarn.util.ResourceCalculatorPlugin;
 @InterfaceStability.Unstable
 public class NodeManagerHardwareUtils {
 
-  /**
-   *
-   * Returns the fraction of CPU cores that should be used for YARN containers.
-   * The number is derived based on various configuration params such as
-   * YarnConfiguration.NM_RESOURCE_PERCENTAGE_PHYSICAL_CPU_LIMIT
-   *
-   * @param conf
-   *          - Configuration object
-   * @return Fraction of CPU cores to be used for YARN containers
-   */
-  public static float getContainersCores(Configuration conf) {
-    ResourceCalculatorPlugin plugin =
-        ResourceCalculatorPlugin.getResourceCalculatorPlugin(null, conf);
-    return NodeManagerHardwareUtils.getContainersCores(plugin, conf);
-  }
-
-  /**
-   *
-   * Returns the fraction of CPU cores that should be used for YARN containers.
-   * The number is derived based on various configuration params such as
-   * YarnConfiguration.NM_RESOURCE_PERCENTAGE_PHYSICAL_CPU_LIMIT
-   *
-   * @param plugin
-   *          - ResourceCalculatorPlugin object to determine hardware specs
-   * @param conf
-   *          - Configuration object
-   * @return Fraction of CPU cores to be used for YARN containers
-   */
-  public static float getContainersCores(ResourceCalculatorPlugin plugin,
-      Configuration conf) {
-    int numProcessors = plugin.getNumProcessors();
-    int nodeCpuPercentage =
-        Math.min(conf.getInt(
-          YarnConfiguration.NM_RESOURCE_PERCENTAGE_PHYSICAL_CPU_LIMIT,
-          YarnConfiguration.DEFAULT_NM_RESOURCE_PERCENTAGE_PHYSICAL_CPU_LIMIT),
-          100);
-    nodeCpuPercentage = Math.max(0, nodeCpuPercentage);
-
-    if (nodeCpuPercentage == 0) {
-      String message =
-          "Illegal value for "
-              + YarnConfiguration.NM_RESOURCE_PERCENTAGE_PHYSICAL_CPU_LIMIT
-              + ". Value cannot be less than or equal to 0.";
-      throw new IllegalArgumentException(message);
+    /**
+     * Returns the fraction of CPU cores that should be used for YARN containers.
+     * The number is derived based on various configuration params such as
+     * YarnConfiguration.NM_RESOURCE_PERCENTAGE_PHYSICAL_CPU_LIMIT
+     *
+     * @param conf - Configuration object
+     * @return Fraction of CPU cores to be used for YARN containers
+     */
+    public static float getContainersCores(Configuration conf) {
+        ResourceCalculatorPlugin plugin =
+                ResourceCalculatorPlugin.getResourceCalculatorPlugin(null, conf);
+        return NodeManagerHardwareUtils.getContainersCores(plugin, conf);
     }
 
-    return (nodeCpuPercentage * numProcessors) / 100.0f;
-  }
+    /**
+     * Returns the fraction of CPU cores that should be used for YARN containers.
+     * The number is derived based on various configuration params such as
+     * YarnConfiguration.NM_RESOURCE_PERCENTAGE_PHYSICAL_CPU_LIMIT
+     *
+     * @param plugin - ResourceCalculatorPlugin object to determine hardware specs
+     * @param conf   - Configuration object
+     * @return Fraction of CPU cores to be used for YARN containers
+     */
+    public static float getContainersCores(ResourceCalculatorPlugin plugin,
+                                           Configuration conf) {
+        int numProcessors = plugin.getNumProcessors();
+        int nodeCpuPercentage =
+                Math.min(conf.getInt(
+                        YarnConfiguration.NM_RESOURCE_PERCENTAGE_PHYSICAL_CPU_LIMIT,
+                        YarnConfiguration.DEFAULT_NM_RESOURCE_PERCENTAGE_PHYSICAL_CPU_LIMIT),
+                        100);
+        nodeCpuPercentage = Math.max(0, nodeCpuPercentage);
+
+        if (nodeCpuPercentage == 0) {
+            String message =
+                    "Illegal value for "
+                            + YarnConfiguration.NM_RESOURCE_PERCENTAGE_PHYSICAL_CPU_LIMIT
+                            + ". Value cannot be less than or equal to 0.";
+            throw new IllegalArgumentException(message);
+        }
+
+        return (nodeCpuPercentage * numProcessors) / 100.0f;
+    }
 }

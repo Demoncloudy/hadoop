@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,32 +41,32 @@ import org.apache.hadoop.yarn.util.Records;
  * application is completed, the <code>ResourceManager</code> may retry this
  * application on recovery.
  * </p>
- * 
+ *
  * @see ApplicationClientProtocol#forceKillApplication(KillApplicationRequest)
  */
 @Public
 @Stable
 public abstract class KillApplicationResponse {
-  @Private
-  @Unstable
-  public static KillApplicationResponse newInstance(boolean isKillCompleted) {
-    KillApplicationResponse response =
-        Records.newRecord(KillApplicationResponse.class);
-    response.setIsKillCompleted(isKillCompleted);
-    return response;
-  }
+    @Private
+    @Unstable
+    public static KillApplicationResponse newInstance(boolean isKillCompleted) {
+        KillApplicationResponse response =
+                Records.newRecord(KillApplicationResponse.class);
+        response.setIsKillCompleted(isKillCompleted);
+        return response;
+    }
 
-  /**
-   * Get the flag which indicates that the process of killing application is completed or not.
-   */
-  @Public
-  @Stable
-  public abstract boolean getIsKillCompleted();
+    /**
+     * Get the flag which indicates that the process of killing application is completed or not.
+     */
+    @Public
+    @Stable
+    public abstract boolean getIsKillCompleted();
 
-  /**
-   * Set the flag which indicates that the process of killing application is completed or not.
-   */
-  @Private
-  @Unstable
-  public abstract void setIsKillCompleted(boolean isKillCompleted);
+    /**
+     * Set the flag which indicates that the process of killing application is completed or not.
+     */
+    @Private
+    @Unstable
+    public abstract void setIsKillCompleted(boolean isKillCompleted);
 }

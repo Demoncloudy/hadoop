@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,8 +17,6 @@
  */
 
 package org.apache.hadoop.mapreduce.lib.input;
-
-import java.io.IOException;
 
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
@@ -29,6 +27,8 @@ import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
+import java.io.IOException;
+
 /**
  * This class converts the input keys and values to their String forms by
  * calling toString() method. This class to SequenceFileAsTextInputFormat
@@ -37,59 +37,61 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 @InterfaceAudience.Public
 @InterfaceStability.Stable
 public class SequenceFileAsTextRecordReader
-  extends RecordReader<Text, Text> {
-  
-  private final SequenceFileRecordReader<WritableComparable<?>, Writable>
-    sequenceFileRecordReader;
+        extends RecordReader<Text, Text> {
 
-  private Text key;
-  private Text value;
+    private final SequenceFileRecordReader<WritableComparable<?>, Writable>
+            sequenceFileRecordReader;
 
-  public SequenceFileAsTextRecordReader()
-    throws IOException {
-    sequenceFileRecordReader =
-      new SequenceFileRecordReader<WritableComparable<?>, Writable>();
-  }
+    private Text key;
+    private Text value;
 
-  public void initialize(InputSplit split, TaskAttemptContext context)
-      throws IOException, InterruptedException {
-    sequenceFileRecordReader.initialize(split, context);
-  }
-
-  @Override
-  public Text getCurrentKey() 
-      throws IOException, InterruptedException {
-    return key;
-  }
-  
-  @Override
-  public Text getCurrentValue() 
-      throws IOException, InterruptedException {
-    return value;
-  }
-  
-  /** Read key/value pair in a line. */
-  public synchronized boolean nextKeyValue() 
-      throws IOException, InterruptedException {
-    if (!sequenceFileRecordReader.nextKeyValue()) {
-      return false;
+    public SequenceFileAsTextRecordReader()
+            throws IOException {
+        sequenceFileRecordReader =
+                new SequenceFileRecordReader<WritableComparable<?>, Writable>();
     }
-    if (key == null) {
-      key = new Text(); 
+
+    public void initialize(InputSplit split, TaskAttemptContext context)
+            throws IOException, InterruptedException {
+        sequenceFileRecordReader.initialize(split, context);
     }
-    if (value == null) {
-      value = new Text(); 
+
+    @Override
+    public Text getCurrentKey()
+            throws IOException, InterruptedException {
+        return key;
     }
-    key.set(sequenceFileRecordReader.getCurrentKey().toString());
-    value.set(sequenceFileRecordReader.getCurrentValue().toString());
-    return true;
-  }
-  
-  public float getProgress() throws IOException,  InterruptedException {
-    return sequenceFileRecordReader.getProgress();
-  }
-  
-  public synchronized void close() throws IOException {
-    sequenceFileRecordReader.close();
-  }
+
+    @Override
+    public Text getCurrentValue()
+            throws IOException, InterruptedException {
+        return value;
+    }
+
+    /**
+     * Read key/value pair in a line.
+     */
+    public synchronized boolean nextKeyValue()
+            throws IOException, InterruptedException {
+        if (!sequenceFileRecordReader.nextKeyValue()) {
+            return false;
+        }
+        if (key == null) {
+            key = new Text();
+        }
+        if (value == null) {
+            value = new Text();
+        }
+        key.set(sequenceFileRecordReader.getCurrentKey().toString());
+        value.set(sequenceFileRecordReader.getCurrentValue().toString());
+        return true;
+    }
+
+    public float getProgress() throws IOException, InterruptedException {
+        return sequenceFileRecordReader.getProgress();
+    }
+
+    public synchronized void close() throws IOException {
+        sequenceFileRecordReader.close();
+    }
 }

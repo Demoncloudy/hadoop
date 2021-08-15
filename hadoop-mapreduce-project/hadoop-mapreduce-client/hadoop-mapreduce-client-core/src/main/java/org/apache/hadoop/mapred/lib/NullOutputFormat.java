@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,19 +28,23 @@ import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.util.Progressable;
 
 /**
- * Consume all outputs and put them in /dev/null. 
+ * Consume all outputs and put them in /dev/null.
  */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
 public class NullOutputFormat<K, V> implements OutputFormat<K, V> {
-  
-  public RecordWriter<K, V> getRecordWriter(FileSystem ignored, JobConf job, 
-                                      String name, Progressable progress) {
-    return new RecordWriter<K, V>(){
-        public void write(K key, V value) { }
-        public void close(Reporter reporter) { }
-      };
-  }
-  
-  public void checkOutputSpecs(FileSystem ignored, JobConf job) { }
+
+    public RecordWriter<K, V> getRecordWriter(FileSystem ignored, JobConf job,
+                                              String name, Progressable progress) {
+        return new RecordWriter<K, V>() {
+            public void write(K key, V value) {
+            }
+
+            public void close(Reporter reporter) {
+            }
+        };
+    }
+
+    public void checkOutputSpecs(FileSystem ignored, JobConf job) {
+    }
 }

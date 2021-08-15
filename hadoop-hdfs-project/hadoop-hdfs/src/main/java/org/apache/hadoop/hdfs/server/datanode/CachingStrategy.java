@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,56 +21,56 @@ package org.apache.hadoop.hdfs.server.datanode;
  * The caching strategy we should use for an HDFS read or write operation.
  */
 public class CachingStrategy {
-  private final Boolean dropBehind; // null = use server defaults
-  private final Long readahead; // null = use server defaults
-  
-  public static CachingStrategy newDefaultStrategy() {
-    return new CachingStrategy(null, null);
-  }
+    private final Boolean dropBehind; // null = use server defaults
+    private final Long readahead; // null = use server defaults
 
-  public static CachingStrategy newDropBehind() {
-    return new CachingStrategy(true, null);
-  }
-
-  public static class Builder {
-    private Boolean dropBehind;
-    private Long readahead;
-
-    public Builder(CachingStrategy prev) {
-      this.dropBehind = prev.dropBehind;
-      this.readahead = prev.readahead;
+    public CachingStrategy(Boolean dropBehind, Long readahead) {
+        this.dropBehind = dropBehind;
+        this.readahead = readahead;
     }
 
-    public Builder setDropBehind(Boolean dropBehind) {
-      this.dropBehind = dropBehind;
-      return this;
+    public static CachingStrategy newDefaultStrategy() {
+        return new CachingStrategy(null, null);
     }
 
-    public Builder setReadahead(Long readahead) {
-      this.readahead = readahead;
-      return this;
+    public static CachingStrategy newDropBehind() {
+        return new CachingStrategy(true, null);
     }
 
-    public CachingStrategy build() {
-      return new CachingStrategy(dropBehind, readahead);
+    public Boolean getDropBehind() {
+        return dropBehind;
     }
-  }
 
-  public CachingStrategy(Boolean dropBehind, Long readahead) {
-    this.dropBehind = dropBehind;
-    this.readahead = readahead;
-  }
+    public Long getReadahead() {
+        return readahead;
+    }
 
-  public Boolean getDropBehind() {
-    return dropBehind;
-  }
-  
-  public Long getReadahead() {
-    return readahead;
-  }
+    public String toString() {
+        return "CachingStrategy(dropBehind=" + dropBehind +
+                ", readahead=" + readahead + ")";
+    }
 
-  public String toString() {
-    return "CachingStrategy(dropBehind=" + dropBehind +
-        ", readahead=" + readahead + ")";
-  }
+    public static class Builder {
+        private Boolean dropBehind;
+        private Long readahead;
+
+        public Builder(CachingStrategy prev) {
+            this.dropBehind = prev.dropBehind;
+            this.readahead = prev.readahead;
+        }
+
+        public Builder setDropBehind(Boolean dropBehind) {
+            this.dropBehind = dropBehind;
+            return this;
+        }
+
+        public Builder setReadahead(Long readahead) {
+            this.readahead = readahead;
+            return this;
+        }
+
+        public CachingStrategy build() {
+            return new CachingStrategy(dropBehind, readahead);
+        }
+    }
 }

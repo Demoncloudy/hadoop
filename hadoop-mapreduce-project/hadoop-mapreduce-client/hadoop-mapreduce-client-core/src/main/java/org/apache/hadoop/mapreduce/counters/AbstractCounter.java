@@ -29,24 +29,26 @@ import org.apache.hadoop.mapreduce.Counter;
 @InterfaceAudience.Private
 public abstract class AbstractCounter implements Counter {
 
-  @Override @Deprecated
-  public void setDisplayName(String name) {}
-
-  @Override
-  public synchronized boolean equals(Object genericRight) {
-    if (genericRight instanceof Counter) {
-      synchronized (genericRight) {
-        Counter right = (Counter) genericRight;
-        return getName().equals(right.getName()) &&
-               getDisplayName().equals(right.getDisplayName()) &&
-               getValue() == right.getValue();
-      }
+    @Override
+    @Deprecated
+    public void setDisplayName(String name) {
     }
-    return false;
-  }
 
-  @Override
-  public synchronized int hashCode() {
-    return Objects.hashCode(getName(), getDisplayName(), getValue());
-  }
+    @Override
+    public synchronized boolean equals(Object genericRight) {
+        if (genericRight instanceof Counter) {
+            synchronized (genericRight) {
+                Counter right = (Counter) genericRight;
+                return getName().equals(right.getName()) &&
+                        getDisplayName().equals(right.getDisplayName()) &&
+                        getValue() == right.getValue();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public synchronized int hashCode() {
+        return Objects.hashCode(getName(), getDisplayName(), getValue());
+    }
 }

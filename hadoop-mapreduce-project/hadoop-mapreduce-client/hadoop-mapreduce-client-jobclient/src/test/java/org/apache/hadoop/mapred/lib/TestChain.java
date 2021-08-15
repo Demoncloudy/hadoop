@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,40 +17,39 @@
  */
 package org.apache.hadoop.mapred.lib;
 
-import org.junit.Assert;
-
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.Reducer;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestChain {
-  @Test
-  public void testSetReducerWithReducerByValueAsTrue() throws Exception {
+    @Test
+    public void testSetReducerWithReducerByValueAsTrue() throws Exception {
 
-    JobConf jobConf = new JobConf();
-    JobConf reducerConf = new JobConf();
-    Chain.setReducer(jobConf, MyReducer.class, Object.class, Object.class,
-        Object.class, Object.class, true, reducerConf);
-    boolean reduceByValue = reducerConf.getBoolean("chain.reducer.byValue",
-        false);
-    Assert.assertEquals("It should set chain.reducer.byValue as true "
-        + "in reducerConf when we give value as true", true, reduceByValue);
-  }
+        JobConf jobConf = new JobConf();
+        JobConf reducerConf = new JobConf();
+        Chain.setReducer(jobConf, MyReducer.class, Object.class, Object.class,
+                Object.class, Object.class, true, reducerConf);
+        boolean reduceByValue = reducerConf.getBoolean("chain.reducer.byValue",
+                false);
+        Assert.assertEquals("It should set chain.reducer.byValue as true "
+                + "in reducerConf when we give value as true", true, reduceByValue);
+    }
 
-  @Test
-  public void testSetReducerWithReducerByValueAsFalse() throws Exception {
+    @Test
+    public void testSetReducerWithReducerByValueAsFalse() throws Exception {
 
-    JobConf jobConf = new JobConf();
-    JobConf reducerConf = new JobConf();
-    Chain.setReducer(jobConf, MyReducer.class, Object.class, Object.class,
-        Object.class, Object.class, false, reducerConf);
-    boolean reduceByValue = reducerConf.getBoolean("chain.reducer.byValue",
-        true);
-    Assert.assertEquals("It should set chain.reducer.byValue as false "
-        + "in reducerConf when we give value as false", false, reduceByValue);
-  }
+        JobConf jobConf = new JobConf();
+        JobConf reducerConf = new JobConf();
+        Chain.setReducer(jobConf, MyReducer.class, Object.class, Object.class,
+                Object.class, Object.class, false, reducerConf);
+        boolean reduceByValue = reducerConf.getBoolean("chain.reducer.byValue",
+                true);
+        Assert.assertEquals("It should set chain.reducer.byValue as false "
+                + "in reducerConf when we give value as false", false, reduceByValue);
+    }
 
-  interface MyReducer extends Reducer<Object, Object, Object, Object> {
+    interface MyReducer extends Reducer<Object, Object, Object, Object> {
 
-  }
+    }
 }

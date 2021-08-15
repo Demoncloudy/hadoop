@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,11 +17,11 @@
  */
 package org.apache.hadoop.tools.rumen;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * {@link DefaultInputDemuxer} acts as a pass-through demuxer. It just opens
@@ -29,42 +29,42 @@ import org.apache.hadoop.fs.Path;
  * would return a decompression stream.
  */
 public class DefaultInputDemuxer implements InputDemuxer {
-  String name;
-  InputStream input;
+    String name;
+    InputStream input;
 
-  @Override
-  public void bindTo(Path path, Configuration conf) throws IOException {
-    if (name != null) { // re-binding before the previous one was consumed.
-      close();
+    @Override
+    public void bindTo(Path path, Configuration conf) throws IOException {
+        if (name != null) { // re-binding before the previous one was consumed.
+            close();
+        }
+        name = path.getName();
+
+        input = new PossiblyDecompressedInputStream(path, conf);
+
+        return;
     }
-    name = path.getName();
 
-    input = new PossiblyDecompressedInputStream(path, conf);
-
-    return;
-  }
-
-  @Override
-  public Pair<String, InputStream> getNext() throws IOException {
-    if (name != null) {
-      Pair<String, InputStream> ret =
-          new Pair<String, InputStream>(name, input);
-      name = null;
-      input = null;
-      return ret;
+    @Override
+    public Pair<String, InputStream> getNext() throws IOException {
+        if (name != null) {
+            Pair<String, InputStream> ret =
+                    new Pair<String, InputStream>(name, input);
+            name = null;
+            input = null;
+            return ret;
+        }
+        return null;
     }
-    return null;
-  }
 
-  @Override
-  public void close() throws IOException {
-    try {
-      if (input != null) {
-        input.close();
-      }
-    } finally {
-      name = null;
-      input = null;
+    @Override
+    public void close() throws IOException {
+        try {
+            if (input != null) {
+                input.close();
+            }
+        } finally {
+            name = null;
+            input = null;
+        }
     }
-  }
 }

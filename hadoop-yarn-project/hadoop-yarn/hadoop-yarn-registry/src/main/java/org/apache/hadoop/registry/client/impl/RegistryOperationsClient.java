@@ -26,17 +26,17 @@ import org.apache.hadoop.registry.client.impl.zk.RegistryOperationsService;
 
 /**
  * This is the client service for applications to work with the registry.
- *
+ * <p>
  * It does not set up the root paths for the registry, is bonded
  * to a user, and can be set to use SASL, anonymous or id:pass auth.
- *
+ * <p>
  * For SASL, the client must be operating in the context of an authed user.
- *
+ * <p>
  * For id:pass the client must have the relevant id & password, SASL is
  * not used even if the client has credentials.
- *
+ * <p>
  * For anonymous, nothing is used.
- *
+ * <p>
  * Any SASL-authed client also has the ability to add one or more authentication
  * id:pass pair on all future writes, and to reset them later.
  */
@@ -44,12 +44,12 @@ import org.apache.hadoop.registry.client.impl.zk.RegistryOperationsService;
 @InterfaceStability.Evolving
 public class RegistryOperationsClient extends RegistryOperationsService {
 
-  public RegistryOperationsClient(String name) {
-    super(name);
-  }
+    public RegistryOperationsClient(String name) {
+        super(name);
+    }
 
-  public RegistryOperationsClient(String name,
-      RegistryBindingSource bindingSource) {
-    super(name, bindingSource);
-  }
+    public RegistryOperationsClient(String name,
+                                    RegistryBindingSource bindingSource) {
+        super(name, bindingSource);
+    }
 }

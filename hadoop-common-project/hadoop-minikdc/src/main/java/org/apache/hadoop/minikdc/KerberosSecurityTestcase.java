@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,51 +36,51 @@ import java.util.Properties;
  */
 
 public class KerberosSecurityTestcase {
-  private MiniKdc kdc;
-  private File workDir;
-  private Properties conf;
+    private MiniKdc kdc;
+    private File workDir;
+    private Properties conf;
 
-  @Before
-  public void startMiniKdc() throws Exception {
-    createTestDir();
-    createMiniKdcConf();
+    @Before
+    public void startMiniKdc() throws Exception {
+        createTestDir();
+        createMiniKdcConf();
 
-    kdc = new MiniKdc(conf, workDir);
-    kdc.start();
-  }
-
-  /**
-   * Create a working directory, it should be the build directory. Under
-   * this directory an ApacheDS working directory will be created, this
-   * directory will be deleted when the MiniKdc stops.
-   */
-  public void createTestDir() {
-    workDir = new File(System.getProperty("test.dir", "target"));
-  }
-
-  /**
-   * Create a Kdc configuration
-   */
-  public void createMiniKdcConf() {
-    conf = MiniKdc.createConf();
-  }
-
-  @After
-  public void stopMiniKdc() {
-    if (kdc != null) {
-      kdc.stop();
+        kdc = new MiniKdc(conf, workDir);
+        kdc.start();
     }
-  }
 
-  public MiniKdc getKdc() {
-    return kdc;
-  }
+    /**
+     * Create a working directory, it should be the build directory. Under
+     * this directory an ApacheDS working directory will be created, this
+     * directory will be deleted when the MiniKdc stops.
+     */
+    public void createTestDir() {
+        workDir = new File(System.getProperty("test.dir", "target"));
+    }
 
-  public File getWorkDir() {
-    return workDir;
-  }
+    /**
+     * Create a Kdc configuration
+     */
+    public void createMiniKdcConf() {
+        conf = MiniKdc.createConf();
+    }
 
-  public Properties getConf() {
-    return conf;
-  }
+    @After
+    public void stopMiniKdc() {
+        if (kdc != null) {
+            kdc.stop();
+        }
+    }
+
+    public MiniKdc getKdc() {
+        return kdc;
+    }
+
+    public File getWorkDir() {
+        return workDir;
+    }
+
+    public Properties getConf() {
+        return conf;
+    }
 }

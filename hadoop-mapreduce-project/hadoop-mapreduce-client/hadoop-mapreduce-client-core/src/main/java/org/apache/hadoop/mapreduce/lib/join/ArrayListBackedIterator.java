@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,16 +17,16 @@
  */
 package org.apache.hadoop.mapreduce.lib.join;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableUtils;
 import org.apache.hadoop.util.ReflectionUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * This class provides an implementation of ResetableIterator. The
@@ -37,59 +37,59 @@ import org.apache.hadoop.util.ReflectionUtils;
 @InterfaceAudience.Public
 @InterfaceStability.Stable
 public class ArrayListBackedIterator<X extends Writable>
-    implements ResetableIterator<X> {
+        implements ResetableIterator<X> {
 
-  private Iterator<X> iter;
-  private ArrayList<X> data;
-  private X hold = null;
-  private Configuration conf = new Configuration();
+    private Iterator<X> iter;
+    private ArrayList<X> data;
+    private X hold = null;
+    private Configuration conf = new Configuration();
 
-  public ArrayListBackedIterator() {
-    this(new ArrayList<X>());
-  }
-
-  public ArrayListBackedIterator(ArrayList<X> data) {
-    this.data = data;
-    this.iter = this.data.iterator();
-  }
-
-  public boolean hasNext() {
-    return iter.hasNext();
-  }
-
-  public boolean next(X val) throws IOException {
-    if (iter.hasNext()) {
-      ReflectionUtils.copy(conf, iter.next(), val);
-      if (null == hold) {
-        hold = WritableUtils.clone(val, null);
-      } else {
-        ReflectionUtils.copy(conf, val, hold);
-      }
-      return true;
+    public ArrayListBackedIterator() {
+        this(new ArrayList<X>());
     }
-    return false;
-  }
 
-  public boolean replay(X val) throws IOException {
-    ReflectionUtils.copy(conf, hold, val);
-    return true;
-  }
+    public ArrayListBackedIterator(ArrayList<X> data) {
+        this.data = data;
+        this.iter = this.data.iterator();
+    }
 
-  public void reset() {
-    iter = data.iterator();
-  }
+    public boolean hasNext() {
+        return iter.hasNext();
+    }
 
-  public void add(X item) throws IOException {
-    data.add(WritableUtils.clone(item, null));
-  }
+    public boolean next(X val) throws IOException {
+        if (iter.hasNext()) {
+            ReflectionUtils.copy(conf, iter.next(), val);
+            if (null == hold) {
+                hold = WritableUtils.clone(val, null);
+            } else {
+                ReflectionUtils.copy(conf, val, hold);
+            }
+            return true;
+        }
+        return false;
+    }
 
-  public void close() throws IOException {
-    iter = null;
-    data = null;
-  }
+    public boolean replay(X val) throws IOException {
+        ReflectionUtils.copy(conf, hold, val);
+        return true;
+    }
 
-  public void clear() {
-    data.clear();
-    reset();
-  }
+    public void reset() {
+        iter = data.iterator();
+    }
+
+    public void add(X item) throws IOException {
+        data.add(WritableUtils.clone(item, null));
+    }
+
+    public void close() throws IOException {
+        iter = null;
+        data = null;
+    }
+
+    public void clear() {
+        data.clear();
+        reset();
+    }
 }

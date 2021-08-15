@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,65 +28,65 @@ import org.apache.hadoop.yarn.proto.YarnProtos.ResourceProtoOrBuilder;
 @Private
 @Unstable
 public class ResourcePBImpl extends Resource {
-  ResourceProto proto = ResourceProto.getDefaultInstance();
-  ResourceProto.Builder builder = null;
-  boolean viaProto = false;
-  
-  public ResourcePBImpl() {
-    builder = ResourceProto.newBuilder();
-  }
+    ResourceProto proto = ResourceProto.getDefaultInstance();
+    ResourceProto.Builder builder = null;
+    boolean viaProto = false;
 
-  public ResourcePBImpl(ResourceProto proto) {
-    this.proto = proto;
-    viaProto = true;
-  }
-  
-  public ResourceProto getProto() {
-    proto = viaProto ? proto : builder.build();
-    viaProto = true;
-    return proto;
-  }
-
-  private void maybeInitBuilder() {
-    if (viaProto || builder == null) {
-      builder = ResourceProto.newBuilder(proto);
+    public ResourcePBImpl() {
+        builder = ResourceProto.newBuilder();
     }
-    viaProto = false;
-  }
-    
-  
-  @Override
-  public int getMemory() {
-    ResourceProtoOrBuilder p = viaProto ? proto : builder;
-    return (p.getMemory());
-  }
 
-  @Override
-  public void setMemory(int memory) {
-    maybeInitBuilder();
-    builder.setMemory((memory));
-  }
-
-  @Override
-  public int getVirtualCores() {
-    ResourceProtoOrBuilder p = viaProto ? proto : builder;
-    return (p.getVirtualCores());
-  }
-
-  @Override
-  public void setVirtualCores(int vCores) {
-    maybeInitBuilder();
-    builder.setVirtualCores((vCores));
-  }
-
-  @Override
-  public int compareTo(Resource other) {
-    int diff = this.getMemory() - other.getMemory();
-    if (diff == 0) {
-      diff = this.getVirtualCores() - other.getVirtualCores();
+    public ResourcePBImpl(ResourceProto proto) {
+        this.proto = proto;
+        viaProto = true;
     }
-    return diff;
-  }
-  
-  
+
+    public ResourceProto getProto() {
+        proto = viaProto ? proto : builder.build();
+        viaProto = true;
+        return proto;
+    }
+
+    private void maybeInitBuilder() {
+        if (viaProto || builder == null) {
+            builder = ResourceProto.newBuilder(proto);
+        }
+        viaProto = false;
+    }
+
+
+    @Override
+    public int getMemory() {
+        ResourceProtoOrBuilder p = viaProto ? proto : builder;
+        return (p.getMemory());
+    }
+
+    @Override
+    public void setMemory(int memory) {
+        maybeInitBuilder();
+        builder.setMemory((memory));
+    }
+
+    @Override
+    public int getVirtualCores() {
+        ResourceProtoOrBuilder p = viaProto ? proto : builder;
+        return (p.getVirtualCores());
+    }
+
+    @Override
+    public void setVirtualCores(int vCores) {
+        maybeInitBuilder();
+        builder.setVirtualCores((vCores));
+    }
+
+    @Override
+    public int compareTo(Resource other) {
+        int diff = this.getMemory() - other.getMemory();
+        if (diff == 0) {
+            diff = this.getVirtualCores() - other.getVirtualCores();
+        }
+        return diff;
+    }
+
+
 }  

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,35 +18,35 @@
 
 package org.apache.hadoop.yarn.server.timeline.webapp;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.http.FilterContainer;
 import org.apache.hadoop.http.FilterInitializer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CrossOriginFilterInitializer extends FilterInitializer {
 
-  public static final String PREFIX =
-      "yarn.timeline-service.http-cross-origin.";
+    public static final String PREFIX =
+            "yarn.timeline-service.http-cross-origin.";
 
-  @Override
-  public void initFilter(FilterContainer container, Configuration conf) {
-
-    container.addGlobalFilter("Cross Origin Filter",
-        CrossOriginFilter.class.getName(), getFilterParameters(conf));
-  }
-
-  static Map<String, String> getFilterParameters(Configuration conf) {
-    Map<String, String> filterParams =
-        new HashMap<String, String>();
-    for (Map.Entry<String, String> entry : conf.getValByRegex(PREFIX)
-        .entrySet()) {
-      String name = entry.getKey();
-      String value = entry.getValue();
-      name = name.substring(PREFIX.length());
-      filterParams.put(name, value);
+    static Map<String, String> getFilterParameters(Configuration conf) {
+        Map<String, String> filterParams =
+                new HashMap<String, String>();
+        for (Map.Entry<String, String> entry : conf.getValByRegex(PREFIX)
+                .entrySet()) {
+            String name = entry.getKey();
+            String value = entry.getValue();
+            name = name.substring(PREFIX.length());
+            filterParams.put(name, value);
+        }
+        return filterParams;
     }
-    return filterParams;
-  }
+
+    @Override
+    public void initFilter(FilterContainer container, Configuration conf) {
+
+        container.addGlobalFilter("Cross Origin Filter",
+                CrossOriginFilter.class.getName(), getFilterParameters(conf));
+    }
 }

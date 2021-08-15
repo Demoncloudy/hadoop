@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,40 +18,39 @@
 
 package org.apache.hadoop.tools.protocolPB;
 
-import java.io.IOException;
-
+import com.google.protobuf.RpcController;
+import com.google.protobuf.ServiceException;
 import org.apache.hadoop.tools.GetUserMappingsProtocol;
 import org.apache.hadoop.tools.proto.GetUserMappingsProtocolProtos.GetGroupsForUserRequestProto;
 import org.apache.hadoop.tools.proto.GetUserMappingsProtocolProtos.GetGroupsForUserResponseProto;
 
-import com.google.protobuf.RpcController;
-import com.google.protobuf.ServiceException;
+import java.io.IOException;
 
 public class GetUserMappingsProtocolServerSideTranslatorPB implements
-    GetUserMappingsProtocolPB {
+        GetUserMappingsProtocolPB {
 
-  private final GetUserMappingsProtocol impl;
+    private final GetUserMappingsProtocol impl;
 
-  public GetUserMappingsProtocolServerSideTranslatorPB(
-      GetUserMappingsProtocol impl) {
-    this.impl = impl;
-  }
-
-  @Override
-  public GetGroupsForUserResponseProto getGroupsForUser(
-      RpcController controller, GetGroupsForUserRequestProto request)
-      throws ServiceException {
-    String[] groups;
-    try {
-      groups = impl.getGroupsForUser(request.getUser());
-    } catch (IOException e) {
-      throw new ServiceException(e);
+    public GetUserMappingsProtocolServerSideTranslatorPB(
+            GetUserMappingsProtocol impl) {
+        this.impl = impl;
     }
-    GetGroupsForUserResponseProto.Builder builder = GetGroupsForUserResponseProto
-        .newBuilder();
-    for (String g : groups) {
-      builder.addGroups(g);
+
+    @Override
+    public GetGroupsForUserResponseProto getGroupsForUser(
+            RpcController controller, GetGroupsForUserRequestProto request)
+            throws ServiceException {
+        String[] groups;
+        try {
+            groups = impl.getGroupsForUser(request.getUser());
+        } catch (IOException e) {
+            throw new ServiceException(e);
+        }
+        GetGroupsForUserResponseProto.Builder builder = GetGroupsForUserResponseProto
+                .newBuilder();
+        for (String g : groups) {
+            builder.addGroups(g);
+        }
+        return builder.build();
     }
-    return builder.build();
-  }
 }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,12 +27,13 @@ import org.apache.hadoop.mapred.Partitioner;
  * number of the reducers.
  */
 public class SlivePartitioner implements Partitioner<Text, Text> {
-  @Override // JobConfigurable
-  public void configure(JobConf conf) {}
+    @Override // JobConfigurable
+    public void configure(JobConf conf) {
+    }
 
-  @Override // Partitioner
-  public int getPartition(Text key, Text value, int numPartitions) {
-    OperationOutput oo = new OperationOutput(key, value);
-    return (oo.getOperationType().hashCode() & Integer.MAX_VALUE) % numPartitions;
-  }
+    @Override // Partitioner
+    public int getPartition(Text key, Text value, int numPartitions) {
+        OperationOutput oo = new OperationOutput(key, value);
+        return (oo.getOperationType().hashCode() & Integer.MAX_VALUE) % numPartitions;
+    }
 }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,17 +25,19 @@ import org.apache.hadoop.classification.InterfaceAudience;
  */
 @InterfaceAudience.Public
 public class EventBatch {
-  private final long txid;
-  private final Event[] events;
+    private final long txid;
+    private final Event[] events;
 
-  public EventBatch(long txid, Event[] events) {
-    this.txid = txid;
-    this.events = events;
-  }
+    public EventBatch(long txid, Event[] events) {
+        this.txid = txid;
+        this.events = events;
+    }
 
-  public long getTxid() {
-    return txid;
-  }
+    public long getTxid() {
+        return txid;
+    }
 
-  public Event[] getEvents() { return events; }
+    public Event[] getEvents() {
+        return events;
+    }
 }

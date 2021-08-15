@@ -5,9 +5,9 @@
  * licenses this file to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -17,40 +17,42 @@
 
 package org.apache.hadoop.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TestProxyUserFromEnv {
-  /** Test HADOOP_PROXY_USER for impersonation */
-  @Test
-  public void testProxyUserFromEnvironment() throws IOException {
-    String proxyUser = "foo.bar";
-    System.setProperty(UserGroupInformation.HADOOP_PROXY_USER, proxyUser);
-    UserGroupInformation ugi = UserGroupInformation.getLoginUser();
-    assertEquals(proxyUser, ugi.getUserName());
+    /**
+     * Test HADOOP_PROXY_USER for impersonation
+     */
+    @Test
+    public void testProxyUserFromEnvironment() throws IOException {
+        String proxyUser = "foo.bar";
+        System.setProperty(UserGroupInformation.HADOOP_PROXY_USER, proxyUser);
+        UserGroupInformation ugi = UserGroupInformation.getLoginUser();
+        assertEquals(proxyUser, ugi.getUserName());
 
-    UserGroupInformation realUgi = ugi.getRealUser();
-    assertNotNull(realUgi);
-    // get the expected real user name
-    Process pp = Runtime.getRuntime().exec("whoami");
-    BufferedReader br = new BufferedReader
-                          (new InputStreamReader(pp.getInputStream()));
-    String realUser = br.readLine().trim();
+        UserGroupInformation realUgi = ugi.getRealUser();
+        assertNotNull(realUgi);
+        // get the expected real user name
+        Process pp = Runtime.getRuntime().exec("whoami");
+        BufferedReader br = new BufferedReader
+                (new InputStreamReader(pp.getInputStream()));
+        String realUser = br.readLine().trim();
 
-    // On Windows domain joined machine, whoami returns the username
-    // in the DOMAIN\\username format, so we trim the domain part before
-    // the comparison. We don't have to special case for Windows
-    // given that Unix systems do not allow slashes in usernames.
-    int backslashIndex = realUser.indexOf('\\');
-    if (backslashIndex != -1) {
-      realUser = realUser.substring(backslashIndex + 1);
+        // On Windows domain joined machine, whoami returns the username
+        // in the DOMAIN\\username format, so we trim the domain part before
+        // the comparison. We don't have to special case for Windows
+        // given that Unix systems do not allow slashes in usernames.
+        int backslashIndex = realUser.indexOf('\\');
+        if (backslashIndex != -1) {
+            realUser = realUser.substring(backslashIndex + 1);
+        }
+        assertEquals(realUser, realUgi.getUserName());
     }
-    assertEquals(realUser, realUgi.getUserName());
-  }
 }

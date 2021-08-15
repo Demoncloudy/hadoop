@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,24 +42,26 @@ import org.apache.hadoop.conf.Configurable;
 @InterfaceAudience.Public
 @InterfaceStability.Unstable
 public interface FenceMethod {
-  /**
-   * Verify that the given fencing method's arguments are valid.
-   * @param args the arguments provided in the configuration. This may
-   *        be null if the operator did not configure any arguments.
-   * @throws BadFencingConfigurationException if the arguments are invalid
-   */
-  public void checkArgs(String args) throws BadFencingConfigurationException;
-  
-  /**
-   * Attempt to fence the target node.
-   * @param serviceAddr the address (host:ipcport) of the service to fence
-   * @param args the configured arguments, which were checked at startup by
-   *             {@link #checkArgs(String)}
-   * @return true if fencing was successful, false if unsuccessful or
-   *              indeterminate
-   * @throws BadFencingConfigurationException if the configuration was
-   *         determined to be invalid only at runtime
-   */
-  public boolean tryFence(HAServiceTarget target, String args)
-    throws BadFencingConfigurationException;
+    /**
+     * Verify that the given fencing method's arguments are valid.
+     *
+     * @param args the arguments provided in the configuration. This may
+     *             be null if the operator did not configure any arguments.
+     * @throws BadFencingConfigurationException if the arguments are invalid
+     */
+    public void checkArgs(String args) throws BadFencingConfigurationException;
+
+    /**
+     * Attempt to fence the target node.
+     *
+     * @param serviceAddr the address (host:ipcport) of the service to fence
+     * @param args        the configured arguments, which were checked at startup by
+     *                    {@link #checkArgs(String)}
+     * @return true if fencing was successful, false if unsuccessful or
+     * indeterminate
+     * @throws BadFencingConfigurationException if the configuration was
+     *                                          determined to be invalid only at runtime
+     */
+    public boolean tryFence(HAServiceTarget target, String args)
+            throws BadFencingConfigurationException;
 }

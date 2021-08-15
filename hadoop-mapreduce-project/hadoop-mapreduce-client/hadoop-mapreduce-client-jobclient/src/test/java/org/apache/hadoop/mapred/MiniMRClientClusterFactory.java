@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,8 +18,6 @@
 
 package org.apache.hadoop.mapred;
 
-import java.io.IOException;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -27,6 +25,8 @@ import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.v2.MiniMRYarnCluster;
 import org.apache.hadoop.util.JarFinder;
+
+import java.io.IOException;
 
 /**
  * A MiniMRCluster factory. In MR2, it provides a wrapper MiniMRClientCluster
@@ -36,50 +36,50 @@ import org.apache.hadoop.util.JarFinder;
  */
 public class MiniMRClientClusterFactory {
 
-  public static MiniMRClientCluster create(Class<?> caller, int noOfNMs,
-      Configuration conf) throws IOException {
-    return create(caller, caller.getSimpleName(), noOfNMs, conf);
-  }
-
-  public static MiniMRClientCluster create(Class<?> caller, String identifier,
-      int noOfNMs, Configuration conf) throws IOException {
-
-    if (conf == null) {
-      conf = new Configuration();
+    public static MiniMRClientCluster create(Class<?> caller, int noOfNMs,
+                                             Configuration conf) throws IOException {
+        return create(caller, caller.getSimpleName(), noOfNMs, conf);
     }
 
-    FileSystem fs = FileSystem.get(conf);
+    public static MiniMRClientCluster create(Class<?> caller, String identifier,
+                                             int noOfNMs, Configuration conf) throws IOException {
 
-    Path testRootDir = new Path("target", identifier + "-tmpDir")
-        .makeQualified(fs);
-    Path appJar = new Path(testRootDir, "MRAppJar.jar");
+        if (conf == null) {
+            conf = new Configuration();
+        }
 
-    // Copy MRAppJar and make it private.
-    Path appMasterJar = new Path(MiniMRYarnCluster.APPJAR);
+        FileSystem fs = FileSystem.get(conf);
 
-    fs.copyFromLocalFile(appMasterJar, appJar);
-    fs.setPermission(appJar, new FsPermission("744"));
+        Path testRootDir = new Path("target", identifier + "-tmpDir")
+                .makeQualified(fs);
+        Path appJar = new Path(testRootDir, "MRAppJar.jar");
 
-    Job job = Job.getInstance(conf);
+        // Copy MRAppJar and make it private.
+        Path appMasterJar = new Path(MiniMRYarnCluster.APPJAR);
 
-    job.addFileToClassPath(appJar);
+        fs.copyFromLocalFile(appMasterJar, appJar);
+        fs.setPermission(appJar, new FsPermission("744"));
 
-    Path callerJar = new Path(JarFinder.getJar(caller));
-    Path remoteCallerJar = new Path(testRootDir, callerJar.getName());
-    fs.copyFromLocalFile(callerJar, remoteCallerJar);
-    fs.setPermission(remoteCallerJar, new FsPermission("744"));
-    job.addFileToClassPath(remoteCallerJar);
+        Job job = Job.getInstance(conf);
 
-    MiniMRYarnCluster miniMRYarnCluster = new MiniMRYarnCluster(identifier,
-        noOfNMs);
-    job.getConfiguration().set("minimrclientcluster.caller.name",
-        identifier);
-    job.getConfiguration().setInt("minimrclientcluster.nodemanagers.number",
-        noOfNMs);
-    miniMRYarnCluster.init(job.getConfiguration());
-    miniMRYarnCluster.start();
+        job.addFileToClassPath(appJar);
 
-    return new MiniMRYarnClusterAdapter(miniMRYarnCluster);
-  }
+        Path callerJar = new Path(JarFinder.getJar(caller));
+        Path remoteCallerJar = new Path(testRootDir, callerJar.getName());
+        fs.copyFromLocalFile(callerJar, remoteCallerJar);
+        fs.setPermission(remoteCallerJar, new FsPermission("744"));
+        job.addFileToClassPath(remoteCallerJar);
+
+        MiniMRYarnCluster miniMRYarnCluster = new MiniMRYarnCluster(identifier,
+                noOfNMs);
+        job.getConfiguration().set("minimrclientcluster.caller.name",
+                identifier);
+        job.getConfiguration().setInt("minimrclientcluster.nodemanagers.number",
+                noOfNMs);
+        miniMRYarnCluster.init(job.getConfiguration());
+        miniMRYarnCluster.start();
+
+        return new MiniMRYarnClusterAdapter(miniMRYarnCluster);
+    }
 
 }

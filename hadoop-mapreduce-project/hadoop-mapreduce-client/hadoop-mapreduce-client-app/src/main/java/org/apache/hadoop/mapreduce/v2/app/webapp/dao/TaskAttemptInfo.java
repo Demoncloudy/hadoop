@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,14 +16,6 @@
  * limitations under the License.
  */
 package org.apache.hadoop.mapreduce.v2.app.webapp.dao;
-
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptReport;
 import org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptState;
@@ -34,101 +26,103 @@ import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.util.Times;
 
+import javax.xml.bind.annotation.*;
+
 @XmlRootElement(name = "taskAttempt")
-@XmlSeeAlso({ ReduceTaskAttemptInfo.class })
+@XmlSeeAlso({ReduceTaskAttemptInfo.class})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TaskAttemptInfo {
 
-  protected long startTime;
-  protected long finishTime;
-  protected long elapsedTime;
-  protected float progress;
-  protected String id;
-  protected String rack;
-  protected TaskAttemptState state;
-  protected String status;
-  protected String nodeHttpAddress;
-  protected String diagnostics;
-  protected String type;
-  protected String assignedContainerId;
+    protected long startTime;
+    protected long finishTime;
+    protected long elapsedTime;
+    protected float progress;
+    protected String id;
+    protected String rack;
+    protected TaskAttemptState state;
+    protected String status;
+    protected String nodeHttpAddress;
+    protected String diagnostics;
+    protected String type;
+    protected String assignedContainerId;
 
-  @XmlTransient
-  protected ContainerId assignedContainer;
+    @XmlTransient
+    protected ContainerId assignedContainer;
 
-  public TaskAttemptInfo() {
-  }
-
-  public TaskAttemptInfo(TaskAttempt ta, Boolean isRunning) {
-    this(ta, TaskType.MAP, isRunning);
-  }
-
-  public TaskAttemptInfo(TaskAttempt ta, TaskType type, Boolean isRunning) {
-    final TaskAttemptReport report = ta.getReport();
-    this.type = type.toString();
-    this.id = MRApps.toString(ta.getID());
-    this.nodeHttpAddress = ta.getNodeHttpAddress();
-    this.startTime = report.getStartTime();
-    this.finishTime = report.getFinishTime();
-    this.assignedContainerId = ConverterUtils.toString(report.getContainerId());
-    this.assignedContainer = report.getContainerId();
-    this.progress = report.getProgress() * 100;
-    this.status = report.getStateString();
-    this.state = report.getTaskAttemptState();
-    this.elapsedTime = Times
-        .elapsed(this.startTime, this.finishTime, isRunning);
-    if (this.elapsedTime == -1) {
-      this.elapsedTime = 0;
+    public TaskAttemptInfo() {
     }
-    this.diagnostics = report.getDiagnosticInfo();
-    this.rack = ta.getNodeRackName();
-  }
 
-  public String getAssignedContainerIdStr() {
-    return this.assignedContainerId;
-  }
+    public TaskAttemptInfo(TaskAttempt ta, Boolean isRunning) {
+        this(ta, TaskType.MAP, isRunning);
+    }
 
-  public ContainerId getAssignedContainerId() {
-    return this.assignedContainer;
-  }
+    public TaskAttemptInfo(TaskAttempt ta, TaskType type, Boolean isRunning) {
+        final TaskAttemptReport report = ta.getReport();
+        this.type = type.toString();
+        this.id = MRApps.toString(ta.getID());
+        this.nodeHttpAddress = ta.getNodeHttpAddress();
+        this.startTime = report.getStartTime();
+        this.finishTime = report.getFinishTime();
+        this.assignedContainerId = ConverterUtils.toString(report.getContainerId());
+        this.assignedContainer = report.getContainerId();
+        this.progress = report.getProgress() * 100;
+        this.status = report.getStateString();
+        this.state = report.getTaskAttemptState();
+        this.elapsedTime = Times
+                .elapsed(this.startTime, this.finishTime, isRunning);
+        if (this.elapsedTime == -1) {
+            this.elapsedTime = 0;
+        }
+        this.diagnostics = report.getDiagnosticInfo();
+        this.rack = ta.getNodeRackName();
+    }
 
-  public String getState() {
-    return this.state.toString();
-  }
+    public String getAssignedContainerIdStr() {
+        return this.assignedContainerId;
+    }
 
-  public String getStatus() {
-    return status;
-  }
+    public ContainerId getAssignedContainerId() {
+        return this.assignedContainer;
+    }
 
-  public String getId() {
-    return this.id;
-  }
+    public String getState() {
+        return this.state.toString();
+    }
 
-  public long getStartTime() {
-    return this.startTime;
-  }
+    public String getStatus() {
+        return status;
+    }
 
-  public long getFinishTime() {
-    return this.finishTime;
-  }
+    public String getId() {
+        return this.id;
+    }
 
-  public float getProgress() {
-    return this.progress;
-  }
+    public long getStartTime() {
+        return this.startTime;
+    }
 
-  public long getElapsedTime() {
-    return this.elapsedTime;
-  }
+    public long getFinishTime() {
+        return this.finishTime;
+    }
 
-  public String getNode() {
-    return this.nodeHttpAddress;
-  }
+    public float getProgress() {
+        return this.progress;
+    }
 
-  public String getRack() {
-    return this.rack;
-  }
+    public long getElapsedTime() {
+        return this.elapsedTime;
+    }
 
-  public String getNote() {
-    return this.diagnostics;
-  }
+    public String getNode() {
+        return this.nodeHttpAddress;
+    }
+
+    public String getRack() {
+        return this.rack;
+    }
+
+    public String getNote() {
+        return this.diagnostics;
+    }
 
 }

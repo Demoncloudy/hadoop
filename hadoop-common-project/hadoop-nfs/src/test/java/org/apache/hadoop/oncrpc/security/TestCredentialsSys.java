@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,30 +17,29 @@
  */
 package org.apache.hadoop.oncrpc.security;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.hadoop.oncrpc.XDR;
-import org.apache.hadoop.oncrpc.security.CredentialsSys;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test for {@link CredentialsSys}
  */
 public class TestCredentialsSys {
 
-  @Test
-  public void testReadWrite() {
-    CredentialsSys credential = new CredentialsSys();
-    credential.setUID(0);
-    credential.setGID(1);
-    
-    XDR xdr = new XDR();
-    credential.write(xdr);
-    
-    CredentialsSys newCredential = new CredentialsSys();
-    newCredential.read(xdr.asReadOnlyWrap());
-    
-    assertEquals(0, newCredential.getUID());
-    assertEquals(1, newCredential.getGID());
-  }
+    @Test
+    public void testReadWrite() {
+        CredentialsSys credential = new CredentialsSys();
+        credential.setUID(0);
+        credential.setGID(1);
+
+        XDR xdr = new XDR();
+        credential.write(xdr);
+
+        CredentialsSys newCredential = new CredentialsSys();
+        newCredential.read(xdr.asReadOnlyWrap());
+
+        assertEquals(0, newCredential.getUID());
+        assertEquals(1, newCredential.getGID());
+    }
 }

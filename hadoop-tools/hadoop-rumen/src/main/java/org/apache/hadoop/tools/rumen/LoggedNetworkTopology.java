@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,161 +17,146 @@
  */
 package org.apache.hadoop.tools.rumen;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.ArrayList;
-import java.util.Comparator;
-
 import org.apache.hadoop.tools.rumen.datatypes.NodeName;
 import org.codehaus.jackson.annotate.JsonAnySetter;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * A {@link LoggedNetworkTopology} represents a tree that in turn represents a
  * hierarchy of hosts. The current version requires the tree to have all leaves
  * at the same level.
- * 
+ * <p>
  * All of the public methods are simply accessors for the instance variables we
  * want to write out in the JSON files.
- * 
  */
 public class LoggedNetworkTopology implements DeepCompare {
-  NodeName name;
-  List<LoggedNetworkTopology> children = new ArrayList<LoggedNetworkTopology>();
+    static private Set<String> alreadySeenAnySetterAttributes =
+            new TreeSet<String>();
+    NodeName name;
+    List<LoggedNetworkTopology> children = new ArrayList<LoggedNetworkTopology>();
 
-  static private Set<String> alreadySeenAnySetterAttributes =
-      new TreeSet<String>();
-
-  public LoggedNetworkTopology() {
-    super();
-  }
-
-  // for input parameter ignored.
-  @JsonAnySetter
-  public void setUnknownAttribute(String attributeName, Object ignored) {
-    if (!alreadySeenAnySetterAttributes.contains(attributeName)) {
-      alreadySeenAnySetterAttributes.add(attributeName);
-      System.err.println("In LoggedJob, we saw the unknown attribute "
-          + attributeName + ".");
+    public LoggedNetworkTopology() {
+        super();
     }
-  }
 
-  /**
-   * We need this because we have to sort the {@code children} field. That field
-   * is set-valued, but if we sort these fields we ensure that comparisons won't
-   * bogusly fail because the hash table happened to enumerate in a different
-   * order.
-   * 
-   */
-  static class TopoSort implements Comparator<LoggedNetworkTopology>, 
-  Serializable {
-    public int compare(LoggedNetworkTopology t1, LoggedNetworkTopology t2) {
-      return t1.name.getValue().compareTo(t2.name.getValue());
+    /**
+     * @param hosts a HashSet of the {@link ParsedHost}
+     * @param name  the name of this level's host [for recursive descent]
+     * @param level the level number
+     */
+    LoggedNetworkTopology(Set<ParsedHost> hosts, String name, int level) {
+        if (name == null) {
+            this.name = NodeName.ROOT;
+        } else {
+            this.name = new NodeName(name);
+        }
+        this.children = null;
+
+        if (level < ParsedHost.numberOfDistances() - 1) {
+            HashMap<String, HashSet<ParsedHost>> topologies =
+                    new HashMap<String, HashSet<ParsedHost>>();
+
+            Iterator<ParsedHost> iter = hosts.iterator();
+
+            while (iter.hasNext()) {
+                ParsedHost host = iter.next();
+
+                String thisComponent = host.nameComponent(level);
+
+                HashSet<ParsedHost> thisSet = topologies.get(thisComponent);
+
+                if (thisSet == null) {
+                    thisSet = new HashSet<ParsedHost>();
+                    topologies.put(thisComponent, thisSet);
+                }
+
+                thisSet.add(host);
+            }
+
+            children = new ArrayList<LoggedNetworkTopology>();
+
+            for (Map.Entry<String, HashSet<ParsedHost>> ent : topologies.entrySet()) {
+                children.add(new LoggedNetworkTopology(ent.getValue(), ent.getKey(),
+                        level + 1));
+            }
+        } else {
+            // nothing to do here
+        }
     }
-  }
 
-  /**
-   * @param hosts
-   *          a HashSet of the {@link ParsedHost}
-   * @param name
-   *          the name of this level's host [for recursive descent]
-   * @param level
-   *          the level number
-   */
-  LoggedNetworkTopology(Set<ParsedHost> hosts, String name, int level) {
-    if (name == null) {
-      this.name = NodeName.ROOT;
-    } else {
-      this.name = new NodeName(name);
+    LoggedNetworkTopology(Set<ParsedHost> hosts) {
+        this(hosts, null, 0);
     }
-    this.children = null;
 
-    if (level < ParsedHost.numberOfDistances() - 1) {
-      HashMap<String, HashSet<ParsedHost>> topologies =
-          new HashMap<String, HashSet<ParsedHost>>();
+    // for input parameter ignored.
+    @JsonAnySetter
+    public void setUnknownAttribute(String attributeName, Object ignored) {
+        if (!alreadySeenAnySetterAttributes.contains(attributeName)) {
+            alreadySeenAnySetterAttributes.add(attributeName);
+            System.err.println("In LoggedJob, we saw the unknown attribute "
+                    + attributeName + ".");
+        }
+    }
 
-      Iterator<ParsedHost> iter = hosts.iterator();
+    public NodeName getName() {
+        return name;
+    }
 
-      while (iter.hasNext()) {
-        ParsedHost host = iter.next();
+    void setName(String name) {
+        this.name = new NodeName(name);
+    }
 
-        String thisComponent = host.nameComponent(level);
+    public List<LoggedNetworkTopology> getChildren() {
+        return children;
+    }
 
-        HashSet<ParsedHost> thisSet = topologies.get(thisComponent);
+    void setChildren(List<LoggedNetworkTopology> children) {
+        this.children = children;
+    }
 
-        if (thisSet == null) {
-          thisSet = new HashSet<ParsedHost>();
-          topologies.put(thisComponent, thisSet);
+    private void compare1(List<LoggedNetworkTopology> c1,
+                          List<LoggedNetworkTopology> c2, TreePath loc, String eltname)
+            throws DeepInequalityException {
+        if (c1 == null && c2 == null) {
+            return;
         }
 
-        thisSet.add(host);
-      }
+        if (c1 == null || c2 == null || c1.size() != c2.size()) {
+            throw new DeepInequalityException(eltname + " miscompared", new TreePath(
+                    loc, eltname));
+        }
 
-      children = new ArrayList<LoggedNetworkTopology>();
+        Collections.sort(c1, new TopoSort());
+        Collections.sort(c2, new TopoSort());
 
-      for (Map.Entry<String, HashSet<ParsedHost>> ent : topologies.entrySet()) {
-        children.add(new LoggedNetworkTopology(ent.getValue(), ent.getKey(),
-            level + 1));
-      }
-    } else {
-      // nothing to do here
-    }
-  }
-
-  LoggedNetworkTopology(Set<ParsedHost> hosts) {
-    this(hosts, null, 0);
-  }
-
-  public NodeName getName() {
-    return name;
-  }
-
-  void setName(String name) {
-    this.name = new NodeName(name);
-  }
-
-  public List<LoggedNetworkTopology> getChildren() {
-    return children;
-  }
-
-  void setChildren(List<LoggedNetworkTopology> children) {
-    this.children = children;
-  }
-
-  private void compare1(List<LoggedNetworkTopology> c1,
-      List<LoggedNetworkTopology> c2, TreePath loc, String eltname)
-      throws DeepInequalityException {
-    if (c1 == null && c2 == null) {
-      return;
+        for (int i = 0; i < c1.size(); ++i) {
+            c1.get(i).deepCompare(c2.get(i), new TreePath(loc, eltname, i));
+        }
     }
 
-    if (c1 == null || c2 == null || c1.size() != c2.size()) {
-      throw new DeepInequalityException(eltname + " miscompared", new TreePath(
-          loc, eltname));
+    public void deepCompare(DeepCompare comparand, TreePath loc)
+            throws DeepInequalityException {
+        if (!(comparand instanceof LoggedNetworkTopology)) {
+            throw new DeepInequalityException("comparand has wrong type", loc);
+        }
+
+        LoggedNetworkTopology other = (LoggedNetworkTopology) comparand;
+
+        compare1(children, other.children, loc, "children");
     }
 
-    Collections.sort(c1, new TopoSort());
-    Collections.sort(c2, new TopoSort());
-
-    for (int i = 0; i < c1.size(); ++i) {
-      c1.get(i).deepCompare(c2.get(i), new TreePath(loc, eltname, i));
+    /**
+     * We need this because we have to sort the {@code children} field. That field
+     * is set-valued, but if we sort these fields we ensure that comparisons won't
+     * bogusly fail because the hash table happened to enumerate in a different
+     * order.
+     */
+    static class TopoSort implements Comparator<LoggedNetworkTopology>,
+            Serializable {
+        public int compare(LoggedNetworkTopology t1, LoggedNetworkTopology t2) {
+            return t1.name.getValue().compareTo(t2.name.getValue());
+        }
     }
-  }
-
-  public void deepCompare(DeepCompare comparand, TreePath loc)
-      throws DeepInequalityException {
-    if (!(comparand instanceof LoggedNetworkTopology)) {
-      throw new DeepInequalityException("comparand has wrong type", loc);
-    }
-
-    LoggedNetworkTopology other = (LoggedNetworkTopology) comparand;
-
-    compare1(children, other.children, loc, "children");
-  }
 }

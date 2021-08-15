@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,49 +33,49 @@ import static org.mockito.Mockito.mock;
 
 public class TestAMLivelinessMonitor {
 
-  @Test(timeout = 10000)
-  public void testResetTimer() throws Exception {
-    YarnConfiguration conf = new YarnConfiguration();
-    UserGroupInformation.setConfiguration(conf);
-    conf.set(YarnConfiguration.RECOVERY_ENABLED, "true");
-    conf.set(YarnConfiguration.RM_STORE, MemoryRMStateStore.class.getName());
-    conf.setBoolean(YarnConfiguration.RM_WORK_PRESERVING_RECOVERY_ENABLED, true);
-    conf.setInt(YarnConfiguration.RM_AM_EXPIRY_INTERVAL_MS, 6000);
-    final ControlledClock clock = new ControlledClock(new SystemClock());
-    clock.setTime(0);
-    MemoryRMStateStore memStore = new MemoryRMStateStore() {
-      @Override
-      public synchronized RMState loadState() throws Exception {
-        clock.setTime(8000);
-        return super.loadState();
-      }
-    };
-    memStore.init(conf);
-    final ApplicationAttemptId attemptId = mock(ApplicationAttemptId.class);
-    final Dispatcher dispatcher = mock(Dispatcher.class);
-    final boolean[] expired = new boolean[]{false};
-    final AMLivelinessMonitor monitor = new AMLivelinessMonitor(
-        dispatcher, clock) {
-      @Override
-      protected void expire(ApplicationAttemptId id) {
-        Assert.assertEquals(id, attemptId);
-        expired[0] = true;
-      }
-    };
-    monitor.register(attemptId);
-    MockRM rm = new MockRM(conf, memStore) {
-      @Override
-      protected AMLivelinessMonitor createAMLivelinessMonitor() {
-        return monitor;
-      }
-    };
-    rm.start();
-    // make sure that monitor has started
-    while (monitor.getServiceState() != Service.STATE.STARTED) {
-      Thread.sleep(100);
+    @Test(timeout = 10000)
+    public void testResetTimer() throws Exception {
+        YarnConfiguration conf = new YarnConfiguration();
+        UserGroupInformation.setConfiguration(conf);
+        conf.set(YarnConfiguration.RECOVERY_ENABLED, "true");
+        conf.set(YarnConfiguration.RM_STORE, MemoryRMStateStore.class.getName());
+        conf.setBoolean(YarnConfiguration.RM_WORK_PRESERVING_RECOVERY_ENABLED, true);
+        conf.setInt(YarnConfiguration.RM_AM_EXPIRY_INTERVAL_MS, 6000);
+        final ControlledClock clock = new ControlledClock(new SystemClock());
+        clock.setTime(0);
+        MemoryRMStateStore memStore = new MemoryRMStateStore() {
+            @Override
+            public synchronized RMState loadState() throws Exception {
+                clock.setTime(8000);
+                return super.loadState();
+            }
+        };
+        memStore.init(conf);
+        final ApplicationAttemptId attemptId = mock(ApplicationAttemptId.class);
+        final Dispatcher dispatcher = mock(Dispatcher.class);
+        final boolean[] expired = new boolean[]{false};
+        final AMLivelinessMonitor monitor = new AMLivelinessMonitor(
+                dispatcher, clock) {
+            @Override
+            protected void expire(ApplicationAttemptId id) {
+                Assert.assertEquals(id, attemptId);
+                expired[0] = true;
+            }
+        };
+        monitor.register(attemptId);
+        MockRM rm = new MockRM(conf, memStore) {
+            @Override
+            protected AMLivelinessMonitor createAMLivelinessMonitor() {
+                return monitor;
+            }
+        };
+        rm.start();
+        // make sure that monitor has started
+        while (monitor.getServiceState() != Service.STATE.STARTED) {
+            Thread.sleep(100);
+        }
+        // expired[0] would be set to true without resetTimer
+        Assert.assertFalse(expired[0]);
+        rm.stop();
     }
-    // expired[0] would be set to true without resetTimer
-    Assert.assertFalse(expired[0]);
-    rm.stop();
-  }
 }

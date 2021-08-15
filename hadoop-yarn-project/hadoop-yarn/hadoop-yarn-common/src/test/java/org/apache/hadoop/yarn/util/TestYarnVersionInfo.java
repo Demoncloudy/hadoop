@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,38 +18,40 @@
 
 package org.apache.hadoop.yarn.util;
 
+import org.junit.Test;
+
 import java.io.IOException;
 
-import org.apache.hadoop.yarn.util.YarnVersionInfo;
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 /**
  * A JUnit test to test {@link YarnVersionInfo}
  */
 public class TestYarnVersionInfo {
-  
-  /**
-   * Test the yarn version info routines.
-   * @throws IOException
-   */
-  @Test
-  public void versionInfoGenerated() throws IOException {
 
-    // can't easily know what the correct values are going to be so just
-    // make sure they aren't Unknown
-    assertTrue("getVersion returned Unknown", !YarnVersionInfo.getVersion().equals("Unknown"));
-    assertTrue("getUser returned Unknown", !YarnVersionInfo.getUser().equals("Unknown"));
-    assertTrue("getUrl returned Unknown", !YarnVersionInfo.getUrl().equals("Unknown"));
-    assertTrue("getSrcChecksum returned Unknown", !YarnVersionInfo.getSrcChecksum().equals("Unknown"));
+    /**
+     * Test the yarn version info routines.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void versionInfoGenerated() throws IOException {
 
-    // these could be Unknown if the VersionInfo generated from code not in svn or git
-    // so just check that they return something
-    assertNotNull("getRevision returned null", YarnVersionInfo.getRevision());
-    assertNotNull("getBranch returned null", YarnVersionInfo.getBranch());
+        // can't easily know what the correct values are going to be so just
+        // make sure they aren't Unknown
+        assertTrue("getVersion returned Unknown", !YarnVersionInfo.getVersion().equals("Unknown"));
+        assertTrue("getUser returned Unknown", !YarnVersionInfo.getUser().equals("Unknown"));
+        assertTrue("getUrl returned Unknown", !YarnVersionInfo.getUrl().equals("Unknown"));
+        assertTrue("getSrcChecksum returned Unknown", !YarnVersionInfo.getSrcChecksum().equals("Unknown"));
 
-    assertTrue("getBuildVersion check doesn't contain: source checksum",
-               YarnVersionInfo.getBuildVersion().contains("source checksum"));
+        // these could be Unknown if the VersionInfo generated from code not in svn or git
+        // so just check that they return something
+        assertNotNull("getRevision returned null", YarnVersionInfo.getRevision());
+        assertNotNull("getBranch returned null", YarnVersionInfo.getBranch());
 
-  }
+        assertTrue("getBuildVersion check doesn't contain: source checksum",
+                YarnVersionInfo.getBuildVersion().contains("source checksum"));
+
+    }
 }

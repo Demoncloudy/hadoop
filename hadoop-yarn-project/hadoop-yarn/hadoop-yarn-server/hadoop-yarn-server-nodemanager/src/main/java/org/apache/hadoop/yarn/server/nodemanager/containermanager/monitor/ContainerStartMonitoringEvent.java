@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,22 +22,22 @@ import org.apache.hadoop.yarn.api.records.ContainerId;
 
 public class ContainerStartMonitoringEvent extends ContainersMonitorEvent {
 
-  private final long vmemLimit;
-  private final long pmemLimit;
+    private final long vmemLimit;
+    private final long pmemLimit;
 
-  public ContainerStartMonitoringEvent(ContainerId containerId,
-      long vmemLimit, long pmemLimit) {
-    super(containerId, ContainersMonitorEventType.START_MONITORING_CONTAINER);
-    this.vmemLimit = vmemLimit;
-    this.pmemLimit = pmemLimit;
-  }
+    public ContainerStartMonitoringEvent(ContainerId containerId,
+                                         long vmemLimit, long pmemLimit) {
+        super(containerId, ContainersMonitorEventType.START_MONITORING_CONTAINER);
+        this.vmemLimit = vmemLimit;
+        this.pmemLimit = pmemLimit;
+    }
 
-  public long getVmemLimit() {
-    return this.vmemLimit;
-  }
+    public long getVmemLimit() {
+        return this.vmemLimit;
+    }
 
-  public long getPmemLimit() {
-    return this.pmemLimit;
-  }
+    public long getPmemLimit() {
+        return this.pmemLimit;
+    }
 
 }

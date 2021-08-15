@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,38 +27,46 @@ import org.apache.hadoop.classification.InterfaceStability;
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
 public class DatanodeLocalInfo {
-  private final String softwareVersion;
-  private final String configVersion;
-  private final long uptime; // datanode uptime in seconds.
+    private final String softwareVersion;
+    private final String configVersion;
+    private final long uptime; // datanode uptime in seconds.
 
-  public DatanodeLocalInfo(String softwareVersion,
-      String configVersion, long uptime) {
-    this.softwareVersion = softwareVersion;
-    this.configVersion = configVersion;
-    this.uptime = uptime;
-  }
+    public DatanodeLocalInfo(String softwareVersion,
+                             String configVersion, long uptime) {
+        this.softwareVersion = softwareVersion;
+        this.configVersion = configVersion;
+        this.uptime = uptime;
+    }
 
-  /** get software version */
-  public String getSoftwareVersion() {
-    return this.softwareVersion;
-  }
+    /**
+     * get software version
+     */
+    public String getSoftwareVersion() {
+        return this.softwareVersion;
+    }
 
-  /** get config version */
-  public String getConfigVersion() {
-    return this.configVersion;
-  }
+    /**
+     * get config version
+     */
+    public String getConfigVersion() {
+        return this.configVersion;
+    }
 
-  /** get uptime */
-  public long getUptime() {
-    return this.uptime;
-  }
+    /**
+     * get uptime
+     */
+    public long getUptime() {
+        return this.uptime;
+    }
 
-  /** A formatted string for printing the status of the DataNode. */
-  public String getDatanodeLocalReport() {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append("Uptime: " + getUptime());
-    buffer.append(", Software version: " + getSoftwareVersion());
-    buffer.append(", Config version: " + getConfigVersion());
-    return buffer.toString();
-  }
+    /**
+     * A formatted string for printing the status of the DataNode.
+     */
+    public String getDatanodeLocalReport() {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("Uptime: " + getUptime());
+        buffer.append(", Software version: " + getSoftwareVersion());
+        buffer.append(", Config version: " + getConfigVersion());
+        return buffer.toString();
+    }
 }

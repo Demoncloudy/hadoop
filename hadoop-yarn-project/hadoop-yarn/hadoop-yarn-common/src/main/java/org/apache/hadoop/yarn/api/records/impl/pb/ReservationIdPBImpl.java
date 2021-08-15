@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,58 +18,57 @@
 
 package org.apache.hadoop.yarn.api.records.impl.pb;
 
+import com.google.common.base.Preconditions;
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.yarn.api.records.ReservationId;
 import org.apache.hadoop.yarn.proto.YarnProtos.ReservationIdProto;
 
-import com.google.common.base.Preconditions;
-
 @Private
 @Unstable
 public class ReservationIdPBImpl extends ReservationId {
-  ReservationIdProto proto = null;
-  ReservationIdProto.Builder builder = null;
+    ReservationIdProto proto = null;
+    ReservationIdProto.Builder builder = null;
 
-  public ReservationIdPBImpl() {
-    builder = ReservationIdProto.newBuilder();
-  }
+    public ReservationIdPBImpl() {
+        builder = ReservationIdProto.newBuilder();
+    }
 
-  public ReservationIdPBImpl(ReservationIdProto proto) {
-    this.proto = proto;
-  }
+    public ReservationIdPBImpl(ReservationIdProto proto) {
+        this.proto = proto;
+    }
 
-  public ReservationIdProto getProto() {
-    return proto;
-  }
+    public ReservationIdProto getProto() {
+        return proto;
+    }
 
-  @Override
-  public long getId() {
-    Preconditions.checkNotNull(proto);
-    return proto.getId();
-  }
+    @Override
+    public long getId() {
+        Preconditions.checkNotNull(proto);
+        return proto.getId();
+    }
 
-  @Override
-  protected void setId(long id) {
-    Preconditions.checkNotNull(builder);
-    builder.setId(id);
-  }
+    @Override
+    protected void setId(long id) {
+        Preconditions.checkNotNull(builder);
+        builder.setId(id);
+    }
 
-  @Override
-  public long getClusterTimestamp() {
-    Preconditions.checkNotNull(proto);
-    return proto.getClusterTimestamp();
-  }
+    @Override
+    public long getClusterTimestamp() {
+        Preconditions.checkNotNull(proto);
+        return proto.getClusterTimestamp();
+    }
 
-  @Override
-  protected void setClusterTimestamp(long clusterTimestamp) {
-    Preconditions.checkNotNull(builder);
-    builder.setClusterTimestamp((clusterTimestamp));
-  }
+    @Override
+    protected void setClusterTimestamp(long clusterTimestamp) {
+        Preconditions.checkNotNull(builder);
+        builder.setClusterTimestamp((clusterTimestamp));
+    }
 
-  @Override
-  protected void build() {
-    proto = builder.build();
-    builder = null;
-  }
+    @Override
+    protected void build() {
+        proto = builder.build();
+        builder = null;
+    }
 }

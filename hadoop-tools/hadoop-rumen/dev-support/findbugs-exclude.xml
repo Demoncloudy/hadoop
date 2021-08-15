@@ -16,16 +16,16 @@
    limitations under the License.
 -->
 <FindBugsFilter>
-  <And>
-    <Class name="org.apache.hadoop.tools.rumen.LoggedJob"/>
-    <Method name="getMapperTriesToSucceed"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-    <Bug code="EI"/>
-  </And>
-  <And>
-    <Class name="org.apache.hadoop.tools.rumen.ZombieJob"/>
-    <Method name="getInputSplits"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-    <Bug code="EI"/>
-  </And>
+    <And>
+        <Class name="org.apache.hadoop.tools.rumen.LoggedJob"/>
+        <Method name="getMapperTriesToSucceed"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+        <Bug code="EI"/>
+    </And>
+    <And>
+        <Class name="org.apache.hadoop.tools.rumen.ZombieJob"/>
+        <Method name="getInputSplits"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+        <Bug code="EI"/>
+    </And>
 </FindBugsFilter>

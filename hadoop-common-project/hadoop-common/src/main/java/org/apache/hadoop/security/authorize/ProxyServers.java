@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,36 +18,36 @@
 
 package org.apache.hadoop.security.authorize;
 
+import org.apache.hadoop.conf.Configuration;
+
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.apache.hadoop.conf.Configuration;
-
 public class ProxyServers {
-  public static final String CONF_HADOOP_PROXYSERVERS = "hadoop.proxyservers";
-  private static volatile Collection<String> proxyServers;
+    public static final String CONF_HADOOP_PROXYSERVERS = "hadoop.proxyservers";
+    private static volatile Collection<String> proxyServers;
 
-  public static void refresh() {
-    refresh(new Configuration());
-  }
-
-  public static void refresh(Configuration conf){
-    Collection<String> tempServers = new HashSet<String>();
-    // trusted proxy servers such as http proxies
-    for (String host : conf.getTrimmedStrings(CONF_HADOOP_PROXYSERVERS)) {
-      InetSocketAddress addr = new InetSocketAddress(host, 0);
-      if (!addr.isUnresolved()) {
-        tempServers.add(addr.getAddress().getHostAddress());
-      }
+    public static void refresh() {
+        refresh(new Configuration());
     }
-    proxyServers = tempServers;
-  }
 
-  public static boolean isProxyServer(String remoteAddr) { 
-    if (proxyServers == null) {
-      refresh(); 
+    public static void refresh(Configuration conf) {
+        Collection<String> tempServers = new HashSet<String>();
+        // trusted proxy servers such as http proxies
+        for (String host : conf.getTrimmedStrings(CONF_HADOOP_PROXYSERVERS)) {
+            InetSocketAddress addr = new InetSocketAddress(host, 0);
+            if (!addr.isUnresolved()) {
+                tempServers.add(addr.getAddress().getHostAddress());
+            }
+        }
+        proxyServers = tempServers;
     }
-    return proxyServers.contains(remoteAddr);
-  }
+
+    public static boolean isProxyServer(String remoteAddr) {
+        if (proxyServers == null) {
+            refresh();
+        }
+        return proxyServers.contains(remoteAddr);
+    }
 }

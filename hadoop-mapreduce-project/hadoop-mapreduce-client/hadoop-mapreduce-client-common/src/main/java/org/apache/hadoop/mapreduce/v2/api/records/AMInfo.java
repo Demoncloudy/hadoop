@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,17 +22,27 @@ import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ContainerId;
 
 public interface AMInfo {
-  public ApplicationAttemptId getAppAttemptId();
-  public long getStartTime();
-  public ContainerId getContainerId();
-  public String getNodeManagerHost();
-  public int getNodeManagerPort();
-  public int getNodeManagerHttpPort();
+    public ApplicationAttemptId getAppAttemptId();
 
-  public void setAppAttemptId(ApplicationAttemptId appAttemptId);
-  public void setStartTime(long startTime);
-  public void setContainerId(ContainerId containerId);
-  public void setNodeManagerHost(String nmHost);
-  public void setNodeManagerPort(int nmPort);
-  public void setNodeManagerHttpPort(int mnHttpPort);
+    public void setAppAttemptId(ApplicationAttemptId appAttemptId);
+
+    public long getStartTime();
+
+    public void setStartTime(long startTime);
+
+    public ContainerId getContainerId();
+
+    public void setContainerId(ContainerId containerId);
+
+    public String getNodeManagerHost();
+
+    public void setNodeManagerHost(String nmHost);
+
+    public int getNodeManagerPort();
+
+    public void setNodeManagerPort(int nmPort);
+
+    public int getNodeManagerHttpPort();
+
+    public void setNodeManagerHttpPort(int mnHttpPort);
 }

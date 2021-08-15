@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,28 +18,28 @@
 
 package org.apache.hadoop.yarn.server.resourcemanager.rmnode;
 
-import java.util.List;
-
 import org.apache.hadoop.yarn.api.records.ContainerStatus;
 
+import java.util.List;
+
 public class UpdatedContainerInfo {
-  private List<ContainerStatus> newlyLaunchedContainers;
-  private List<ContainerStatus> completedContainers;
-  
-  public UpdatedContainerInfo() {
-  }
+    private List<ContainerStatus> newlyLaunchedContainers;
+    private List<ContainerStatus> completedContainers;
 
-  public UpdatedContainerInfo(List<ContainerStatus> newlyLaunchedContainers
-      , List<ContainerStatus> completedContainers) {
-    this.newlyLaunchedContainers = newlyLaunchedContainers;
-    this.completedContainers = completedContainers;
-  } 
+    public UpdatedContainerInfo() {
+    }
 
-  public List<ContainerStatus> getNewlyLaunchedContainers() {
-    return this.newlyLaunchedContainers;
-  }
+    public UpdatedContainerInfo(List<ContainerStatus> newlyLaunchedContainers
+            , List<ContainerStatus> completedContainers) {
+        this.newlyLaunchedContainers = newlyLaunchedContainers;
+        this.completedContainers = completedContainers;
+    }
 
-  public List<ContainerStatus> getCompletedContainers() {
-    return this.completedContainers;
-  }
+    public List<ContainerStatus> getNewlyLaunchedContainers() {
+        return this.newlyLaunchedContainers;
+    }
+
+    public List<ContainerStatus> getCompletedContainers() {
+        return this.completedContainers;
+    }
 }

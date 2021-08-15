@@ -18,71 +18,89 @@
  */
 -->
 
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
-  <xsl:template name="humanReadableBytes">
+    <xsl:template name="humanReadableBytes">
 
-    <xsl:param name="number"/>
+        <xsl:param name="number"/>
 
-    <xsl:variable name="kb" select="1024"/>
-    <xsl:variable name="Mb" select="$kb * 1024"/>
-    <xsl:variable name="Gb" select="$Mb * 1024"/>
-    <xsl:variable name="Tb" select="$Gb * 1024"/>
-    <xsl:variable name="Pb" select="$Tb * 1024"/>
+        <xsl:variable name="kb" select="1024"/>
+        <xsl:variable name="Mb" select="$kb * 1024"/>
+        <xsl:variable name="Gb" select="$Mb * 1024"/>
+        <xsl:variable name="Tb" select="$Gb * 1024"/>
+        <xsl:variable name="Pb" select="$Tb * 1024"/>
 
-     
-    <xsl:choose>
-      <xsl:when test="$number &lt; $kb"><xsl:value-of select="format-number($number, '#,###.##')"/> b</xsl:when>
-      <xsl:when test="$number &lt; $Mb"><xsl:value-of select="format-number($number div $kb, '#,###.00')"/> kb</xsl:when>
-      <xsl:when test="$number &lt; $Gb"><xsl:value-of select="format-number($number div $Mb, '#,###.00')"/> Mb</xsl:when>
-      <xsl:when test="$number &lt; $Tb"><xsl:value-of select="format-number($number div $Gb, '#,###.00')"/> Gb</xsl:when>
 
-      <xsl:when test="$number &lt; $Pb"><xsl:value-of select="format-number($number div $Tb, '#,###.00')"/> Tb</xsl:when>
-      <xsl:when test="$number &lt; ($Pb * 1024)"><xsl:value-of select="format-number($number div $Pb, '#,###.00')"/> Pb</xsl:when>
-      <xsl:otherwise><xsl:value-of select="format-number($number, '#,###.00')"/> b</xsl:otherwise>
-    </xsl:choose>
+        <xsl:choose>
+            <xsl:when test="$number &lt; $kb">
+                <xsl:value-of select="format-number($number, '#,###.##')"/> b
+            </xsl:when>
+            <xsl:when test="$number &lt; $Mb">
+                <xsl:value-of select="format-number($number div $kb, '#,###.00')"/> kb
+            </xsl:when>
+            <xsl:when test="$number &lt; $Gb">
+                <xsl:value-of select="format-number($number div $Mb, '#,###.00')"/> Mb
+            </xsl:when>
+            <xsl:when test="$number &lt; $Tb">
+                <xsl:value-of select="format-number($number div $Gb, '#,###.00')"/> Gb
+            </xsl:when>
 
-  </xsl:template>
+            <xsl:when test="$number &lt; $Pb">
+                <xsl:value-of select="format-number($number div $Tb, '#,###.00')"/> Tb
+            </xsl:when>
+            <xsl:when test="$number &lt; ($Pb * 1024)">
+                <xsl:value-of select="format-number($number div $Pb, '#,###.00')"/> Pb
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="format-number($number, '#,###.00')"/> b
+            </xsl:otherwise>
+        </xsl:choose>
 
-  <xsl:template name="percentage">
-    <xsl:param name="number"/>
-    <xsl:value-of select="format-number($number, '0.000%')"/>
-  </xsl:template>
+    </xsl:template>
 
-  <!--
-    Displays value:
-      - if it has parameter unit="b" then call humanReadableBytes
-      - if it has parameter link then call displayLink
-  -->
-  <xsl:template name="displayValue">
-    <xsl:param name="value"/>
-    <xsl:param name="unit"/>
+    <xsl:template name="percentage">
+        <xsl:param name="number"/>
+        <xsl:value-of select="format-number($number, '0.000%')"/>
+    </xsl:template>
 
-    <xsl:param name="link"/>
-    <xsl:choose>
-      <xsl:when test="$unit = 'b'">
-        <xsl:call-template name="humanReadableBytes">
-          <xsl:with-param name="number">
-            <xsl:value-of select="@value"/>
-          </xsl:with-param>
-        </xsl:call-template>
-      </xsl:when>
+    <!--
+      Displays value:
+        - if it has parameter unit="b" then call humanReadableBytes
+        - if it has parameter link then call displayLink
+    -->
+    <xsl:template name="displayValue">
+        <xsl:param name="value"/>
+        <xsl:param name="unit"/>
 
-      <xsl:when test="$unit = '%'">
-        <xsl:call-template name="percentage">
-          <xsl:with-param name="number">
-            <xsl:value-of select="@value"/>
-          </xsl:with-param>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="string-length($link) &gt; 0">
-        <a href="{$link}"><xsl:value-of select="$value"/></a>
+        <xsl:param name="link"/>
+        <xsl:choose>
+            <xsl:when test="$unit = 'b'">
+                <xsl:call-template name="humanReadableBytes">
+                    <xsl:with-param name="number">
+                        <xsl:value-of select="@value"/>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </xsl:when>
 
-      </xsl:when>
-      <xsl:otherwise><xsl:value-of select="$value"/></xsl:otherwise>
-    </xsl:choose>
+            <xsl:when test="$unit = '%'">
+                <xsl:call-template name="percentage">
+                    <xsl:with-param name="number">
+                        <xsl:value-of select="@value"/>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="string-length($link) &gt; 0">
+                <a href="{$link}">
+                    <xsl:value-of select="$value"/>
+                </a>
 
-  </xsl:template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$value"/>
+            </xsl:otherwise>
+        </xsl:choose>
+
+    </xsl:template>
 
 </xsl:stylesheet> 
 

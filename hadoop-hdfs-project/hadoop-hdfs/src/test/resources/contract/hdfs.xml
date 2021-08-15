@@ -17,78 +17,78 @@
   -->
 
 <configuration>
-  <!--
-  Here are most of the HDFS contract options.
-  -->
+    <!--
+    Here are most of the HDFS contract options.
+    -->
 
-  <property>
-    <name>fs.contract.test.root-tests-enabled</name>
-    <value>true</value>
-  </property>
+    <property>
+        <name>fs.contract.test.root-tests-enabled</name>
+        <value>true</value>
+    </property>
 
-  <property>
-    <name>fs.file.contract.test.random-seek-count</name>
-    <value>500</value>
-  </property>
+    <property>
+        <name>fs.file.contract.test.random-seek-count</name>
+        <value>500</value>
+    </property>
 
-  <property>
-    <name>fs.contract.is-case-sensitive</name>
-    <value>true</value>
-  </property>
+    <property>
+        <name>fs.contract.is-case-sensitive</name>
+        <value>true</value>
+    </property>
 
-  <property>
-    <name>fs.contract.supports-append</name>
-    <value>true</value>
-  </property>
+    <property>
+        <name>fs.contract.supports-append</name>
+        <value>true</value>
+    </property>
 
-  <property>
-    <name>fs.contract.supports-atomic-directory-delete</name>
-    <value>true</value>
-  </property>
+    <property>
+        <name>fs.contract.supports-atomic-directory-delete</name>
+        <value>true</value>
+    </property>
 
-  <property>
-    <name>fs.contract.supports-atomic-rename</name>
-    <value>true</value>
-  </property>
+    <property>
+        <name>fs.contract.supports-atomic-rename</name>
+        <value>true</value>
+    </property>
 
-  <property>
-    <name>fs.contract.supports-block-locality</name>
-    <value>true</value>
-  </property>
+    <property>
+        <name>fs.contract.supports-block-locality</name>
+        <value>true</value>
+    </property>
 
-  <property>
-    <name>fs.contract.supports-concat</name>
-    <value>true</value>
-  </property>
+    <property>
+        <name>fs.contract.supports-concat</name>
+        <value>true</value>
+    </property>
 
-  <property>
-    <name>fs.contract.supports-seek</name>
-    <value>true</value>
-  </property>
+    <property>
+        <name>fs.contract.supports-seek</name>
+        <value>true</value>
+    </property>
 
-  <property>
-    <name>fs.contract.rejects-seek-past-eof</name>
-    <value>true</value>
-  </property>
+    <property>
+        <name>fs.contract.rejects-seek-past-eof</name>
+        <value>true</value>
+    </property>
 
-  <property>
-    <name>fs.contract.supports-strict-exceptions</name>
-    <value>true</value>
-  </property>
+    <property>
+        <name>fs.contract.supports-strict-exceptions</name>
+        <value>true</value>
+    </property>
 
-  <property>
-    <name>fs.contract.supports-unix-permissions</name>
-    <value>true</value>
-  </property>
+    <property>
+        <name>fs.contract.supports-unix-permissions</name>
+        <value>true</value>
+    </property>
 
-  <property>
-    <name>fs.contract.rename-returns-false-if-dest-exists</name>
-    <value>true</value>
-  </property>
+    <property>
+        <name>fs.contract.rename-returns-false-if-dest-exists</name>
+        <value>true</value>
+    </property>
 
-  <property>
-    <name>fs.contract.rename-returns-false-if-source-missing</name>
-    <value>true</value>
-  </property>
+    <property>
+        <name>fs.contract.rename-returns-false-if-source-missing</name>
+        <value>true</value>
+    </property>
 
 </configuration>

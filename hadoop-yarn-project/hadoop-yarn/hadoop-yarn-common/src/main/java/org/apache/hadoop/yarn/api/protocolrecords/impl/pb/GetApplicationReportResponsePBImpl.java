@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@
 package org.apache.hadoop.yarn.api.protocolrecords.impl.pb;
 
 
+import com.google.protobuf.TextFormat;
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationReportResponse;
@@ -28,105 +29,102 @@ import org.apache.hadoop.yarn.proto.YarnProtos.ApplicationReportProto;
 import org.apache.hadoop.yarn.proto.YarnServiceProtos.GetApplicationReportResponseProto;
 import org.apache.hadoop.yarn.proto.YarnServiceProtos.GetApplicationReportResponseProtoOrBuilder;
 
-import com.google.protobuf.TextFormat;
-
 @Private
 @Unstable
 public class GetApplicationReportResponsePBImpl extends GetApplicationReportResponse {
-  GetApplicationReportResponseProto proto = GetApplicationReportResponseProto.getDefaultInstance();
-  GetApplicationReportResponseProto.Builder builder = null;
-  boolean viaProto = false;
-  
-  private ApplicationReport applicationReport = null;
-  
-  
-  public GetApplicationReportResponsePBImpl() {
-    builder = GetApplicationReportResponseProto.newBuilder();
-  }
+    GetApplicationReportResponseProto proto = GetApplicationReportResponseProto.getDefaultInstance();
+    GetApplicationReportResponseProto.Builder builder = null;
+    boolean viaProto = false;
 
-  public GetApplicationReportResponsePBImpl(GetApplicationReportResponseProto proto) {
-    this.proto = proto;
-    viaProto = true;
-  }
-  
-  public GetApplicationReportResponseProto getProto() {
-      mergeLocalToProto();
-    proto = viaProto ? proto : builder.build();
-    viaProto = true;
-    return proto;
-  }
+    private ApplicationReport applicationReport = null;
 
-  @Override
-  public int hashCode() {
-    return getProto().hashCode();
-  }
 
-  @Override
-  public boolean equals(Object other) {
-    if (other == null)
-      return false;
-    if (other.getClass().isAssignableFrom(this.getClass())) {
-      return this.getProto().equals(this.getClass().cast(other).getProto());
+    public GetApplicationReportResponsePBImpl() {
+        builder = GetApplicationReportResponseProto.newBuilder();
     }
-    return false;
-  }
 
-  @Override
-  public String toString() {
-    return TextFormat.shortDebugString(getProto());
-  }
-
-  private void mergeLocalToBuilder() {
-    if (this.applicationReport != null) {
-      builder.setApplicationReport(convertToProtoFormat(this.applicationReport));
+    public GetApplicationReportResponsePBImpl(GetApplicationReportResponseProto proto) {
+        this.proto = proto;
+        viaProto = true;
     }
-  }
 
-  private void mergeLocalToProto() {
-    if (viaProto) 
-      maybeInitBuilder();
-    mergeLocalToBuilder();
-    proto = builder.build();
-    viaProto = true;
-  }
-
-  private void maybeInitBuilder() {
-    if (viaProto || builder == null) {
-      builder = GetApplicationReportResponseProto.newBuilder(proto);
+    public GetApplicationReportResponseProto getProto() {
+        mergeLocalToProto();
+        proto = viaProto ? proto : builder.build();
+        viaProto = true;
+        return proto;
     }
-    viaProto = false;
-  }
-    
-  
-  @Override
-  public ApplicationReport getApplicationReport() {
-    GetApplicationReportResponseProtoOrBuilder p = viaProto ? proto : builder;
-    if (this.applicationReport != null) {
-      return this.applicationReport;
+
+    @Override
+    public int hashCode() {
+        return getProto().hashCode();
     }
-    if (!p.hasApplicationReport()) {
-      return null;
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null)
+            return false;
+        if (other.getClass().isAssignableFrom(this.getClass())) {
+            return this.getProto().equals(this.getClass().cast(other).getProto());
+        }
+        return false;
     }
-    this.applicationReport = convertFromProtoFormat(p.getApplicationReport());
-    return this.applicationReport;
-  }
 
-  @Override
-  public void setApplicationReport(ApplicationReport applicationMaster) {
-    maybeInitBuilder();
-    if (applicationMaster == null) 
-      builder.clearApplicationReport();
-    this.applicationReport = applicationMaster;
-  }
+    @Override
+    public String toString() {
+        return TextFormat.shortDebugString(getProto());
+    }
 
-  private ApplicationReportPBImpl convertFromProtoFormat(ApplicationReportProto p) {
-    return new ApplicationReportPBImpl(p);
-  }
+    private void mergeLocalToBuilder() {
+        if (this.applicationReport != null) {
+            builder.setApplicationReport(convertToProtoFormat(this.applicationReport));
+        }
+    }
 
-  private ApplicationReportProto convertToProtoFormat(ApplicationReport t) {
-    return ((ApplicationReportPBImpl)t).getProto();
-  }
+    private void mergeLocalToProto() {
+        if (viaProto)
+            maybeInitBuilder();
+        mergeLocalToBuilder();
+        proto = builder.build();
+        viaProto = true;
+    }
+
+    private void maybeInitBuilder() {
+        if (viaProto || builder == null) {
+            builder = GetApplicationReportResponseProto.newBuilder(proto);
+        }
+        viaProto = false;
+    }
 
 
+    @Override
+    public ApplicationReport getApplicationReport() {
+        GetApplicationReportResponseProtoOrBuilder p = viaProto ? proto : builder;
+        if (this.applicationReport != null) {
+            return this.applicationReport;
+        }
+        if (!p.hasApplicationReport()) {
+            return null;
+        }
+        this.applicationReport = convertFromProtoFormat(p.getApplicationReport());
+        return this.applicationReport;
+    }
 
-}  
+    @Override
+    public void setApplicationReport(ApplicationReport applicationMaster) {
+        maybeInitBuilder();
+        if (applicationMaster == null)
+            builder.clearApplicationReport();
+        this.applicationReport = applicationMaster;
+    }
+
+    private ApplicationReportPBImpl convertFromProtoFormat(ApplicationReportProto p) {
+        return new ApplicationReportPBImpl(p);
+    }
+
+    private ApplicationReportProto convertToProtoFormat(ApplicationReport t) {
+        return ((ApplicationReportPBImpl) t).getProto();
+    }
+
+
+}

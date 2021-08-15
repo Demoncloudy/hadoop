@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,78 +17,77 @@
  */
 package org.apache.hadoop.tools.rumen;
 
-import java.util.List;
-
 import org.apache.hadoop.mapred.TaskStatus.State;
+
+import java.util.List;
 
 /**
  * {@link ReduceTaskAttemptInfo} represents the information with regard to a
  * reduce task attempt.
  */
 public class ReduceTaskAttemptInfo extends TaskAttemptInfo {
-  private long shuffleTime;
-  private long mergeTime;
-  private long reduceTime;
+    private long shuffleTime;
+    private long mergeTime;
+    private long reduceTime;
 
-  public ReduceTaskAttemptInfo(State state, TaskInfo taskInfo, long shuffleTime,
-      long mergeTime, long reduceTime, List<List<Integer>> allSplits) {
-    super(state, taskInfo,
-          allSplits == null
-            ? LoggedTaskAttempt.SplitVectorKind.getNullSplitsVector()
-           : allSplits);
-    this.shuffleTime = shuffleTime;
-    this.mergeTime = mergeTime;
-    this.reduceTime = reduceTime;
-  }
+    public ReduceTaskAttemptInfo(State state, TaskInfo taskInfo, long shuffleTime,
+                                 long mergeTime, long reduceTime, List<List<Integer>> allSplits) {
+        super(state, taskInfo,
+                allSplits == null
+                        ? LoggedTaskAttempt.SplitVectorKind.getNullSplitsVector()
+                        : allSplits);
+        this.shuffleTime = shuffleTime;
+        this.mergeTime = mergeTime;
+        this.reduceTime = reduceTime;
+    }
 
 
-  /**
-   *
-   * @deprecated please use the constructor with 
-   *               {@code (state, taskInfo, shuffleTime, mergeTime, reduceTime
-   *                  List<List<Integer>> allSplits)}
-   *             instead.  
-   *
-   * see {@link LoggedTaskAttempt} for an explanation of
-   *        {@code allSplits}.
-   *
-   * If there are no known splits, use {@code null}.
-   */
-  @Deprecated
-  public ReduceTaskAttemptInfo(State state, TaskInfo taskInfo, long shuffleTime,
-      long mergeTime, long reduceTime) {
-    this(state, taskInfo, shuffleTime, mergeTime, reduceTime, null);
-  }
+    /**
+     * @deprecated please use the constructor with
+     * {@code (state, taskInfo, shuffleTime, mergeTime, reduceTime
+     * List<List<Integer>> allSplits)}
+     * instead.
+     * <p>
+     * see {@link LoggedTaskAttempt} for an explanation of
+     * {@code allSplits}.
+     * <p>
+     * If there are no known splits, use {@code null}.
+     */
+    @Deprecated
+    public ReduceTaskAttemptInfo(State state, TaskInfo taskInfo, long shuffleTime,
+                                 long mergeTime, long reduceTime) {
+        this(state, taskInfo, shuffleTime, mergeTime, reduceTime, null);
+    }
 
-  /**
-   * Get the runtime for the <b>reduce</b> phase of the reduce task-attempt.
-   * 
-   * @return the runtime for the <b>reduce</b> phase of the reduce task-attempt
-   */
-  public long getReduceRuntime() {
-    return reduceTime;
-  }
+    /**
+     * Get the runtime for the <b>reduce</b> phase of the reduce task-attempt.
+     *
+     * @return the runtime for the <b>reduce</b> phase of the reduce task-attempt
+     */
+    public long getReduceRuntime() {
+        return reduceTime;
+    }
 
-  /**
-   * Get the runtime for the <b>shuffle</b> phase of the reduce task-attempt.
-   * 
-   * @return the runtime for the <b>shuffle</b> phase of the reduce task-attempt
-   */
-  public long getShuffleRuntime() {
-    return shuffleTime;
-  }
+    /**
+     * Get the runtime for the <b>shuffle</b> phase of the reduce task-attempt.
+     *
+     * @return the runtime for the <b>shuffle</b> phase of the reduce task-attempt
+     */
+    public long getShuffleRuntime() {
+        return shuffleTime;
+    }
 
-  /**
-   * Get the runtime for the <b>merge</b> phase of the reduce task-attempt
-   * 
-   * @return the runtime for the <b>merge</b> phase of the reduce task-attempt
-   */
-  public long getMergeRuntime() {
-    return mergeTime;
-  }
+    /**
+     * Get the runtime for the <b>merge</b> phase of the reduce task-attempt
+     *
+     * @return the runtime for the <b>merge</b> phase of the reduce task-attempt
+     */
+    public long getMergeRuntime() {
+        return mergeTime;
+    }
 
-  @Override
-  public long getRuntime() {
-    return (getShuffleRuntime() + getMergeRuntime() + getReduceRuntime());
-  }
+    @Override
+    public long getRuntime() {
+        return (getShuffleRuntime() + getMergeRuntime() + getReduceRuntime());
+    }
 }

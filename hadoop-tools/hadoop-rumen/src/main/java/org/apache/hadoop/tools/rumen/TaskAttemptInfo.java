@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,62 +17,62 @@
  */
 package org.apache.hadoop.tools.rumen;
 
-import java.util.List;
-
 import org.apache.hadoop.mapred.TaskStatus.State;
+
+import java.util.List;
 
 /**
  * {@link TaskAttemptInfo} is a collection of statistics about a particular
  * task-attempt gleaned from job-history of the job.
  */
 public abstract class TaskAttemptInfo {
-  protected final State state;
-  protected final TaskInfo taskInfo;
+    protected final State state;
+    protected final TaskInfo taskInfo;
 
-  protected final List<List<Integer>> allSplits;
+    protected final List<List<Integer>> allSplits;
 
-  protected TaskAttemptInfo
-       (State state, TaskInfo taskInfo, List<List<Integer>> allSplits) {
-    if (state == State.SUCCEEDED || state == State.FAILED) {
-      this.state = state;
-    } else {
-      throw new IllegalArgumentException("status cannot be " + state);
+    protected TaskAttemptInfo
+            (State state, TaskInfo taskInfo, List<List<Integer>> allSplits) {
+        if (state == State.SUCCEEDED || state == State.FAILED) {
+            this.state = state;
+        } else {
+            throw new IllegalArgumentException("status cannot be " + state);
+        }
+        this.taskInfo = taskInfo;
+        this.allSplits = allSplits;
     }
-    this.taskInfo = taskInfo;
-    this.allSplits = allSplits;
-  }
 
-  protected TaskAttemptInfo
-       (State state, TaskInfo taskInfo) {
-    this(state, taskInfo, LoggedTaskAttempt.SplitVectorKind.getNullSplitsVector());
-  }
+    protected TaskAttemptInfo
+            (State state, TaskInfo taskInfo) {
+        this(state, taskInfo, LoggedTaskAttempt.SplitVectorKind.getNullSplitsVector());
+    }
 
-  /**
-   * Get the final {@link State} of the task-attempt.
-   * 
-   * @return the final <code>State</code> of the task-attempt
-   */
-  public State getRunState() {
-    return state;
-  }
+    /**
+     * Get the final {@link State} of the task-attempt.
+     *
+     * @return the final <code>State</code> of the task-attempt
+     */
+    public State getRunState() {
+        return state;
+    }
 
-  /**
-   * Get the total runtime for the task-attempt.
-   * 
-   * @return the total runtime for the task-attempt
-   */
-  public abstract long getRuntime();
+    /**
+     * Get the total runtime for the task-attempt.
+     *
+     * @return the total runtime for the task-attempt
+     */
+    public abstract long getRuntime();
 
-  /**
-   * Get the {@link TaskInfo} for the given task-attempt.
-   * 
-   * @return the <code>TaskInfo</code> for the given task-attempt
-   */
-  public TaskInfo getTaskInfo() {
-    return taskInfo;
-  }
-      
-  public List<Integer> getSplitVector(LoggedTaskAttempt.SplitVectorKind kind) {
-    return kind.get(allSplits);
-  }
+    /**
+     * Get the {@link TaskInfo} for the given task-attempt.
+     *
+     * @return the <code>TaskInfo</code> for the given task-attempt
+     */
+    public TaskInfo getTaskInfo() {
+        return taskInfo;
+    }
+
+    public List<Integer> getSplitVector(LoggedTaskAttempt.SplitVectorKind kind) {
+        return kind.get(allSplits);
+    }
 }

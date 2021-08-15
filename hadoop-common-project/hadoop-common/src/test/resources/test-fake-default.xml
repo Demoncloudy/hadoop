@@ -21,9 +21,9 @@
   core-default or mapred-default, used for some of the unit tests.
   -->
 <configuration>
-  <property>
-    <name>tests.fake-default.new-key</name>
-    <value>tests.fake-default.value</value>
-    <description>a default value for the "new" key of a deprecated pair.</description>
-  </property>
+    <property>
+        <name>tests.fake-default.new-key</name>
+        <value>tests.fake-default.value</value>
+        <description>a default value for the "new" key of a deprecated pair.</description>
+    </property>
 </configuration>

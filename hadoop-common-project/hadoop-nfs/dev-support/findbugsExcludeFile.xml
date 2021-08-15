@@ -15,14 +15,14 @@
    limitations under the License.
 -->
 <FindBugsFilter>
-  <!--
-    FindBugs is complaining about CredentialsSys#getAuxGIDs(...) returning
-    a mutable array, but it is alright in our case, and copies would be
-    more expensive instead.
-  -->
-  <Match>
-      <Class name="org.apache.hadoop.oncrpc.security.CredentialsSys"/>
-      <Method name="getAuxGIDs" params="" returns="int[]"/>
-      <Bug code="EI"/>
-  </Match>
+    <!--
+      FindBugs is complaining about CredentialsSys#getAuxGIDs(...) returning
+      a mutable array, but it is alright in our case, and copies would be
+      more expensive instead.
+    -->
+    <Match>
+        <Class name="org.apache.hadoop.oncrpc.security.CredentialsSys"/>
+        <Method name="getAuxGIDs" params="" returns="int[]"/>
+        <Bug code="EI"/>
+    </Match>
 </FindBugsFilter>

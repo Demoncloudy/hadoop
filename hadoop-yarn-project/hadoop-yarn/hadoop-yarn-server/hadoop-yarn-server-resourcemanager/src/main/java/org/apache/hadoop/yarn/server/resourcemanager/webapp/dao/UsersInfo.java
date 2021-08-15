@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,29 +18,28 @@
 
 package org.apache.hadoop.yarn.server.resourcemanager.webapp.dao;
 
-import java.util.ArrayList;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.UserInfo;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.UserInfo;
+import java.util.ArrayList;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class UsersInfo {
-  @XmlElement(name="user")
-  protected ArrayList<UserInfo> usersList = new ArrayList<UserInfo>();
+    @XmlElement(name = "user")
+    protected ArrayList<UserInfo> usersList = new ArrayList<UserInfo>();
 
-  public UsersInfo() {
-  }
+    public UsersInfo() {
+    }
 
-  public UsersInfo(ArrayList<UserInfo> usersList) {
-    this.usersList = usersList;
-  }
+    public UsersInfo(ArrayList<UserInfo> usersList) {
+        this.usersList = usersList;
+    }
 
-  public ArrayList<UserInfo> getUsersList() {
-    return usersList;
-  }
+    public ArrayList<UserInfo> getUsersList() {
+        return usersList;
+    }
 }

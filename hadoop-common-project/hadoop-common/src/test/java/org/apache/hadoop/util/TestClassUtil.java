@@ -18,23 +18,22 @@
 
 package org.apache.hadoop.util;
 
-import java.io.File;
-
-import org.junit.Assert;
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
+
 public class TestClassUtil {
-  @Test(timeout=1000)
-  public void testFindContainingJar() {
-    String containingJar = ClassUtil.findContainingJar(Logger.class);
-    Assert.assertNotNull("Containing jar not found for Logger", 
-        containingJar);
-    File jarFile = new File(containingJar);
-    Assert.assertTrue("Containing jar does not exist on file system", 
-        jarFile.exists());
-    Assert.assertTrue("Incorrect jar file" + containingJar,  
-        jarFile.getName().matches("log4j.+[.]jar"));
-  }
+    @Test(timeout = 1000)
+    public void testFindContainingJar() {
+        String containingJar = ClassUtil.findContainingJar(Logger.class);
+        Assert.assertNotNull("Containing jar not found for Logger",
+                containingJar);
+        File jarFile = new File(containingJar);
+        Assert.assertTrue("Containing jar does not exist on file system",
+                jarFile.exists());
+        Assert.assertTrue("Incorrect jar file" + containingJar,
+                jarFile.getName().matches("log4j.+[.]jar"));
+    }
 }

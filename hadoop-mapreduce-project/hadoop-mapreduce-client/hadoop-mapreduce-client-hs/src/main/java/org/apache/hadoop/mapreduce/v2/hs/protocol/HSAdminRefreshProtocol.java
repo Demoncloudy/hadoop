@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,46 +18,46 @@
 
 package org.apache.hadoop.mapreduce.v2.hs.protocol;
 
-import java.io.IOException;
-
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
 import org.apache.hadoop.security.KerberosInfo;
 
+import java.io.IOException;
+
 /**
  * Protocol use
- * 
  */
 @KerberosInfo(serverPrincipal = CommonConfigurationKeys.HADOOP_SECURITY_SERVICE_USER_NAME_KEY)
 @Private
 @InterfaceStability.Evolving
 public interface HSAdminRefreshProtocol {
-  /**
-   * Refresh admin acls.
-   * 
-   * @throws IOException
-   */
-  public void refreshAdminAcls() throws IOException;
-  
-  /**
-   * Refresh loaded job cache
-   * @throws IOException
-   */
-  public void refreshLoadedJobCache() throws IOException;
+    /**
+     * Refresh admin acls.
+     *
+     * @throws IOException
+     */
+    public void refreshAdminAcls() throws IOException;
 
-  /**
-   * Refresh job retention settings.
-   * 
-   * @throws IOException
-   */
-  public void refreshJobRetentionSettings() throws IOException;
+    /**
+     * Refresh loaded job cache
+     *
+     * @throws IOException
+     */
+    public void refreshLoadedJobCache() throws IOException;
 
-  /**
-   * Refresh log retention settings.
-   * 
-   * @throws IOException
-   */
-  public void refreshLogRetentionSettings() throws IOException;
-  
+    /**
+     * Refresh job retention settings.
+     *
+     * @throws IOException
+     */
+    public void refreshJobRetentionSettings() throws IOException;
+
+    /**
+     * Refresh log retention settings.
+     *
+     * @throws IOException
+     */
+    public void refreshLogRetentionSettings() throws IOException;
+
 }

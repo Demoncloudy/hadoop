@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,25 +25,25 @@ import org.apache.hadoop.security.UserGroupInformation;
 
 @InterfaceStability.Unstable
 @InterfaceAudience.Public
-public interface ImpersonationProvider  extends Configurable {
+public interface ImpersonationProvider extends Configurable {
 
 
-  /**
-   * Specifies the configuration prefix for the proxy user properties and
-   * initializes the provider.
-   *
-   * @param configurationPrefix the configuration prefix for the proxy user
-   * properties
-   */
-  public void init(String configurationPrefix);
+    /**
+     * Specifies the configuration prefix for the proxy user properties and
+     * initializes the provider.
+     *
+     * @param configurationPrefix the configuration prefix for the proxy user
+     *                            properties
+     */
+    public void init(String configurationPrefix);
 
-  /**
-   * Authorize the superuser which is doing doAs
-   * 
-   * @param user ugi of the effective or proxy user which contains a real user
-   * @param remoteAddress the ip address of client
-   * @throws AuthorizationException
-   */
-  public void authorize(UserGroupInformation user, String remoteAddress)
-      throws AuthorizationException;
+    /**
+     * Authorize the superuser which is doing doAs
+     *
+     * @param user          ugi of the effective or proxy user which contains a real user
+     * @param remoteAddress the ip address of client
+     * @throws AuthorizationException
+     */
+    public void authorize(UserGroupInformation user, String remoteAddress)
+            throws AuthorizationException;
 }

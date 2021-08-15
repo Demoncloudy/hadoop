@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,27 +23,27 @@ import org.apache.hadoop.yarn.server.applicationhistoryservice.records.Container
 
 public class WritingContainerFinishEvent extends WritingApplicationHistoryEvent {
 
-  private ContainerId containerId;
-  private ContainerFinishData containerFinish;
+    private ContainerId containerId;
+    private ContainerFinishData containerFinish;
 
-  public WritingContainerFinishEvent(ContainerId containerId,
-      ContainerFinishData containerFinish) {
-    super(WritingHistoryEventType.CONTAINER_FINISH);
-    this.containerId = containerId;
-    this.containerFinish = containerFinish;
-  }
+    public WritingContainerFinishEvent(ContainerId containerId,
+                                       ContainerFinishData containerFinish) {
+        super(WritingHistoryEventType.CONTAINER_FINISH);
+        this.containerId = containerId;
+        this.containerFinish = containerFinish;
+    }
 
-  @Override
-  public int hashCode() {
-    return containerId.getApplicationAttemptId().getApplicationId().hashCode();
-  }
+    @Override
+    public int hashCode() {
+        return containerId.getApplicationAttemptId().getApplicationId().hashCode();
+    }
 
-  public ContainerId getContainerId() {
-    return containerId;
-  }
+    public ContainerId getContainerId() {
+        return containerId;
+    }
 
-  public ContainerFinishData getContainerFinishData() {
-    return containerFinish;
-  }
+    public ContainerFinishData getContainerFinishData() {
+        return containerFinish;
+    }
 
 }

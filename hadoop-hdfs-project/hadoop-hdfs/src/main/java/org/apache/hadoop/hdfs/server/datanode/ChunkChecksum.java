@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,26 +21,26 @@ package org.apache.hadoop.hdfs.server.datanode;
 /**
  * holder class that holds checksum bytes and the length in a block at which
  * the checksum bytes end
- * 
+ * <p>
  * ex: length = 1023 and checksum is 4 bytes which is for 512 bytes, then
- *     the checksum applies for the last chunk, or bytes 512 - 1023
+ * the checksum applies for the last chunk, or bytes 512 - 1023
  */
 
 class ChunkChecksum {
-  private final long dataLength;
-  // can be null if not available
-  private final byte[] checksum;
+    private final long dataLength;
+    // can be null if not available
+    private final byte[] checksum;
 
-  ChunkChecksum(long dataLength, byte[] checksum) {
-    this.dataLength = dataLength;
-    this.checksum = checksum;
-  }
+    ChunkChecksum(long dataLength, byte[] checksum) {
+        this.dataLength = dataLength;
+        this.checksum = checksum;
+    }
 
-  public long getDataLength() {
-    return dataLength;
-  }
+    public long getDataLength() {
+        return dataLength;
+    }
 
-  public byte[] getChecksum() {
-    return checksum;
-  }
+    public byte[] getChecksum() {
+        return checksum;
+    }
 }

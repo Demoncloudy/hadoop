@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,168 +18,168 @@
 
 package org.apache.hadoop.yarn.api.records.impl.pb;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 import org.apache.hadoop.yarn.api.records.SerializedException;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.exceptions.YarnRuntimeException;
 import org.apache.hadoop.yarn.proto.YarnProtos.SerializedExceptionProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.SerializedExceptionProtoOrBuilder;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 public class SerializedExceptionPBImpl extends SerializedException {
 
-  SerializedExceptionProto proto = null;
-  SerializedExceptionProto.Builder builder =
-      SerializedExceptionProto.newBuilder();
-  boolean viaProto = false;
+    SerializedExceptionProto proto = null;
+    SerializedExceptionProto.Builder builder =
+            SerializedExceptionProto.newBuilder();
+    boolean viaProto = false;
 
-  public SerializedExceptionPBImpl() {
-  }
-
-  public SerializedExceptionPBImpl(SerializedExceptionProto proto) {
-    this.proto = proto;
-    viaProto = true;
-  }
-
-  private SerializedExceptionPBImpl(Throwable t) {
-    init(t);
-  }
-
-  public void init(String message) {
-    maybeInitBuilder();
-    builder.setMessage(message);
-  }
-
-  public void init(Throwable t) {
-    maybeInitBuilder();
-    if (t == null) {
-      return;
+    public SerializedExceptionPBImpl() {
     }
 
-    if (t.getCause() == null) {
-    } else {
-      builder.setCause(new SerializedExceptionPBImpl(t.getCause()).getProto());
+    public SerializedExceptionPBImpl(SerializedExceptionProto proto) {
+        this.proto = proto;
+        viaProto = true;
     }
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    t.printStackTrace(pw);
-    pw.close();
-    if (sw.toString() != null)
-      builder.setTrace(sw.toString());
-    if (t.getMessage() != null)
-      builder.setMessage(t.getMessage());
-    builder.setClassName(t.getClass().getCanonicalName());
-  }
 
-  public void init(String message, Throwable t) {
-    init(t);
-    if (message != null)
-      builder.setMessage(message);
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public Throwable deSerialize() {
-
-    SerializedException cause = getCause();
-    SerializedExceptionProtoOrBuilder p = viaProto ? proto : builder;
-    Class<?> realClass = null;
-    try {
-      realClass = Class.forName(p.getClassName());
-    } catch (ClassNotFoundException e) {
-      throw new YarnRuntimeException(e);
+    private SerializedExceptionPBImpl(Throwable t) {
+        init(t);
     }
-    Class classType = null;
-    if (YarnException.class.isAssignableFrom(realClass)) {
-      classType = YarnException.class;
-    } else if (IOException.class.isAssignableFrom(realClass)) {
-      classType = IOException.class;
-    } else if (RuntimeException.class.isAssignableFrom(realClass)) {
-      classType = RuntimeException.class;
-    } else {
-      classType = Exception.class;
+
+    private static <T extends Throwable> T instantiateException(
+            Class<? extends T> cls, String message, Throwable cause) {
+        Constructor<? extends T> cn;
+        T ex = null;
+        try {
+            cn = cls.getConstructor(String.class);
+            cn.setAccessible(true);
+            ex = cn.newInstance(message);
+            ex.initCause(cause);
+        } catch (SecurityException e) {
+            throw new YarnRuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new YarnRuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            throw new YarnRuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new YarnRuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new YarnRuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new YarnRuntimeException(e);
+        }
+        return ex;
     }
-    return instantiateException(realClass.asSubclass(classType), getMessage(),
-      cause == null ? null : cause.deSerialize());
-  }
 
-  @Override
-  public String getMessage() {
-    SerializedExceptionProtoOrBuilder p = viaProto ? proto : builder;
-    return p.getMessage();
-  }
-
-  @Override
-  public String getRemoteTrace() {
-    SerializedExceptionProtoOrBuilder p = viaProto ? proto : builder;
-    return p.getTrace();
-  }
-
-  @Override
-  public SerializedException getCause() {
-    SerializedExceptionProtoOrBuilder p = viaProto ? proto : builder;
-    if (p.hasCause()) {
-      return new SerializedExceptionPBImpl(p.getCause());
-    } else {
-      return null;
+    public void init(String message) {
+        maybeInitBuilder();
+        builder.setMessage(message);
     }
-  }
 
-  public SerializedExceptionProto getProto() {
-    proto = viaProto ? proto : builder.build();
-    viaProto = true;
-    return proto;
-  }
+    public void init(Throwable t) {
+        maybeInitBuilder();
+        if (t == null) {
+            return;
+        }
 
-  @Override
-  public int hashCode() {
-    return getProto().hashCode();
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if (other == null) {
-      return false;
+        if (t.getCause() == null) {
+        } else {
+            builder.setCause(new SerializedExceptionPBImpl(t.getCause()).getProto());
+        }
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        t.printStackTrace(pw);
+        pw.close();
+        if (sw.toString() != null)
+            builder.setTrace(sw.toString());
+        if (t.getMessage() != null)
+            builder.setMessage(t.getMessage());
+        builder.setClassName(t.getClass().getCanonicalName());
     }
-    if (other.getClass().isAssignableFrom(this.getClass())) {
-      return this.getProto().equals(this.getClass().cast(other).getProto());
-    }
-    return false;
-  }
 
-  private void maybeInitBuilder() {
-    if (viaProto || builder == null) {
-      builder = SerializedExceptionProto.newBuilder(proto);
+    public void init(String message, Throwable t) {
+        init(t);
+        if (message != null)
+            builder.setMessage(message);
     }
-    viaProto = false;
-  }
 
-  private static <T extends Throwable> T instantiateException(
-      Class<? extends T> cls, String message, Throwable cause) {
-    Constructor<? extends T> cn;
-    T ex = null;
-    try {
-      cn = cls.getConstructor(String.class);
-      cn.setAccessible(true);
-      ex = cn.newInstance(message);
-      ex.initCause(cause);
-    } catch (SecurityException e) {
-      throw new YarnRuntimeException(e);
-    } catch (NoSuchMethodException e) {
-      throw new YarnRuntimeException(e);
-    } catch (IllegalArgumentException e) {
-      throw new YarnRuntimeException(e);
-    } catch (InstantiationException e) {
-      throw new YarnRuntimeException(e);
-    } catch (IllegalAccessException e) {
-      throw new YarnRuntimeException(e);
-    } catch (InvocationTargetException e) {
-      throw new YarnRuntimeException(e);
+    @SuppressWarnings("unchecked")
+    @Override
+    public Throwable deSerialize() {
+
+        SerializedException cause = getCause();
+        SerializedExceptionProtoOrBuilder p = viaProto ? proto : builder;
+        Class<?> realClass = null;
+        try {
+            realClass = Class.forName(p.getClassName());
+        } catch (ClassNotFoundException e) {
+            throw new YarnRuntimeException(e);
+        }
+        Class classType = null;
+        if (YarnException.class.isAssignableFrom(realClass)) {
+            classType = YarnException.class;
+        } else if (IOException.class.isAssignableFrom(realClass)) {
+            classType = IOException.class;
+        } else if (RuntimeException.class.isAssignableFrom(realClass)) {
+            classType = RuntimeException.class;
+        } else {
+            classType = Exception.class;
+        }
+        return instantiateException(realClass.asSubclass(classType), getMessage(),
+                cause == null ? null : cause.deSerialize());
     }
-    return ex;
-  }
+
+    @Override
+    public String getMessage() {
+        SerializedExceptionProtoOrBuilder p = viaProto ? proto : builder;
+        return p.getMessage();
+    }
+
+    @Override
+    public String getRemoteTrace() {
+        SerializedExceptionProtoOrBuilder p = viaProto ? proto : builder;
+        return p.getTrace();
+    }
+
+    @Override
+    public SerializedException getCause() {
+        SerializedExceptionProtoOrBuilder p = viaProto ? proto : builder;
+        if (p.hasCause()) {
+            return new SerializedExceptionPBImpl(p.getCause());
+        } else {
+            return null;
+        }
+    }
+
+    public SerializedExceptionProto getProto() {
+        proto = viaProto ? proto : builder.build();
+        viaProto = true;
+        return proto;
+    }
+
+    @Override
+    public int hashCode() {
+        return getProto().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other.getClass().isAssignableFrom(this.getClass())) {
+            return this.getProto().equals(this.getClass().cast(other).getProto());
+        }
+        return false;
+    }
+
+    private void maybeInitBuilder() {
+        if (viaProto || builder == null) {
+            builder = SerializedExceptionProto.newBuilder(proto);
+        }
+        viaProto = false;
+    }
 }

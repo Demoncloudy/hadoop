@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,17 +17,16 @@
  */
 package org.apache.hadoop.net;
 
+import org.apache.hadoop.classification.InterfaceAudience;
+import org.apache.hadoop.classification.InterfaceStability;
+
+import javax.net.SocketFactory;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.channels.SocketChannel;
-
-import javax.net.SocketFactory;
-
-import org.apache.hadoop.classification.InterfaceAudience;
-import org.apache.hadoop.classification.InterfaceStability;
 
 /**
  * Specialized SocketFactory to create sockets with a SOCKS proxy
@@ -36,82 +35,82 @@ import org.apache.hadoop.classification.InterfaceStability;
 @InterfaceStability.Evolving
 public class StandardSocketFactory extends SocketFactory {
 
-  /**
-   * Default empty constructor (for use with the reflection API).
-   */
-  public StandardSocketFactory() {
-  }
-
-  @Override
-  public Socket createSocket() throws IOException {
-    /*
-     * NOTE: This returns an NIO socket so that it has an associated 
-     * SocketChannel. As of now, this unfortunately makes streams returned
-     * by Socket.getInputStream() and Socket.getOutputStream() unusable
-     * (because a blocking read on input stream blocks write on output stream
-     * and vice versa).
-     * 
-     * So users of these socket factories should use 
-     * NetUtils.getInputStream(socket) and 
-     * NetUtils.getOutputStream(socket) instead.
-     * 
-     * A solution for hiding from this from user is to write a 
-     * 'FilterSocket' on the lines of FilterInputStream and extend it by
-     * overriding getInputStream() and getOutputStream().
+    /**
+     * Default empty constructor (for use with the reflection API).
      */
-    return SocketChannel.open().socket();
-  }
+    public StandardSocketFactory() {
+    }
 
-  @Override
-  public Socket createSocket(InetAddress addr, int port) throws IOException {
+    @Override
+    public Socket createSocket() throws IOException {
+        /*
+         * NOTE: This returns an NIO socket so that it has an associated
+         * SocketChannel. As of now, this unfortunately makes streams returned
+         * by Socket.getInputStream() and Socket.getOutputStream() unusable
+         * (because a blocking read on input stream blocks write on output stream
+         * and vice versa).
+         *
+         * So users of these socket factories should use
+         * NetUtils.getInputStream(socket) and
+         * NetUtils.getOutputStream(socket) instead.
+         *
+         * A solution for hiding from this from user is to write a
+         * 'FilterSocket' on the lines of FilterInputStream and extend it by
+         * overriding getInputStream() and getOutputStream().
+         */
+        return SocketChannel.open().socket();
+    }
 
-    Socket socket = createSocket();
-    socket.connect(new InetSocketAddress(addr, port));
-    return socket;
-  }
+    @Override
+    public Socket createSocket(InetAddress addr, int port) throws IOException {
 
-  @Override
-  public Socket createSocket(InetAddress addr, int port,
-      InetAddress localHostAddr, int localPort) throws IOException {
+        Socket socket = createSocket();
+        socket.connect(new InetSocketAddress(addr, port));
+        return socket;
+    }
 
-    Socket socket = createSocket();
-    socket.bind(new InetSocketAddress(localHostAddr, localPort));
-    socket.connect(new InetSocketAddress(addr, port));
-    return socket;
-  }
+    @Override
+    public Socket createSocket(InetAddress addr, int port,
+                               InetAddress localHostAddr, int localPort) throws IOException {
 
-  @Override
-  public Socket createSocket(String host, int port) throws IOException,
-      UnknownHostException {
+        Socket socket = createSocket();
+        socket.bind(new InetSocketAddress(localHostAddr, localPort));
+        socket.connect(new InetSocketAddress(addr, port));
+        return socket;
+    }
 
-    Socket socket = createSocket();
-    socket.connect(new InetSocketAddress(host, port));
-    return socket;
-  }
+    @Override
+    public Socket createSocket(String host, int port) throws IOException,
+            UnknownHostException {
 
-  @Override
-  public Socket createSocket(String host, int port,
-      InetAddress localHostAddr, int localPort) throws IOException,
-      UnknownHostException {
+        Socket socket = createSocket();
+        socket.connect(new InetSocketAddress(host, port));
+        return socket;
+    }
 
-    Socket socket = createSocket();
-    socket.bind(new InetSocketAddress(localHostAddr, localPort));
-    socket.connect(new InetSocketAddress(host, port));
-    return socket;
-  }
+    @Override
+    public Socket createSocket(String host, int port,
+                               InetAddress localHostAddr, int localPort) throws IOException,
+            UnknownHostException {
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    return obj.getClass().equals(this.getClass());
-  }
+        Socket socket = createSocket();
+        socket.bind(new InetSocketAddress(localHostAddr, localPort));
+        socket.connect(new InetSocketAddress(host, port));
+        return socket;
+    }
 
-  @Override
-  public int hashCode() {
-    return this.getClass().hashCode();
-  }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        return obj.getClass().equals(this.getClass());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().hashCode();
+    }
 
 }

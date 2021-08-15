@@ -12,49 +12,49 @@
   See the License for the specific language governing permissions and
   limitations under the License. See accompanying LICENSE file.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-project</artifactId>
+        <version>2.6.5</version>
+        <relativePath>../hadoop-project</relativePath>
+    </parent>
     <groupId>org.apache.hadoop</groupId>
-    <artifactId>hadoop-project</artifactId>
+    <artifactId>hadoop-common-project</artifactId>
     <version>2.6.5</version>
-    <relativePath>../hadoop-project</relativePath>
-  </parent>
-  <groupId>org.apache.hadoop</groupId>
-  <artifactId>hadoop-common-project</artifactId>
-  <version>2.6.5</version>
-  <description>Apache Hadoop Common Project</description>
-  <name>Apache Hadoop Common Project</name>
-  <packaging>pom</packaging>
+    <description>Apache Hadoop Common Project</description>
+    <name>Apache Hadoop Common Project</name>
+    <packaging>pom</packaging>
 
-  <modules>
-    <module>hadoop-auth</module>
-    <module>hadoop-auth-examples</module>
-    <module>hadoop-common</module>
-    <module>hadoop-annotations</module>
-    <module>hadoop-nfs</module>
-    <module>hadoop-minikdc</module>
-    <module>hadoop-kms</module>
-  </modules>
+    <modules>
+        <module>hadoop-auth</module>
+        <module>hadoop-auth-examples</module>
+        <module>hadoop-common</module>
+        <module>hadoop-annotations</module>
+        <module>hadoop-nfs</module>
+        <module>hadoop-minikdc</module>
+        <module>hadoop-kms</module>
+    </modules>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <configuration>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <configuration>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

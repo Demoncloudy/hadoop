@@ -24,7 +24,7 @@ import org.apache.hadoop.classification.InterfaceStability;
 /**
  * This is a manifestation of the Zookeeper restrictions about
  * what nodes may act as parents.
- *
+ * <p>
  * Children are not allowed under ephemeral nodes. This is an aspect
  * of ZK which isn't directly exposed to the registry API. It may
  * surface if the registry is manipulated outside of the registry API.
@@ -32,17 +32,17 @@ import org.apache.hadoop.classification.InterfaceStability;
 @InterfaceAudience.Public
 @InterfaceStability.Evolving
 public class NoChildrenForEphemeralsException extends RegistryIOException {
-  public NoChildrenForEphemeralsException(String path, Throwable cause) {
-    super(path, cause);
-  }
+    public NoChildrenForEphemeralsException(String path, Throwable cause) {
+        super(path, cause);
+    }
 
-  public NoChildrenForEphemeralsException(String path, String error) {
-    super(path, error);
-  }
+    public NoChildrenForEphemeralsException(String path, String error) {
+        super(path, error);
+    }
 
-  public NoChildrenForEphemeralsException(String path,
-      String error,
-      Throwable cause) {
-    super(path, error, cause);
-  }
+    public NoChildrenForEphemeralsException(String path,
+                                            String error,
+                                            Throwable cause) {
+        super(path, error, cause);
+    }
 }

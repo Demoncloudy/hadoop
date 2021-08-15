@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,16 +18,15 @@
 
 package org.apache.hadoop.yarn.api.records.timeline;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.hadoop.classification.InterfaceAudience.Public;
+import org.apache.hadoop.classification.InterfaceStability.Unstable;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.apache.hadoop.classification.InterfaceAudience.Public;
-import org.apache.hadoop.classification.InterfaceStability.Unstable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The class that hosts a list of timeline domains.
@@ -38,49 +37,46 @@ import org.apache.hadoop.classification.InterfaceStability.Unstable;
 @Unstable
 public class TimelineDomains {
 
-  private List<TimelineDomain> domains = new ArrayList<TimelineDomain>();
+    private List<TimelineDomain> domains = new ArrayList<TimelineDomain>();
 
-  public TimelineDomains() {
-  }
+    public TimelineDomains() {
+    }
 
-  /**
-   * Get a list of domains
-   * 
-   * @return a list of domains
-   */
-  @XmlElement(name = "domains")
-  public List<TimelineDomain> getDomains() {
-    return domains;
-  }
+    /**
+     * Get a list of domains
+     *
+     * @return a list of domains
+     */
+    @XmlElement(name = "domains")
+    public List<TimelineDomain> getDomains() {
+        return domains;
+    }
 
-  /**
-   * Add a single domain into the existing domain list
-   * 
-   * @param domain
-   *          a single domain
-   */
-  public void addDomain(TimelineDomain domain) {
-    domains.add(domain);
-  }
+    /**
+     * Set the domain list to the given list of domains
+     *
+     * @param domains a list of domains
+     */
+    public void setDomains(List<TimelineDomain> domains) {
+        this.domains = domains;
+    }
 
-  /**
-   * All a list of domains into the existing domain list
-   * 
-   * @param domains
-   *          a list of domains
-   */
-  public void addDomains(List<TimelineDomain> domains) {
-    this.domains.addAll(domains);
-  }
+    /**
+     * Add a single domain into the existing domain list
+     *
+     * @param domain a single domain
+     */
+    public void addDomain(TimelineDomain domain) {
+        domains.add(domain);
+    }
 
-  /**
-   * Set the domain list to the given list of domains
-   * 
-   * @param domains
-   *          a list of domains
-   */
-  public void setDomains(List<TimelineDomain> domains) {
-    this.domains = domains;
-  }
+    /**
+     * All a list of domains into the existing domain list
+     *
+     * @param domains a list of domains
+     */
+    public void addDomains(List<TimelineDomain> domains) {
+        this.domains.addAll(domains);
+    }
 
 }

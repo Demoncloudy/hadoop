@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,78 +19,78 @@
 package org.apache.hadoop.lib.lang;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.concurrent.Callable;
-
 import org.apache.hadoop.test.HTestCase;
 import org.junit.Test;
 
+import java.util.concurrent.Callable;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class TestRunnableCallable extends HTestCase {
 
-  public static class R implements Runnable {
-    boolean RUN;
+    @Test
+    public void runnable() throws Exception {
+        R r = new R();
+        RunnableCallable rc = new RunnableCallable(r);
+        rc.run();
+        assertTrue(r.RUN);
 
-    @Override
-    public void run() {
-      RUN = true;
+        r = new R();
+        rc = new RunnableCallable(r);
+        rc.call();
+        assertTrue(r.RUN);
+
+        assertEquals(rc.toString(), "R");
     }
-  }
 
-  public static class C implements Callable {
-    boolean RUN;
+    @Test
+    public void callable() throws Exception {
+        C c = new C();
+        RunnableCallable rc = new RunnableCallable(c);
+        rc.run();
+        assertTrue(c.RUN);
 
-    @Override
-    public Object call() throws Exception {
-      RUN = true;
-      return null;
+        c = new C();
+        rc = new RunnableCallable(c);
+        rc.call();
+        assertTrue(c.RUN);
+
+        assertEquals(rc.toString(), "C");
     }
-  }
 
-  public static class CEx implements Callable {
-
-    @Override
-    public Object call() throws Exception {
-      throw new Exception();
+    @Test(expected = RuntimeException.class)
+    public void callableExRun() throws Exception {
+        CEx c = new CEx();
+        RunnableCallable rc = new RunnableCallable(c);
+        rc.run();
     }
-  }
 
-  @Test
-  public void runnable() throws Exception {
-    R r = new R();
-    RunnableCallable rc = new RunnableCallable(r);
-    rc.run();
-    assertTrue(r.RUN);
+    public static class R implements Runnable {
+        boolean RUN;
 
-    r = new R();
-    rc = new RunnableCallable(r);
-    rc.call();
-    assertTrue(r.RUN);
+        @Override
+        public void run() {
+            RUN = true;
+        }
+    }
 
-    assertEquals(rc.toString(), "R");
-  }
+    public static class C implements Callable {
+        boolean RUN;
 
-  @Test
-  public void callable() throws Exception {
-    C c = new C();
-    RunnableCallable rc = new RunnableCallable(c);
-    rc.run();
-    assertTrue(c.RUN);
+        @Override
+        public Object call() throws Exception {
+            RUN = true;
+            return null;
+        }
+    }
 
-    c = new C();
-    rc = new RunnableCallable(c);
-    rc.call();
-    assertTrue(c.RUN);
+    public static class CEx implements Callable {
 
-    assertEquals(rc.toString(), "C");
-  }
-
-  @Test(expected = RuntimeException.class)
-  public void callableExRun() throws Exception {
-    CEx c = new CEx();
-    RunnableCallable rc = new RunnableCallable(c);
-    rc.run();
-  }
+        @Override
+        public Object call() throws Exception {
+            throw new Exception();
+        }
+    }
 
 }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,14 +18,13 @@
 
 package org.apache.hadoop.mapreduce.lib.db;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * A RecordReader that reads records from a MySQL table via DataDrivenDBRecordReader
@@ -33,19 +32,19 @@ import org.apache.hadoop.conf.Configuration;
 @InterfaceAudience.Public
 @InterfaceStability.Evolving
 public class MySQLDataDrivenDBRecordReader<T extends DBWritable>
-    extends DataDrivenDBRecordReader<T> {
+        extends DataDrivenDBRecordReader<T> {
 
-  public MySQLDataDrivenDBRecordReader(DBInputFormat.DBInputSplit split,
-      Class<T> inputClass, Configuration conf, Connection conn, DBConfiguration dbConfig,
-      String cond, String [] fields, String table) throws SQLException {
-    super(split, inputClass, conf, conn, dbConfig, cond, fields, table, "MYSQL");
-  }
+    public MySQLDataDrivenDBRecordReader(DBInputFormat.DBInputSplit split,
+                                         Class<T> inputClass, Configuration conf, Connection conn, DBConfiguration dbConfig,
+                                         String cond, String[] fields, String table) throws SQLException {
+        super(split, inputClass, conf, conn, dbConfig, cond, fields, table, "MYSQL");
+    }
 
-  // Execute statements for mysql in unbuffered mode.
-  protected ResultSet executeQuery(String query) throws SQLException {
-    statement = getConnection().prepareStatement(query,
-      ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-    statement.setFetchSize(Integer.MIN_VALUE); // MySQL: read row-at-a-time.
-    return statement.executeQuery();
-  }
+    // Execute statements for mysql in unbuffered mode.
+    protected ResultSet executeQuery(String query) throws SQLException {
+        statement = getConnection().prepareStatement(query,
+                ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+        statement.setFetchSize(Integer.MIN_VALUE); // MySQL: read row-at-a-time.
+        return statement.executeQuery();
+    }
 }

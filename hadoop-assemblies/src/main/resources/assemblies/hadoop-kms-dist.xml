@@ -13,40 +13,40 @@
   limitations under the License.
 -->
 <assembly>
-  <id>hadoop-kms-dist</id>
-  <formats>
-    <format>dir</format>
-  </formats>
-  <includeBaseDirectory>false</includeBaseDirectory>
-  <fileSets>
-    <!-- Configuration files -->
-    <fileSet>
-      <directory>${basedir}/src/main/conf</directory>
-      <outputDirectory>/etc/hadoop</outputDirectory>
-      <includes>
-        <include>*</include>
-      </includes>
-    </fileSet>
-    <fileSet>
-      <directory>${basedir}/src/main/sbin</directory>
-      <outputDirectory>/sbin</outputDirectory>
-      <includes>
-        <include>*</include>
-      </includes>
-      <fileMode>0755</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>${basedir}/src/main/libexec</directory>
-      <outputDirectory>/libexec</outputDirectory>
-      <includes>
-        <include>*</include>
-      </includes>
-      <fileMode>0755</fileMode>
-    </fileSet>
-    <!-- Documentation -->
-    <fileSet>
-      <directory>${project.build.directory}/site</directory>
-      <outputDirectory>/share/doc/hadoop/kms</outputDirectory>
-    </fileSet>
-  </fileSets>
+    <id>hadoop-kms-dist</id>
+    <formats>
+        <format>dir</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <!-- Configuration files -->
+        <fileSet>
+            <directory>${basedir}/src/main/conf</directory>
+            <outputDirectory>/etc/hadoop</outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/sbin</directory>
+            <outputDirectory>/sbin</outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/libexec</directory>
+            <outputDirectory>/libexec</outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        <!-- Documentation -->
+        <fileSet>
+            <directory>${project.build.directory}/site</directory>
+            <outputDirectory>/share/doc/hadoop/kms</outputDirectory>
+        </fileSet>
+    </fileSets>
 </assembly>

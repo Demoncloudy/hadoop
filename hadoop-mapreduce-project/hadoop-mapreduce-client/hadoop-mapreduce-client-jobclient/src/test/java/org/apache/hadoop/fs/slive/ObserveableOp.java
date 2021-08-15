@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,9 +18,9 @@
 
 package org.apache.hadoop.fs.slive;
 
-import java.util.List;
-
 import org.apache.hadoop.fs.FileSystem;
+
+import java.util.List;
 
 /**
  * Operation which wraps a given operation and allows an observer to be notified
@@ -28,45 +28,47 @@ import org.apache.hadoop.fs.FileSystem;
  */
 class ObserveableOp extends Operation {
 
-  /**
-   * The observation interface which class that wish to monitor starting and
-   * ending events must implement.
-   */
-  interface Observer {
-    void notifyStarting(Operation op);
-    void notifyFinished(Operation op);
-  }
+    private Operation op;
+    private Observer observer;
 
-  private Operation op;
-  private Observer observer;
-
-  ObserveableOp(Operation op, Observer observer) {
-    super(op.getType(), op.getConfig(), op.getRandom());
-    this.op = op;
-    this.observer = observer;
-  }
-
-  /**
-   * Proxy to underlying operation toString()
-   */
-  public String toString() {
-    return op.toString();
-  }
-
-  @Override // Operation
-  List<OperationOutput> run(FileSystem fs) {
-    List<OperationOutput> result = null;
-    try {
-      if (observer != null) {
-        observer.notifyStarting(op);
-      }
-      result = op.run(fs);
-    } finally {
-      if (observer != null) {
-        observer.notifyFinished(op);
-      }
+    ObserveableOp(Operation op, Observer observer) {
+        super(op.getType(), op.getConfig(), op.getRandom());
+        this.op = op;
+        this.observer = observer;
     }
-    return result;
-  }
+
+    /**
+     * Proxy to underlying operation toString()
+     */
+    public String toString() {
+        return op.toString();
+    }
+
+    @Override
+        // Operation
+    List<OperationOutput> run(FileSystem fs) {
+        List<OperationOutput> result = null;
+        try {
+            if (observer != null) {
+                observer.notifyStarting(op);
+            }
+            result = op.run(fs);
+        } finally {
+            if (observer != null) {
+                observer.notifyFinished(op);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * The observation interface which class that wish to monitor starting and
+     * ending events must implement.
+     */
+    interface Observer {
+        void notifyStarting(Operation op);
+
+        void notifyFinished(Operation op);
+    }
 
 }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,9 +18,6 @@
 
 package testjar;
 
-import java.io.IOException;
-import java.util.Iterator;
-
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.mapred.JobConf;
@@ -28,25 +25,28 @@ import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
 
-public class ExternalIdentityReducer implements 
-             Reducer<WritableComparable, Writable,
-                     WritableComparable, Writable> {
+import java.io.IOException;
+import java.util.Iterator;
 
-  public void configure(JobConf job) {
+public class ExternalIdentityReducer implements
+        Reducer<WritableComparable, Writable,
+                WritableComparable, Writable> {
 
-  }
+    public void configure(JobConf job) {
 
-  public void close()
-    throws IOException {
-  }
-
-  public void reduce(WritableComparable key, Iterator<Writable> values,
-                     OutputCollector<WritableComparable, Writable> output,
-                     Reporter reporter)
-    throws IOException {
-    
-    while (values.hasNext()) {
-      output.collect(key, values.next());
     }
-  }
+
+    public void close()
+            throws IOException {
+    }
+
+    public void reduce(WritableComparable key, Iterator<Writable> values,
+                       OutputCollector<WritableComparable, Writable> output,
+                       Reporter reporter)
+            throws IOException {
+
+        while (values.hasNext()) {
+            output.collect(key, values.next());
+        }
+    }
 }

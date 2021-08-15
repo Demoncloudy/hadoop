@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,23 +20,28 @@ package org.apache.hadoop.hdfs.web.resources;
 
 public class TokenKindParam extends StringParam {
 
-  /** Parameter name */
-  public static final String NAME = "kind";
-  /** Default parameter value. */
-  public static final String DEFAULT = NULL;
+    /**
+     * Parameter name
+     */
+    public static final String NAME = "kind";
+    /**
+     * Default parameter value.
+     */
+    public static final String DEFAULT = NULL;
 
-  private static final StringParam.Domain DOMAIN = new StringParam.Domain(NAME, null);
+    private static final StringParam.Domain DOMAIN = new StringParam.Domain(NAME, null);
 
-  /**
-   * Constructor.
-   * @param str a string representation of the parameter value.
-   */
-  public TokenKindParam(final String str) {
-    super(DOMAIN, str == null || str.equals(DEFAULT)? null: str);
-  }
+    /**
+     * Constructor.
+     *
+     * @param str a string representation of the parameter value.
+     */
+    public TokenKindParam(final String str) {
+        super(DOMAIN, str == null || str.equals(DEFAULT) ? null : str);
+    }
 
-  @Override
-  public String getName() {
-    return NAME;
-  }
+    @Override
+    public String getName() {
+        return NAME;
+    }
 }

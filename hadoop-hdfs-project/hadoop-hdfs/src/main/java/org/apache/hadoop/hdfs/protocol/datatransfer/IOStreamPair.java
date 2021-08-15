@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,21 +17,21 @@
  */
 package org.apache.hadoop.hdfs.protocol.datatransfer;
 
+import org.apache.hadoop.classification.InterfaceAudience;
+
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import org.apache.hadoop.classification.InterfaceAudience;
 
 /**
  * A little struct class to wrap an InputStream and an OutputStream.
  */
 @InterfaceAudience.Private
 public class IOStreamPair {
-  public final InputStream in;
-  public final OutputStream out;
-  
-  public IOStreamPair(InputStream in, OutputStream out) {
-    this.in = in;
-    this.out = out;
-  }
+    public final InputStream in;
+    public final OutputStream out;
+
+    public IOStreamPair(InputStream in, OutputStream out) {
+        this.in = in;
+        this.out = out;
+    }
 }

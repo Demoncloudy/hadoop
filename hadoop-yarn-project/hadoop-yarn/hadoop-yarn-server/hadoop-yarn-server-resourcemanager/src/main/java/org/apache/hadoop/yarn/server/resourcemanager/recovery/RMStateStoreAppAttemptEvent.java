@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,14 +21,14 @@ package org.apache.hadoop.yarn.server.resourcemanager.recovery;
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.RMStateStore.ApplicationAttemptState;
 
 public class RMStateStoreAppAttemptEvent extends RMStateStoreEvent {
-  ApplicationAttemptState attemptState;
-  
-  public RMStateStoreAppAttemptEvent(ApplicationAttemptState attemptState) {
-    super(RMStateStoreEventType.STORE_APP_ATTEMPT);
-    this.attemptState = attemptState;
-  }
-  
-  public ApplicationAttemptState getAppAttemptState() {
-    return attemptState;
-  }
+    ApplicationAttemptState attemptState;
+
+    public RMStateStoreAppAttemptEvent(ApplicationAttemptState attemptState) {
+        super(RMStateStoreEventType.STORE_APP_ATTEMPT);
+        this.attemptState = attemptState;
+    }
+
+    public ApplicationAttemptState getAppAttemptState() {
+        return attemptState;
+    }
 }

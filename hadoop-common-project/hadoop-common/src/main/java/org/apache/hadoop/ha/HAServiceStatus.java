@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,35 +22,35 @@ import org.apache.hadoop.ha.HAServiceProtocol.HAServiceState;
 
 @InterfaceAudience.Private
 public class HAServiceStatus {
-  private HAServiceState state;
-  private boolean readyToBecomeActive;
-  private String notReadyReason;
-  
-  public HAServiceStatus(HAServiceState state) {
-    this.state = state;
-  }
+    private HAServiceState state;
+    private boolean readyToBecomeActive;
+    private String notReadyReason;
 
-  public HAServiceState getState() {
-    return state;
-  }
+    public HAServiceStatus(HAServiceState state) {
+        this.state = state;
+    }
 
-  public HAServiceStatus setReadyToBecomeActive() {
-    this.readyToBecomeActive = true;
-    this.notReadyReason = null;
-    return this;
-  }
-  
-  public HAServiceStatus setNotReadyToBecomeActive(String reason) {
-    this.readyToBecomeActive = false;
-    this.notReadyReason = reason;
-    return this;
-  }
+    public HAServiceState getState() {
+        return state;
+    }
 
-  public boolean isReadyToBecomeActive() {
-    return readyToBecomeActive;
-  }
+    public HAServiceStatus setReadyToBecomeActive() {
+        this.readyToBecomeActive = true;
+        this.notReadyReason = null;
+        return this;
+    }
 
-  public String getNotReadyReason() {
-    return notReadyReason;
-  }
+    public HAServiceStatus setNotReadyToBecomeActive(String reason) {
+        this.readyToBecomeActive = false;
+        this.notReadyReason = reason;
+        return this;
+    }
+
+    public boolean isReadyToBecomeActive() {
+        return readyToBecomeActive;
+    }
+
+    public String getNotReadyReason() {
+        return notReadyReason;
+    }
 }

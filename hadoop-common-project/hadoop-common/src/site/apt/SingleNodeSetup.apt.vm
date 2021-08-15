@@ -10,15 +10,15 @@
 ~~ See the License for the specific language governing permissions and
 ~~ limitations under the License. See accompanying LICENSE file.
 
-  ---
-  Single Node Setup
-  ---
-  ---
-  ${maven.build.timestamp}
+---
+Single Node Setup
+---
+---
+${maven.build.timestamp}
 
 Single Node Setup
 
-  This page will be removed in the next major release.
+This page will be removed in the next major release.
 
-  See {{{./SingleCluster.html}Single Cluster Setup}} to set up and configure a
-  single-node Hadoop installation.
+See {{{./SingleCluster.html}Single Cluster Setup}} to set up and configure a
+single-node Hadoop installation.

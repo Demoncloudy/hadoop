@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,122 +18,122 @@
 
 package org.apache.hadoop.yarn.server.nodemanager.webapp.dao;
 
-import static org.apache.hadoop.yarn.util.StringHelper.join;
-import static org.apache.hadoop.yarn.util.StringHelper.ujoin;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
 import org.apache.hadoop.yarn.api.records.ContainerExitStatus;
 import org.apache.hadoop.yarn.api.records.ContainerStatus;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.nodemanager.Context;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.container.Container;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import static org.apache.hadoop.yarn.util.StringHelper.join;
+import static org.apache.hadoop.yarn.util.StringHelper.ujoin;
+
 @XmlRootElement(name = "container")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ContainerInfo {
 
-  protected String id;
-  protected String state;
-  protected int exitCode;
-  protected String diagnostics;
-  protected String user;
-  protected long totalMemoryNeededMB;
-  protected long totalVCoresNeeded;
-  protected String containerLogsLink;
-  protected String nodeId;
-  @XmlTransient
-  protected String containerLogsShortLink;
-  @XmlTransient
-  protected String exitStatus;
+    protected String id;
+    protected String state;
+    protected int exitCode;
+    protected String diagnostics;
+    protected String user;
+    protected long totalMemoryNeededMB;
+    protected long totalVCoresNeeded;
+    protected String containerLogsLink;
+    protected String nodeId;
+    @XmlTransient
+    protected String containerLogsShortLink;
+    @XmlTransient
+    protected String exitStatus;
 
-  public ContainerInfo() {
-  } // JAXB needs this
+    public ContainerInfo() {
+    } // JAXB needs this
 
-  public ContainerInfo(final Context nmContext, final Container container) {
-    this(nmContext, container, "", "");
-  }
-
-  public ContainerInfo(final Context nmContext, final Container container,
-       String requestUri, String pathPrefix) {
-
-    this.id = container.getContainerId().toString();
-    this.nodeId = nmContext.getNodeId().toString();
-    ContainerStatus containerData = container.cloneAndGetContainerStatus();
-    this.exitCode = containerData.getExitStatus();
-    this.exitStatus =
-        (this.exitCode == ContainerExitStatus.INVALID) ?
-            "N/A" : String.valueOf(exitCode);
-    this.state = container.getContainerState().toString();
-    this.diagnostics = containerData.getDiagnostics();
-    if (this.diagnostics == null || this.diagnostics.isEmpty()) {
-      this.diagnostics = "";
+    public ContainerInfo(final Context nmContext, final Container container) {
+        this(nmContext, container, "", "");
     }
 
-    this.user = container.getUser();
-    Resource res = container.getResource();
-    if (res != null) {
-      this.totalMemoryNeededMB = res.getMemory();
-      this.totalVCoresNeeded = res.getVirtualCores();
+    public ContainerInfo(final Context nmContext, final Container container,
+                         String requestUri, String pathPrefix) {
+
+        this.id = container.getContainerId().toString();
+        this.nodeId = nmContext.getNodeId().toString();
+        ContainerStatus containerData = container.cloneAndGetContainerStatus();
+        this.exitCode = containerData.getExitStatus();
+        this.exitStatus =
+                (this.exitCode == ContainerExitStatus.INVALID) ?
+                        "N/A" : String.valueOf(exitCode);
+        this.state = container.getContainerState().toString();
+        this.diagnostics = containerData.getDiagnostics();
+        if (this.diagnostics == null || this.diagnostics.isEmpty()) {
+            this.diagnostics = "";
+        }
+
+        this.user = container.getUser();
+        Resource res = container.getResource();
+        if (res != null) {
+            this.totalMemoryNeededMB = res.getMemory();
+            this.totalVCoresNeeded = res.getVirtualCores();
+        }
+        this.containerLogsShortLink = ujoin("containerlogs", this.id,
+                container.getUser());
+
+        if (requestUri == null) {
+            requestUri = "";
+        }
+        if (pathPrefix == null) {
+            pathPrefix = "";
+        }
+        this.containerLogsLink = join(requestUri, pathPrefix,
+                this.containerLogsShortLink);
     }
-    this.containerLogsShortLink = ujoin("containerlogs", this.id,
-        container.getUser());
 
-    if (requestUri == null) {
-      requestUri = "";
+    public String getId() {
+        return this.id;
     }
-    if (pathPrefix == null) {
-      pathPrefix = "";
+
+    public String getNodeId() {
+        return this.nodeId;
     }
-    this.containerLogsLink = join(requestUri, pathPrefix,
-        this.containerLogsShortLink);
-  }
 
-  public String getId() {
-    return this.id;
-  }
+    public String getState() {
+        return this.state;
+    }
 
-  public String getNodeId() {
-    return this.nodeId;
-  }
+    public int getExitCode() {
+        return this.exitCode;
+    }
 
-  public String getState() {
-    return this.state;
-  }
+    public String getExitStatus() {
+        return this.exitStatus;
+    }
 
-  public int getExitCode() {
-    return this.exitCode;
-  }
+    public String getDiagnostics() {
+        return this.diagnostics;
+    }
 
-  public String getExitStatus() {
-    return this.exitStatus;
-  }
+    public String getUser() {
+        return this.user;
+    }
 
-  public String getDiagnostics() {
-    return this.diagnostics;
-  }
+    public String getShortLogLink() {
+        return this.containerLogsShortLink;
+    }
 
-  public String getUser() {
-    return this.user;
-  }
+    public String getLogLink() {
+        return this.containerLogsLink;
+    }
 
-  public String getShortLogLink() {
-    return this.containerLogsShortLink;
-  }
+    public long getMemoryNeeded() {
+        return this.totalMemoryNeededMB;
+    }
 
-  public String getLogLink() {
-    return this.containerLogsLink;
-  }
-
-  public long getMemoryNeeded() {
-    return this.totalMemoryNeededMB;
-  }
-
-  public long getVCoresNeeded() {
-    return this.totalVCoresNeeded;
-  }
+    public long getVCoresNeeded() {
+        return this.totalVCoresNeeded;
+    }
 
 }

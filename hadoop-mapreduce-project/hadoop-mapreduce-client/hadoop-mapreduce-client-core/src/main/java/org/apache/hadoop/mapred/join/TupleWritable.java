@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,46 +36,46 @@ import org.apache.hadoop.io.Writable;
  */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
-public class TupleWritable 
-    extends org.apache.hadoop.mapreduce.lib.join.TupleWritable {
+public class TupleWritable
+        extends org.apache.hadoop.mapreduce.lib.join.TupleWritable {
 
-  /**
-   * Create an empty tuple with no allocated storage for writables.
-   */
-  public TupleWritable() {
-    super();
-  }
+    /**
+     * Create an empty tuple with no allocated storage for writables.
+     */
+    public TupleWritable() {
+        super();
+    }
 
-  /**
-   * Initialize tuple with storage; unknown whether any of them contain
-   * &quot;written&quot; values.
-   */
-  public TupleWritable(Writable[] vals) {
-    super(vals);
-  }
+    /**
+     * Initialize tuple with storage; unknown whether any of them contain
+     * &quot;written&quot; values.
+     */
+    public TupleWritable(Writable[] vals) {
+        super(vals);
+    }
 
-  /**
-   * Record that the tuple contains an element at the position provided.
-   */
-  void setWritten(int i) {
-    written.set(i);
-  }
+    /**
+     * Record that the tuple contains an element at the position provided.
+     */
+    void setWritten(int i) {
+        written.set(i);
+    }
 
-  /**
-   * Record that the tuple does not contain an element at the position
-   * provided.
-   */
-  void clearWritten(int i) {
-    written.clear(i);
-  }
+    /**
+     * Record that the tuple does not contain an element at the position
+     * provided.
+     */
+    void clearWritten(int i) {
+        written.clear(i);
+    }
 
-  /**
-   * Clear any record of which writables have been written to, without
-   * releasing storage.
-   */
-  void clearWritten() {
-    written.clear();
-  }
+    /**
+     * Clear any record of which writables have been written to, without
+     * releasing storage.
+     */
+    void clearWritten() {
+        written.clear();
+    }
 
 
 }

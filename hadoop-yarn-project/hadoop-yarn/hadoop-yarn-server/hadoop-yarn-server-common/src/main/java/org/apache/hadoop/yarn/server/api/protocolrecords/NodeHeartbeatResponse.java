@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,53 +18,59 @@
 
 package org.apache.hadoop.yarn.server.api.protocolrecords;
 
-import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.server.api.records.MasterKey;
 import org.apache.hadoop.yarn.server.api.records.NodeAction;
 
+import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Map;
+
 public interface NodeHeartbeatResponse {
-  int getResponseId();
-  NodeAction getNodeAction();
+    int getResponseId();
 
-  List<ContainerId> getContainersToCleanup();
-  List<ContainerId> getContainersToBeRemovedFromNM();
+    void setResponseId(int responseId);
 
-  List<ApplicationId> getApplicationsToCleanup();
+    NodeAction getNodeAction();
 
-  void setResponseId(int responseId);
-  void setNodeAction(NodeAction action);
+    void setNodeAction(NodeAction action);
 
-  MasterKey getContainerTokenMasterKey();
-  void setContainerTokenMasterKey(MasterKey secretKey);
-  
-  MasterKey getNMTokenMasterKey();
-  void setNMTokenMasterKey(MasterKey secretKey);
+    List<ContainerId> getContainersToCleanup();
 
-  void addAllContainersToCleanup(List<ContainerId> containers);
+    List<ContainerId> getContainersToBeRemovedFromNM();
 
-  // This tells NM to remove finished containers from its context. Currently, NM
-  // will remove finished containers from its context only after AM has actually
-  // received the finished containers in a previous allocate response
-  void addContainersToBeRemovedFromNM(List<ContainerId> containers);
-  
-  void addAllApplicationsToCleanup(List<ApplicationId> applications);
+    List<ApplicationId> getApplicationsToCleanup();
 
-  long getNextHeartBeatInterval();
-  void setNextHeartBeatInterval(long nextHeartBeatInterval);
-  
-  String getDiagnosticsMessage();
+    MasterKey getContainerTokenMasterKey();
 
-  void setDiagnosticsMessage(String diagnosticsMessage);
+    void setContainerTokenMasterKey(MasterKey secretKey);
 
-  // Credentials (i.e. hdfs tokens) needed by NodeManagers for application
-  // localizations and logAggreations.
-  Map<ApplicationId, ByteBuffer> getSystemCredentialsForApps();
+    MasterKey getNMTokenMasterKey();
 
-  void setSystemCredentialsForApps(
-      Map<ApplicationId, ByteBuffer> systemCredentials);
+    void setNMTokenMasterKey(MasterKey secretKey);
+
+    void addAllContainersToCleanup(List<ContainerId> containers);
+
+    // This tells NM to remove finished containers from its context. Currently, NM
+    // will remove finished containers from its context only after AM has actually
+    // received the finished containers in a previous allocate response
+    void addContainersToBeRemovedFromNM(List<ContainerId> containers);
+
+    void addAllApplicationsToCleanup(List<ApplicationId> applications);
+
+    long getNextHeartBeatInterval();
+
+    void setNextHeartBeatInterval(long nextHeartBeatInterval);
+
+    String getDiagnosticsMessage();
+
+    void setDiagnosticsMessage(String diagnosticsMessage);
+
+    // Credentials (i.e. hdfs tokens) needed by NodeManagers for application
+    // localizations and logAggreations.
+    Map<ApplicationId, ByteBuffer> getSystemCredentialsForApps();
+
+    void setSystemCredentialsForApps(
+            Map<ApplicationId, ByteBuffer> systemCredentials);
 }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,33 +17,34 @@
  */
 package org.apache.hadoop.ipc;
 
-import java.io.IOException;
-import java.util.Collection;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
 import org.apache.hadoop.io.retry.Idempotent;
 import org.apache.hadoop.security.KerberosInfo;
 
+import java.io.IOException;
+import java.util.Collection;
+
 /**
  * Protocol which is used to refresh arbitrary things at runtime.
  */
 @KerberosInfo(
-    serverPrincipal=CommonConfigurationKeys.HADOOP_SECURITY_SERVICE_USER_NAME_KEY)
+        serverPrincipal = CommonConfigurationKeys.HADOOP_SECURITY_SERVICE_USER_NAME_KEY)
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
 public interface GenericRefreshProtocol {
-  /**
-   * Version 1: Initial version.
-   */
-  public static final long versionID = 1L;
+    /**
+     * Version 1: Initial version.
+     */
+    public static final long versionID = 1L;
 
-  /**
-   * Refresh the resource based on identity passed in.
-   * @throws IOException
-   */
-  @Idempotent
-  Collection<RefreshResponse> refresh(String identifier, String[] args)
-      throws IOException;
+    /**
+     * Refresh the resource based on identity passed in.
+     *
+     * @throws IOException
+     */
+    @Idempotent
+    Collection<RefreshResponse> refresh(String identifier, String[] args)
+            throws IOException;
 }

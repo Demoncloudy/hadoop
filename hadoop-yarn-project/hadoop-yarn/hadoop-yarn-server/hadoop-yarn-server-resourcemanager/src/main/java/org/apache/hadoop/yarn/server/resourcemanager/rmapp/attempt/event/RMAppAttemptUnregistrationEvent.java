@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,28 +25,28 @@ import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptE
 
 public class RMAppAttemptUnregistrationEvent extends RMAppAttemptEvent {
 
-  private final String finalTrackingUrl;
-  private final FinalApplicationStatus finalStatus;
-  private final String diagnostics;
+    private final String finalTrackingUrl;
+    private final FinalApplicationStatus finalStatus;
+    private final String diagnostics;
 
-  public RMAppAttemptUnregistrationEvent(ApplicationAttemptId appAttemptId,
-      String trackingUrl, FinalApplicationStatus finalStatus, String diagnostics) {
-    super(appAttemptId, RMAppAttemptEventType.UNREGISTERED);
-    this.finalTrackingUrl = trackingUrl;
-    this.finalStatus = finalStatus;
-    this.diagnostics = diagnostics;
-  }
+    public RMAppAttemptUnregistrationEvent(ApplicationAttemptId appAttemptId,
+                                           String trackingUrl, FinalApplicationStatus finalStatus, String diagnostics) {
+        super(appAttemptId, RMAppAttemptEventType.UNREGISTERED);
+        this.finalTrackingUrl = trackingUrl;
+        this.finalStatus = finalStatus;
+        this.diagnostics = diagnostics;
+    }
 
-  public String getFinalTrackingUrl() {
-    return this.finalTrackingUrl;
-  }
+    public String getFinalTrackingUrl() {
+        return this.finalTrackingUrl;
+    }
 
-  public FinalApplicationStatus getFinalApplicationStatus() {
-    return this.finalStatus;
-  }
+    public FinalApplicationStatus getFinalApplicationStatus() {
+        return this.finalStatus;
+    }
 
-  public String getDiagnostics() {
-    return this.diagnostics;
-  }
+    public String getDiagnostics() {
+        return this.diagnostics;
+    }
 
 }

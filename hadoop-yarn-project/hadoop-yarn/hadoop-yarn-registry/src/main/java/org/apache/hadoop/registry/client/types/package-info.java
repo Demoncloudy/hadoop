@@ -30,12 +30,11 @@
  *   <li>{@link org.apache.hadoop.registry.client.types.yarn.PersistencePolicies}</li>
  *   <li>{@link org.apache.hadoop.registry.client.types.ProtocolTypes}</li>
  * </ul>
- *
+ * <p>
  * The {@link org.apache.hadoop.registry.client.types.RegistryPathStatus}
  * class is not saved to the registry —it is the status of a registry
  * entry that can be retrieved from the API call. It is still
  * designed to be marshalled to and from JSON, as it can be served up
  * from REST front ends to the registry.
- *
  */
 package org.apache.hadoop.registry.client.types;

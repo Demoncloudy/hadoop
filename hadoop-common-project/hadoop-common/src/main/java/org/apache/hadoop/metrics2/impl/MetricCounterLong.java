@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,25 +24,25 @@ import org.apache.hadoop.metrics2.MetricsInfo;
 import org.apache.hadoop.metrics2.MetricsVisitor;
 
 class MetricCounterLong extends AbstractMetric {
-  final long value;
+    final long value;
 
-  MetricCounterLong(MetricsInfo info, long value) {
-    super(info);
-    this.value = value;
-  }
+    MetricCounterLong(MetricsInfo info, long value) {
+        super(info);
+        this.value = value;
+    }
 
-  @Override
-  public Long value() {
-    return value;
-  }
+    @Override
+    public Long value() {
+        return value;
+    }
 
-  @Override
-  public MetricType type() {
-    return MetricType.COUNTER;
-  }
+    @Override
+    public MetricType type() {
+        return MetricType.COUNTER;
+    }
 
-  @Override
-  public void visit(MetricsVisitor visitor) {
-    visitor.counter(this, value);
-  }
+    @Override
+    public void visit(MetricsVisitor visitor) {
+        visitor.counter(this, value);
+    }
 }

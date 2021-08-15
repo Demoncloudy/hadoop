@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,24 +23,24 @@ import org.junit.Before;
 /**
  * Test permissions for localFs using FileContext API.
  */
-public class TestFcLocalFsPermission extends 
-  FileContextPermissionBase {
+public class TestFcLocalFsPermission extends
+        FileContextPermissionBase {
 
-  @Override
-  @Before
-  public void setUp() throws Exception {
-    super.setUp();
-  }
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+    }
 
-  @Override
-  @After
-  public void tearDown() throws Exception {
-    super.tearDown();
-  }
+    @Override
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-  @Override
-  protected FileContext getFileContext() throws UnsupportedFileSystemException {
-    return FileContext.getLocalFSFileContext();
-  }
+    @Override
+    protected FileContext getFileContext() throws UnsupportedFileSystemException {
+        return FileContext.getLocalFSFileContext();
+    }
 
 }

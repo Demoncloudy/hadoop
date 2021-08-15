@@ -26,10 +26,10 @@ import org.apache.hadoop.fs.contract.AbstractFSContract;
  * root dir operations against an S3 bucket
  */
 public class TestSwiftContractRootDir extends
-    AbstractContractRootDirectoryTest {
+        AbstractContractRootDirectoryTest {
 
-  @Override
-  protected AbstractFSContract createContract(Configuration conf) {
-    return new SwiftContract(conf);
-  }
+    @Override
+    protected AbstractFSContract createContract(Configuration conf) {
+        return new SwiftContract(conf);
+    }
 }

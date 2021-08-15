@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,40 +24,40 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
-import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_RPC_BIND_HOST_KEY;
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
-
 import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_RPC_BIND_HOST_KEY;
+import static org.junit.Assert.assertEquals;
 
 public class TestNameNodeRpcServer {
 
-  @Test
-  public void testNamenodeRpcBindAny() throws IOException {
-    Configuration conf = new HdfsConfiguration();
+    @Test
+    public void testNamenodeRpcBindAny() throws IOException {
+        Configuration conf = new HdfsConfiguration();
 
-    // The name node in MiniDFSCluster only binds to 127.0.0.1.
-    // We can set the bind address to 0.0.0.0 to make it listen
-    // to all interfaces.
-    conf.set(DFS_NAMENODE_RPC_BIND_HOST_KEY, "0.0.0.0");
-    MiniDFSCluster cluster = null;
+        // The name node in MiniDFSCluster only binds to 127.0.0.1.
+        // We can set the bind address to 0.0.0.0 to make it listen
+        // to all interfaces.
+        conf.set(DFS_NAMENODE_RPC_BIND_HOST_KEY, "0.0.0.0");
+        MiniDFSCluster cluster = null;
 
-    try {
-      cluster = new MiniDFSCluster.Builder(conf).build();
-      cluster.waitActive();
-      assertEquals("0.0.0.0", ((NameNodeRpcServer)cluster.getNameNodeRpc())
-          .getClientRpcServer().getListenerAddress().getHostName());
-    } finally {
-      if (cluster != null) {
-        cluster.shutdown();
-      }
-      // Reset the config
-      conf.unset(DFS_NAMENODE_RPC_BIND_HOST_KEY);
+        try {
+            cluster = new MiniDFSCluster.Builder(conf).build();
+            cluster.waitActive();
+            assertEquals("0.0.0.0", ((NameNodeRpcServer) cluster.getNameNodeRpc())
+                    .getClientRpcServer().getListenerAddress().getHostName());
+        } finally {
+            if (cluster != null) {
+                cluster.shutdown();
+            }
+            // Reset the config
+            conf.unset(DFS_NAMENODE_RPC_BIND_HOST_KEY);
+        }
     }
-  }
 }
 

@@ -19,9 +19,9 @@
 /**
  * Server-side classes for the registry
  * <p>
- *   These are components intended to be deployed only on servers or in test
- *   JVMs, rather than on client machines.
+ * These are components intended to be deployed only on servers or in test
+ * JVMs, rather than on client machines.
  * <p>
- *   Example components are: server-side ZK support, a REST service, etc.
+ * Example components are: server-side ZK support, a REST service, etc.
  */
 package org.apache.hadoop.registry.server;

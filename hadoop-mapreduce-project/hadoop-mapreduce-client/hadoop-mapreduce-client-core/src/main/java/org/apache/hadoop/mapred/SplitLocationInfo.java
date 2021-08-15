@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,23 +24,23 @@ import org.apache.hadoop.classification.InterfaceStability.Evolving;
 @Public
 @Evolving
 public class SplitLocationInfo {
-  private boolean inMemory;
-  private String location;
-  
-  public SplitLocationInfo(String location, boolean inMemory) {
-    this.location = location;
-    this.inMemory = inMemory;
-  }
-  
-  public boolean isOnDisk() {
-    return true;
-  }
-  
-  public boolean isInMemory() {
-    return inMemory;
-  }
+    private boolean inMemory;
+    private String location;
 
-  public String getLocation() {
-    return location;
-  }
+    public SplitLocationInfo(String location, boolean inMemory) {
+        this.location = location;
+        this.inMemory = inMemory;
+    }
+
+    public boolean isOnDisk() {
+        return true;
+    }
+
+    public boolean isInMemory() {
+        return inMemory;
+    }
+
+    public String getLocation() {
+        return location;
+    }
 }

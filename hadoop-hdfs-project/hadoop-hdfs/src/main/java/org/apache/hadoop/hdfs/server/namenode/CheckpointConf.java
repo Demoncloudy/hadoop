@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,78 +17,87 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
-import static org.apache.hadoop.hdfs.DFSConfigKeys.*;
-
+import com.google.common.collect.ImmutableList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.conf.Configuration;
 
-import com.google.common.collect.ImmutableList;
+import static org.apache.hadoop.hdfs.DFSConfigKeys.*;
 
 @InterfaceAudience.Private
 public class CheckpointConf {
-  private static final Log LOG = LogFactory.getLog(CheckpointConf.class);
-  
-  /** How often to checkpoint regardless of number of txns */
-  private final long checkpointPeriod;    // in seconds
-  
-  /** How often to poll the NN to check checkpointTxnCount */
-  private final long checkpointCheckPeriod; // in seconds
-  
-  /** checkpoint once every this many transactions, regardless of time */
-  private final long checkpointTxnCount;
+    private static final Log LOG = LogFactory.getLog(CheckpointConf.class);
 
-  /** maxium number of retries when merge errors occur */
-  private final int maxRetriesOnMergeError;
+    /**
+     * How often to checkpoint regardless of number of txns
+     */
+    private final long checkpointPeriod;    // in seconds
 
-  /** The output dir for legacy OIV image */
-  private final String legacyOivImageDir;
-  
-  public CheckpointConf(Configuration conf) {
-    checkpointCheckPeriod = conf.getLong(
-        DFS_NAMENODE_CHECKPOINT_CHECK_PERIOD_KEY,
-        DFS_NAMENODE_CHECKPOINT_CHECK_PERIOD_DEFAULT);
-        
-    checkpointPeriod = conf.getLong(DFS_NAMENODE_CHECKPOINT_PERIOD_KEY, 
-                                    DFS_NAMENODE_CHECKPOINT_PERIOD_DEFAULT);
-    checkpointTxnCount = conf.getLong(DFS_NAMENODE_CHECKPOINT_TXNS_KEY, 
-                                  DFS_NAMENODE_CHECKPOINT_TXNS_DEFAULT);
-    maxRetriesOnMergeError = conf.getInt(DFS_NAMENODE_CHECKPOINT_MAX_RETRIES_KEY,
-                                  DFS_NAMENODE_CHECKPOINT_MAX_RETRIES_DEFAULT);
-    legacyOivImageDir = conf.get(DFS_NAMENODE_LEGACY_OIV_IMAGE_DIR_KEY);
-    warnForDeprecatedConfigs(conf);
-  }
-  
-  private static void warnForDeprecatedConfigs(Configuration conf) {
-    for (String key : ImmutableList.of(
-          "fs.checkpoint.size",
-          "dfs.namenode.checkpoint.size")) {
-      if (conf.get(key) != null) {
-        LOG.warn("Configuration key " + key + " is deprecated! Ignoring..." +
-            " Instead please specify a value for " +
-            DFS_NAMENODE_CHECKPOINT_TXNS_KEY);
-      }
+    /**
+     * How often to poll the NN to check checkpointTxnCount
+     */
+    private final long checkpointCheckPeriod; // in seconds
+
+    /**
+     * checkpoint once every this many transactions, regardless of time
+     */
+    private final long checkpointTxnCount;
+
+    /**
+     * maxium number of retries when merge errors occur
+     */
+    private final int maxRetriesOnMergeError;
+
+    /**
+     * The output dir for legacy OIV image
+     */
+    private final String legacyOivImageDir;
+
+    public CheckpointConf(Configuration conf) {
+        checkpointCheckPeriod = conf.getLong(
+                DFS_NAMENODE_CHECKPOINT_CHECK_PERIOD_KEY,
+                DFS_NAMENODE_CHECKPOINT_CHECK_PERIOD_DEFAULT);
+
+        checkpointPeriod = conf.getLong(DFS_NAMENODE_CHECKPOINT_PERIOD_KEY,
+                DFS_NAMENODE_CHECKPOINT_PERIOD_DEFAULT);
+        checkpointTxnCount = conf.getLong(DFS_NAMENODE_CHECKPOINT_TXNS_KEY,
+                DFS_NAMENODE_CHECKPOINT_TXNS_DEFAULT);
+        maxRetriesOnMergeError = conf.getInt(DFS_NAMENODE_CHECKPOINT_MAX_RETRIES_KEY,
+                DFS_NAMENODE_CHECKPOINT_MAX_RETRIES_DEFAULT);
+        legacyOivImageDir = conf.get(DFS_NAMENODE_LEGACY_OIV_IMAGE_DIR_KEY);
+        warnForDeprecatedConfigs(conf);
     }
-  }
 
-  public long getPeriod() {
-    return checkpointPeriod;
-  }
+    private static void warnForDeprecatedConfigs(Configuration conf) {
+        for (String key : ImmutableList.of(
+                "fs.checkpoint.size",
+                "dfs.namenode.checkpoint.size")) {
+            if (conf.get(key) != null) {
+                LOG.warn("Configuration key " + key + " is deprecated! Ignoring..." +
+                        " Instead please specify a value for " +
+                        DFS_NAMENODE_CHECKPOINT_TXNS_KEY);
+            }
+        }
+    }
 
-  public long getCheckPeriod() {
-    return Math.min(checkpointCheckPeriod, checkpointPeriod);
-  }
+    public long getPeriod() {
+        return checkpointPeriod;
+    }
 
-  public long getTxnCount() {
-    return checkpointTxnCount;
-  }
+    public long getCheckPeriod() {
+        return Math.min(checkpointCheckPeriod, checkpointPeriod);
+    }
 
-  public int getMaxRetriesOnMergeError() {
-    return maxRetriesOnMergeError;
-  }
+    public long getTxnCount() {
+        return checkpointTxnCount;
+    }
 
-  public String getLegacyOivImageDir() {
-    return legacyOivImageDir;
-  }
+    public int getMaxRetriesOnMergeError() {
+        return maxRetriesOnMergeError;
+    }
+
+    public String getLegacyOivImageDir() {
+        return legacyOivImageDir;
+    }
 }

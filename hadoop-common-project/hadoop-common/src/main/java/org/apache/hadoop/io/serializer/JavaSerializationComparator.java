@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,12 +18,12 @@
 
 package org.apache.hadoop.io.serializer;
 
-import java.io.IOException;
-import java.io.Serializable;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.io.RawComparator;
+
+import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * <p>
@@ -31,23 +31,24 @@ import org.apache.hadoop.io.RawComparator;
  * {@link Deserializer} to deserialize objects that are then compared via
  * their {@link Comparable} interfaces.
  * </p>
+ *
  * @param <T>
  * @see JavaSerialization
  */
 @InterfaceAudience.Public
 @InterfaceStability.Unstable
-public class JavaSerializationComparator<T extends Serializable&Comparable<T>>
-  extends DeserializerComparator<T> {
+public class JavaSerializationComparator<T extends Serializable & Comparable<T>>
+        extends DeserializerComparator<T> {
 
-  @InterfaceAudience.Private
-  public JavaSerializationComparator() throws IOException {
-    super(new JavaSerialization.JavaSerializationDeserializer<T>());
-  }
+    @InterfaceAudience.Private
+    public JavaSerializationComparator() throws IOException {
+        super(new JavaSerialization.JavaSerializationDeserializer<T>());
+    }
 
-  @Override
-  @InterfaceAudience.Private
-  public int compare(T o1, T o2) {
-    return o1.compareTo(o2);
-  }
+    @Override
+    @InterfaceAudience.Private
+    public int compare(T o1, T o2) {
+        return o1.compareTo(o2);
+    }
 
 }

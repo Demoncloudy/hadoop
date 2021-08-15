@@ -16,40 +16,40 @@
   limitations under the License.
 -->
 <assembly>
-  <id>sls</id>
-  <formats>
-    <format>dir</format>
-    <format>tar.gz</format>
-  </formats>
-  <includeBaseDirectory>false</includeBaseDirectory>
+    <id>sls</id>
+    <formats>
+        <format>dir</format>
+        <format>tar.gz</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
 
-  <fileSets>
-    <fileSet>
-      <directory>${basedir}/src/main/bin</directory>
-      <outputDirectory>bin</outputDirectory>
-      <fileMode>0755</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>${basedir}/src/main/data</directory>
-      <outputDirectory>sample-data</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>${basedir}/src/main/html</directory>
-      <outputDirectory>html</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>${basedir}/src/main/sample-conf</directory>
-      <outputDirectory>sample-conf</outputDirectory>
-    </fileSet>
-  </fileSets>
+    <fileSets>
+        <fileSet>
+            <directory>${basedir}/src/main/bin</directory>
+            <outputDirectory>bin</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/data</directory>
+            <outputDirectory>sample-data</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/html</directory>
+            <outputDirectory>html</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/sample-conf</directory>
+            <outputDirectory>sample-conf</outputDirectory>
+        </fileSet>
+    </fileSets>
 
-  <dependencySets>
-    <dependencySet>
-      <outputDirectory>/lib</outputDirectory>
-      <unpack>false</unpack>
-      <scope>compile</scope>
-      <useProjectArtifact>true</useProjectArtifact>
-    </dependencySet>
-  </dependencySets>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <unpack>false</unpack>
+            <scope>compile</scope>
+            <useProjectArtifact>true</useProjectArtifact>
+        </dependencySet>
+    </dependencySets>
 
 </assembly>

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,30 +22,30 @@ import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.server.applicationhistoryservice.records.ApplicationAttemptFinishData;
 
 public class WritingApplicationAttemptFinishEvent extends
-    WritingApplicationHistoryEvent {
+        WritingApplicationHistoryEvent {
 
-  private ApplicationAttemptId appAttemptId;
-  private ApplicationAttemptFinishData appAttemptFinish;
+    private ApplicationAttemptId appAttemptId;
+    private ApplicationAttemptFinishData appAttemptFinish;
 
-  public WritingApplicationAttemptFinishEvent(
-      ApplicationAttemptId appAttemptId,
-      ApplicationAttemptFinishData appAttemptFinish) {
-    super(WritingHistoryEventType.APP_ATTEMPT_FINISH);
-    this.appAttemptId = appAttemptId;
-    this.appAttemptFinish = appAttemptFinish;
-  }
+    public WritingApplicationAttemptFinishEvent(
+            ApplicationAttemptId appAttemptId,
+            ApplicationAttemptFinishData appAttemptFinish) {
+        super(WritingHistoryEventType.APP_ATTEMPT_FINISH);
+        this.appAttemptId = appAttemptId;
+        this.appAttemptFinish = appAttemptFinish;
+    }
 
-  @Override
-  public int hashCode() {
-    return appAttemptId.getApplicationId().hashCode();
-  }
+    @Override
+    public int hashCode() {
+        return appAttemptId.getApplicationId().hashCode();
+    }
 
-  public ApplicationAttemptId getApplicationAttemptId() {
-    return appAttemptId;
-  }
+    public ApplicationAttemptId getApplicationAttemptId() {
+        return appAttemptId;
+    }
 
-  public ApplicationAttemptFinishData getApplicationAttemptFinishData() {
-    return appAttemptFinish;
-  }
+    public ApplicationAttemptFinishData getApplicationAttemptFinishData() {
+        return appAttemptFinish;
+    }
 
 }

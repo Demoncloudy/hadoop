@@ -18,65 +18,65 @@
 
 package org.apache.hadoop.mapreduce.v2.hs;
 
-import java.io.IOException;
-
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.v2.api.MRDelegationTokenIdentifier;
 import org.apache.hadoop.security.token.delegation.DelegationKey;
 
+import java.io.IOException;
+
 @Private
 @Unstable
 public class HistoryServerNullStateStoreService
-    extends HistoryServerStateStoreService {
+        extends HistoryServerStateStoreService {
 
-  @Override
-  protected void initStorage(Configuration conf) throws IOException {
-    // Do nothing
-  }
+    @Override
+    protected void initStorage(Configuration conf) throws IOException {
+        // Do nothing
+    }
 
-  @Override
-  protected void startStorage() throws IOException {
-    // Do nothing
-  }
+    @Override
+    protected void startStorage() throws IOException {
+        // Do nothing
+    }
 
-  @Override
-  protected void closeStorage() throws IOException {
-    // Do nothing
-  }
+    @Override
+    protected void closeStorage() throws IOException {
+        // Do nothing
+    }
 
-  @Override
-  public HistoryServerState loadState() throws IOException {
-    throw new UnsupportedOperationException(
-        "Cannot load state from null store");
-  }
+    @Override
+    public HistoryServerState loadState() throws IOException {
+        throw new UnsupportedOperationException(
+                "Cannot load state from null store");
+    }
 
-  @Override
-  public void storeToken(MRDelegationTokenIdentifier tokenId, Long renewDate)
-      throws IOException {
-    // Do nothing
-  }
+    @Override
+    public void storeToken(MRDelegationTokenIdentifier tokenId, Long renewDate)
+            throws IOException {
+        // Do nothing
+    }
 
-  @Override
-  public void updateToken(MRDelegationTokenIdentifier tokenId, Long renewDate)
-      throws IOException {
-    // Do nothing
-  }
+    @Override
+    public void updateToken(MRDelegationTokenIdentifier tokenId, Long renewDate)
+            throws IOException {
+        // Do nothing
+    }
 
-  @Override
-  public void removeToken(MRDelegationTokenIdentifier tokenId)
-      throws IOException {
-    // Do nothing
-  }
+    @Override
+    public void removeToken(MRDelegationTokenIdentifier tokenId)
+            throws IOException {
+        // Do nothing
+    }
 
-  @Override
-  public void storeTokenMasterKey(DelegationKey key) throws IOException {
-    // Do nothing
-  }
+    @Override
+    public void storeTokenMasterKey(DelegationKey key) throws IOException {
+        // Do nothing
+    }
 
-  @Override
-  public void removeTokenMasterKey(DelegationKey key) throws IOException {
-    // Do nothing
-  }
+    @Override
+    public void removeTokenMasterKey(DelegationKey key) throws IOException {
+        // Do nothing
+    }
 }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,7 +29,7 @@ import org.apache.hadoop.mapreduce.Partitioner;
 /**
  * <p>Partition {@link BinaryComparable} keys using a configurable part of 
  * the bytes array returned by {@link BinaryComparable#getBytes()}.</p>
- * 
+ *
  * <p>The subarray to be used for the partitioning can be defined by means
  * of the following properties:
  * <ul>
@@ -57,7 +57,7 @@ import org.apache.hadoop.mapreduce.Partitioner;
  * Contrary to Python, the specified subarray has byte <code>i</code> 
  * and <code>j</code> as first and last element, repectively, when 
  * <code>i</code> and <code>j</code> are the left and right offset.
- * 
+ *
  * <p>For Hadoop programs written in Java, it is advisable to use one of 
  * the following static convenience methods for setting the offsets:
  * <ul>
@@ -68,75 +68,73 @@ import org.apache.hadoop.mapreduce.Partitioner;
  */
 @InterfaceAudience.Public
 @InterfaceStability.Evolving
-public class BinaryPartitioner<V> extends Partitioner<BinaryComparable, V> 
-  implements Configurable {
+public class BinaryPartitioner<V> extends Partitioner<BinaryComparable, V>
+        implements Configurable {
 
-  public static final String LEFT_OFFSET_PROPERTY_NAME = 
-    "mapreduce.partition.binarypartitioner.left.offset";
-  public static final String RIGHT_OFFSET_PROPERTY_NAME = 
-    "mapreduce.partition.binarypartitioner.right.offset";
-  
-  /**
-   * Set the subarray to be used for partitioning to 
-   * <code>bytes[left:(right+1)]</code> in Python syntax.
-   * 
-   * @param conf configuration object
-   * @param left left Python-style offset
-   * @param right right Python-style offset
-   */
-  public static void setOffsets(Configuration conf, int left, int right) {
-    conf.setInt(LEFT_OFFSET_PROPERTY_NAME, left);
-    conf.setInt(RIGHT_OFFSET_PROPERTY_NAME, right);
-  }
-  
-  /**
-   * Set the subarray to be used for partitioning to 
-   * <code>bytes[offset:]</code> in Python syntax.
-   * 
-   * @param conf configuration object
-   * @param offset left Python-style offset
-   */
-  public static void setLeftOffset(Configuration conf, int offset) {
-    conf.setInt(LEFT_OFFSET_PROPERTY_NAME, offset);
-  }
-  
-  /**
-   * Set the subarray to be used for partitioning to 
-   * <code>bytes[:(offset+1)]</code> in Python syntax.
-   * 
-   * @param conf configuration object
-   * @param offset right Python-style offset
-   */
-  public static void setRightOffset(Configuration conf, int offset) {
-    conf.setInt(RIGHT_OFFSET_PROPERTY_NAME, offset);
-  }
-  
-  
-  private Configuration conf;
-  private int leftOffset, rightOffset;
-  
-  public void setConf(Configuration conf) {
-    this.conf = conf;
-    leftOffset = conf.getInt(LEFT_OFFSET_PROPERTY_NAME, 0);
-    rightOffset = conf.getInt(RIGHT_OFFSET_PROPERTY_NAME, -1);
-  }
-  
-  public Configuration getConf() {
-    return conf;
-  }
-  
-  /** 
-   * Use (the specified slice of the array returned by) 
-   * {@link BinaryComparable#getBytes()} to partition. 
-   */
-  @Override
-  public int getPartition(BinaryComparable key, V value, int numPartitions) {
-    int length = key.getLength();
-    int leftIndex = (leftOffset + length) % length;
-    int rightIndex = (rightOffset + length) % length;
-    int hash = WritableComparator.hashBytes(key.getBytes(), 
-      leftIndex, rightIndex - leftIndex + 1);
-    return (hash & Integer.MAX_VALUE) % numPartitions;
-  }
-  
+    public static final String LEFT_OFFSET_PROPERTY_NAME =
+            "mapreduce.partition.binarypartitioner.left.offset";
+    public static final String RIGHT_OFFSET_PROPERTY_NAME =
+            "mapreduce.partition.binarypartitioner.right.offset";
+    private Configuration conf;
+    private int leftOffset, rightOffset;
+
+    /**
+     * Set the subarray to be used for partitioning to
+     * <code>bytes[left:(right+1)]</code> in Python syntax.
+     *
+     * @param conf  configuration object
+     * @param left  left Python-style offset
+     * @param right right Python-style offset
+     */
+    public static void setOffsets(Configuration conf, int left, int right) {
+        conf.setInt(LEFT_OFFSET_PROPERTY_NAME, left);
+        conf.setInt(RIGHT_OFFSET_PROPERTY_NAME, right);
+    }
+
+    /**
+     * Set the subarray to be used for partitioning to
+     * <code>bytes[offset:]</code> in Python syntax.
+     *
+     * @param conf   configuration object
+     * @param offset left Python-style offset
+     */
+    public static void setLeftOffset(Configuration conf, int offset) {
+        conf.setInt(LEFT_OFFSET_PROPERTY_NAME, offset);
+    }
+
+    /**
+     * Set the subarray to be used for partitioning to
+     * <code>bytes[:(offset+1)]</code> in Python syntax.
+     *
+     * @param conf   configuration object
+     * @param offset right Python-style offset
+     */
+    public static void setRightOffset(Configuration conf, int offset) {
+        conf.setInt(RIGHT_OFFSET_PROPERTY_NAME, offset);
+    }
+
+    public Configuration getConf() {
+        return conf;
+    }
+
+    public void setConf(Configuration conf) {
+        this.conf = conf;
+        leftOffset = conf.getInt(LEFT_OFFSET_PROPERTY_NAME, 0);
+        rightOffset = conf.getInt(RIGHT_OFFSET_PROPERTY_NAME, -1);
+    }
+
+    /**
+     * Use (the specified slice of the array returned by)
+     * {@link BinaryComparable#getBytes()} to partition.
+     */
+    @Override
+    public int getPartition(BinaryComparable key, V value, int numPartitions) {
+        int length = key.getLength();
+        int leftIndex = (leftOffset + length) % length;
+        int rightIndex = (rightOffset + length) % length;
+        int hash = WritableComparator.hashBytes(key.getBytes(),
+                leftIndex, rightIndex - leftIndex + 1);
+        return (hash & Integer.MAX_VALUE) % numPartitions;
+    }
+
 }

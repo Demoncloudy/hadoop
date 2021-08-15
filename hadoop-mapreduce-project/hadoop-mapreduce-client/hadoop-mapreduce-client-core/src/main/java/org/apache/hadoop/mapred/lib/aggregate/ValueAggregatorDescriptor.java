@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,21 +36,20 @@ import org.apache.hadoop.mapred.JobConf;
  */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
-public interface ValueAggregatorDescriptor extends 
-    org.apache.hadoop.mapreduce.lib.aggregate.ValueAggregatorDescriptor {
+public interface ValueAggregatorDescriptor extends
+        org.apache.hadoop.mapreduce.lib.aggregate.ValueAggregatorDescriptor {
 
-  public static final String TYPE_SEPARATOR = org.apache.hadoop.mapreduce.
-      lib.aggregate.ValueAggregatorDescriptor.TYPE_SEPARATOR;
+    public static final String TYPE_SEPARATOR = org.apache.hadoop.mapreduce.
+            lib.aggregate.ValueAggregatorDescriptor.TYPE_SEPARATOR;
 
-  public static final Text ONE = org.apache.hadoop.mapreduce.
-      lib.aggregate.ValueAggregatorDescriptor.ONE;
+    public static final Text ONE = org.apache.hadoop.mapreduce.
+            lib.aggregate.ValueAggregatorDescriptor.ONE;
 
-  /**
-   * Configure the object
-   * 
-   * @param job
-   *          a JobConf object that may contain the information that can be used
-   *          to configure the object.
-   */
-  public void configure(JobConf job);
+    /**
+     * Configure the object
+     *
+     * @param job a JobConf object that may contain the information that can be used
+     *            to configure the object.
+     */
+    public void configure(JobConf job);
 }

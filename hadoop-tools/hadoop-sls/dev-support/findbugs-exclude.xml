@@ -17,10 +17,10 @@
 -->
 <FindBugsFilter>
 
- <!-- Ignore comparedTo, equals warnings -->
-  <Match>
-    <Class name="org.apache.hadoop.yarn.sls.scheduler.ContainerSimulator" />
-    <Bug pattern="EQ_COMPARETO_USE_OBJECT_EQUALS" />
-  </Match>
+    <!-- Ignore comparedTo, equals warnings -->
+    <Match>
+        <Class name="org.apache.hadoop.yarn.sls.scheduler.ContainerSimulator"/>
+        <Bug pattern="EQ_COMPARETO_USE_OBJECT_EQUALS"/>
+    </Match>
 
 </FindBugsFilter>

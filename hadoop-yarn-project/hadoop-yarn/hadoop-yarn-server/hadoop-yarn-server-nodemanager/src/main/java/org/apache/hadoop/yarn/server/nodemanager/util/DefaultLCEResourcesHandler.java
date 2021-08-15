@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,39 +27,39 @@ import org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor;
 
 public class DefaultLCEResourcesHandler implements LCEResourcesHandler {
 
-  final static Log LOG = LogFactory
-      .getLog(DefaultLCEResourcesHandler.class);
+    final static Log LOG = LogFactory
+            .getLog(DefaultLCEResourcesHandler.class);
 
-  private Configuration conf;
-  
-  public DefaultLCEResourcesHandler() {
-  }
-  
-  public void setConf(Configuration conf) {
+    private Configuration conf;
+
+    public DefaultLCEResourcesHandler() {
+    }
+
+    @Override
+    public Configuration getConf() {
+        return conf;
+    }
+
+    public void setConf(Configuration conf) {
         this.conf = conf;
-  }
+    }
 
-  @Override
-  public Configuration getConf() {
-    return  conf;
-  }
-  
-  public void init(LinuxContainerExecutor lce) {
-  }
+    public void init(LinuxContainerExecutor lce) {
+    }
 
-  /*
-   * LCE Resources Handler interface
-   */
-  
-  public void preExecute(ContainerId containerId, Resource containerResource) {
-  }
-  
-  public void postExecute(ContainerId containerId) {
-  }
-  
-  public String getResourcesOption(ContainerId containerId) {
-    return "cgroups=none";
-  }
+    /*
+     * LCE Resources Handler interface
+     */
+
+    public void preExecute(ContainerId containerId, Resource containerResource) {
+    }
+
+    public void postExecute(ContainerId containerId) {
+    }
+
+    public String getResourcesOption(ContainerId containerId) {
+        return "cgroups=none";
+    }
 
 
 }

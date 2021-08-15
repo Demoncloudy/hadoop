@@ -16,30 +16,30 @@
   limitations under the License.
 -->
 <assembly>
-  <id>hadoop-sls</id>
-  <formats>
-    <format>dir</format>
-  </formats>
-  <includeBaseDirectory>false</includeBaseDirectory>
+    <id>hadoop-sls</id>
+    <formats>
+        <format>dir</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
 
-  <fileSets>
-    <fileSet>
-      <directory>${basedir}/src/main/bin</directory>
-      <outputDirectory>sls/bin</outputDirectory>
-      <fileMode>0755</fileMode>
-    </fileSet>
-    <fileSet>
-      <directory>${basedir}/src/main/html</directory>
-      <outputDirectory>sls/html</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>${basedir}/src/main/sample-conf</directory>
-      <outputDirectory>sls/sample-conf</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>${basedir}/src/main/data</directory>
-      <outputDirectory>sls/sample-data</outputDirectory>
-    </fileSet>
-  </fileSets>
+    <fileSets>
+        <fileSet>
+            <directory>${basedir}/src/main/bin</directory>
+            <outputDirectory>sls/bin</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/html</directory>
+            <outputDirectory>sls/html</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/sample-conf</directory>
+            <outputDirectory>sls/sample-conf</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/data</directory>
+            <outputDirectory>sls/sample-data</outputDirectory>
+        </fileSet>
+    </fileSets>
 
 </assembly>

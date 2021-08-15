@@ -10,11 +10,11 @@
 ~~ See the License for the specific language governing permissions and
 ~~ limitations under the License. See accompanying LICENSE file.
 
-  ---
-  Service Level Authorization Guide
-  ---
-  ---
-  ${maven.build.timestamp}
+---
+Service Level Authorization Guide
+---
+---
+${maven.build.timestamp}
 
 Service Level Authorization Guide
 
@@ -22,48 +22,48 @@ Service Level Authorization Guide
 
 * Purpose
 
-   This document describes how to configure and manage Service Level
-   Authorization for Hadoop.
+This document describes how to configure and manage Service Level
+Authorization for Hadoop.
 
 * Prerequisites
 
-   Make sure Hadoop is installed, configured and setup correctly. For more
-   information see:
+Make sure Hadoop is installed, configured and setup correctly. For more
+information see:
 
-     * {{{./SingleCluster.html}Single Node Setup}} for first-time users.
+* {{{./SingleCluster.html}Single Node Setup}} for first-time users.
 
-     * {{{./ClusterSetup.html}Cluster Setup}} for large, distributed clusters.
+* {{{./ClusterSetup.html}Cluster Setup}} for large, distributed clusters.
 
 * Overview
 
-   Service Level Authorization is the initial authorization mechanism to
-   ensure clients connecting to a particular Hadoop service have the
-   necessary, pre-configured, permissions and are authorized to access the
-   given service. For example, a MapReduce cluster can use this mechanism
-   to allow a configured list of users/groups to submit jobs.
+Service Level Authorization is the initial authorization mechanism to
+ensure clients connecting to a particular Hadoop service have the
+necessary, pre-configured, permissions and are authorized to access the
+given service. For example, a MapReduce cluster can use this mechanism
+to allow a configured list of users/groups to submit jobs.
 
-   The <<<${HADOOP_CONF_DIR}/hadoop-policy.xml>>> configuration file is used to
-   define the access control lists for various Hadoop services.
+The <<<${HADOOP_CONF_DIR}/hadoop-policy.xml>>> configuration file is used to
+define the access control lists for various Hadoop services.
 
-   Service Level Authorization is performed much before to other access
-   control checks such as file-permission checks, access control on job
-   queues etc.
+Service Level Authorization is performed much before to other access
+control checks such as file-permission checks, access control on job
+queues etc.
 
 * Configuration
 
-   This section describes how to configure service-level authorization via
-   the configuration file <<<${HADOOP_CONF_DIR}/hadoop-policy.xml>>>.
+This section describes how to configure service-level authorization via
+the configuration file <<<${HADOOP_CONF_DIR}/hadoop-policy.xml>>>.
 
 ** Enable Service Level Authorization
 
-   By default, service-level authorization is disabled for Hadoop. To
-   enable it set the configuration property hadoop.security.authorization
-   to true in <<<${HADOOP_CONF_DIR}/core-site.xml>>>.
+By default, service-level authorization is disabled for Hadoop. To
+enable it set the configuration property hadoop.security.authorization
+to true in <<<${HADOOP_CONF_DIR}/core-site.xml>>>.
 
 ** Hadoop Services and Configuration Properties
 
-   This section lists the various Hadoop services and their configuration
-   knobs:
+This section lists the various Hadoop services and their configuration
+knobs:
 
 *-------------------------------------+--------------------------------------+
 || Property                           || Service
@@ -91,101 +91,114 @@ security.ha.service.protocol.acl      | ACL for HAService protocol used by HAAdm
 
 ** Access Control Lists
 
-   <<<${HADOOP_CONF_DIR}/hadoop-policy.xml>>> defines an access control list for
-   each Hadoop service. Every access control list has a simple format:
+<<<${HADOOP_CONF_DIR}/hadoop-policy.xml>>> defines an access control list for
+each Hadoop service. Every access control list has a simple format:
 
-   The list of users and groups are both comma separated list of names.
-   The two lists are separated by a space.
+The list of users and groups are both comma separated list of names.
+The two lists are separated by a space.
 
-   Example: <<<user1,user2 group1,group2>>>.
+Example: <<
+<user1,user2 group1,group2>>>.
 
-   Add a blank at the beginning of the line if only a list of groups is to
-   be provided, equivalently a comma-separated list of users followed by
-   a space or nothing implies only a set of given users.
+Add a blank at the beginning of the line if only a list of groups is to
+be provided, equivalently a comma-separated list of users followed by
+a space or nothing implies only a set of given users.
 
-   A special value of <<<*>>> implies that all users are allowed to access the
-   service. 
-   
-   If access control list is not defined for a service, the value of
-   <<<security.service.authorization.default.acl>>> is applied. If 
-   <<<security.service.authorization.default.acl>>> is not defined, <<<*>>>  is applied.
+A special value of <<<*>>> implies that all users are allowed to access the
+service.
 
- ** Blocked Access Control Lists
+If access control list is not defined for a service, the value of
+<<
+<security.service.authorization.default.acl>>> is applied. If
+    <<
+    <security.service.authorization.default.acl>>> is not defined, <<<*>>> is applied.
 
-   In some cases, it is required to specify blocked access control list for a service. This specifies
-   the list of users and groups who are not authorized to access the service. The format of
-   the blocked access control list is same as that of access control list. The blocked access
-   control list can be specified via <<<${HADOOP_CONF_DIR}/hadoop-policy.xml>>>. The property name
-   is derived by suffixing with ".blocked".
+        ** Blocked Access Control Lists
 
-   Example: The property name of blocked access control list for <<<security.client.protocol.acl>>
-   will be <<<security.client.protocol.acl.blocked>>>
+        In some cases, it is required to specify blocked access control list for a service. This specifies
+        the list of users and groups who are not authorized to access the service. The format of
+        the blocked access control list is same as that of access control list. The blocked access
+        control list can be specified via <<<${HADOOP_CONF_DIR}/hadoop-policy.xml>>>. The property name
+        is derived by suffixing with ".blocked".
 
-   For a service, it is possible to specify both an access control list and a blocked control
-   list. A user is authorized to access the service if the user is in the access control and not in
-   the blocked access control list.
+        Example: The property name of blocked access control list for <<
+        <security.client.protocol.acl>>
+            will be <<
+            <security.client.protocol.acl.blocked>>>
 
-   If blocked access control list is not defined for a service, the value of
-   <<<security.service.authorization.default.acl.blocked>>> is applied. If
-   <<<security.service.authorization.default.acl.blocked>>> is not defined,
-   empty blocked access control list is applied.
+                For a service, it is possible to specify both an access control list and a blocked control
+                list. A user is authorized to access the service if the user is in the access control and not in
+                the blocked access control list.
+
+                If blocked access control list is not defined for a service, the value of
+                <<
+                <security.service.authorization.default.acl.blocked>>> is applied. If
+                    <<
+                    <security.service.authorization.default.acl.blocked>>> is not defined,
+                        empty blocked access control list is applied.
 
 
-** Refreshing Service Level Authorization Configuration
+                        ** Refreshing Service Level Authorization Configuration
 
-   The service-level authorization configuration for the NameNode and
-   JobTracker can be changed without restarting either of the Hadoop
-   master daemons. The cluster administrator can change
-   <<<${HADOOP_CONF_DIR}/hadoop-policy.xml>>> on the master nodes and instruct
-   the NameNode and JobTracker to reload their respective configurations
-   via the <<<-refreshServiceAcl>>> switch to <<<dfsadmin>>> and <<<mradmin>>> commands
-   respectively.
+                        The service-level authorization configuration for the NameNode and
+                        JobTracker can be changed without restarting either of the Hadoop
+                        master daemons. The cluster administrator can change
+                        <<<${HADOOP_CONF_DIR}/hadoop-policy.xml>>> on the master nodes and instruct
+                        the NameNode and JobTracker to reload their respective configurations
+                        via the <<<-refreshServiceAcl>>> switch to <<
+                        <dfsadmin>>> and <<
+                            <mradmin>>> commands
+                                respectively.
 
-   Refresh the service-level authorization configuration for the NameNode:
+                                Refresh the service-level authorization configuration for the NameNode:
 
-----
-   $ bin/hadoop dfsadmin -refreshServiceAcl
-----
+                                ----
+                                $ bin/hadoop dfsadmin -refreshServiceAcl
+                                ----
 
-   Refresh the service-level authorization configuration for the
-   JobTracker:
+                                Refresh the service-level authorization configuration for the
+                                JobTracker:
 
-----
-   $ bin/hadoop mradmin -refreshServiceAcl
-----
+                                ----
+                                $ bin/hadoop mradmin -refreshServiceAcl
+                                ----
 
-   Of course, one can use the <<<security.refresh.policy.protocol.acl>>>
-   property in <<<${HADOOP_CONF_DIR}/hadoop-policy.xml>>> to restrict access to
-   the ability to refresh the service-level authorization configuration to
-   certain users/groups.
+                                Of course, one can use the <<
+                                <security.refresh.policy.protocol.acl>>>
+                                    property in <<<${HADOOP_CONF_DIR}/hadoop-policy.xml>>> to restrict access to
+                                    the ability to refresh the service-level authorization configuration to
+                                    certain users/groups.
 
-** Examples
+                                    ** Examples
 
-   Allow only users <<<alice>>>, <<<bob>>> and users in the <<<mapreduce>>> group to submit
-   jobs to the MapReduce cluster:
+                                    Allow only users <<
+                                    <alice>>>, <<
+                                        <bob>>> and users in the <<
+                                            <mapreduce>>> group to submit
+                                                jobs to the MapReduce cluster:
 
-----
-<property>
-     <name>security.job.submission.protocol.acl</name>
-     <value>alice,bob mapreduce</value>
-</property>
-----
+                                                ----
+                                                <property>
+                                                    <name>security.job.submission.protocol.acl</name>
+                                                    <value>alice,bob mapreduce</value>
+                                                </property>
+                                                ----
 
-   Allow only DataNodes running as the users who belong to the group
-   datanodes to communicate with the NameNode:
+                                                Allow only DataNodes running as the users who belong to the group
+                                                datanodes to communicate with the NameNode:
 
-----
-<property>
-     <name>security.datanode.protocol.acl</name>
-     <value>datanodes</value>
-</property>
-----
+                                                ----
+                                                <property>
+                                                    <name>security.datanode.protocol.acl</name>
+                                                    <value>datanodes</value>
+                                                </property>
+                                                ----
 
-   Allow any user to talk to the HDFS cluster as a DFSClient:
+                                                Allow any user to talk to the HDFS cluster as a DFSClient:
 
-----
-<property>
-     <name>security.client.protocol.acl</name>
-     <value>*</value>
-</property>
-----
+                                                ----
+                                                <property>
+                                                    <name>security.client.protocol.acl</name>
+                                                    <value>*</value>
+                                                </property>
+                                                ----

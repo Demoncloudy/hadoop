@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,34 +33,34 @@ import org.apache.hadoop.mapred.JobConf;
 @InterfaceAudience.Public
 @InterfaceStability.Stable
 public class UserDefinedValueAggregatorDescriptor extends org.apache.hadoop.
-    mapreduce.lib.aggregate.UserDefinedValueAggregatorDescriptor
-    implements ValueAggregatorDescriptor {
+        mapreduce.lib.aggregate.UserDefinedValueAggregatorDescriptor
+        implements ValueAggregatorDescriptor {
 
-  /**
-   * Create an instance of the given class
-   * @param className the name of the class
-   * @return a dynamically created instance of the given class 
-   */
-  public static Object createInstance(String className) {
-    return org.apache.hadoop.mapreduce.lib.aggregate.
-      UserDefinedValueAggregatorDescriptor.createInstance(className);
-  }
+    /**
+     * @param className the class name of the user defined descriptor class
+     * @param job       a configure object used for decriptor configuration
+     */
+    public UserDefinedValueAggregatorDescriptor(String className, JobConf job) {
+        super(className, job);
+        ((ValueAggregatorDescriptor) theAggregatorDescriptor).configure(job);
+    }
 
-  /**
-   * 
-   * @param className the class name of the user defined descriptor class
-   * @param job a configure object used for decriptor configuration
-   */
-  public UserDefinedValueAggregatorDescriptor(String className, JobConf job) {
-    super(className, job);
-    ((ValueAggregatorDescriptor)theAggregatorDescriptor).configure(job);
-  }
+    /**
+     * Create an instance of the given class
+     *
+     * @param className the name of the class
+     * @return a dynamically created instance of the given class
+     */
+    public static Object createInstance(String className) {
+        return org.apache.hadoop.mapreduce.lib.aggregate.
+                UserDefinedValueAggregatorDescriptor.createInstance(className);
+    }
 
-  /**
-   *  Do nothing.
-   */
-  public void configure(JobConf job) {
+    /**
+     * Do nothing.
+     */
+    public void configure(JobConf job) {
 
-  }
+    }
 
 }

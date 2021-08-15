@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,38 +18,36 @@
 
 package org.apache.hadoop.ipc.protocolPB;
 
-import java.io.IOException;
-
+import com.google.protobuf.RpcController;
+import com.google.protobuf.ServiceException;
 import org.apache.hadoop.ipc.RefreshCallQueueProtocol;
 import org.apache.hadoop.ipc.proto.RefreshCallQueueProtocolProtos.RefreshCallQueueRequestProto;
 import org.apache.hadoop.ipc.proto.RefreshCallQueueProtocolProtos.RefreshCallQueueResponseProto;
 
-import com.google.protobuf.RpcController;
-import com.google.protobuf.ServiceException;
+import java.io.IOException;
 
 public class RefreshCallQueueProtocolServerSideTranslatorPB implements
-    RefreshCallQueueProtocolPB {
+        RefreshCallQueueProtocolPB {
 
-  private final RefreshCallQueueProtocol impl;
+    private final static RefreshCallQueueResponseProto
+            VOID_REFRESH_CALL_QUEUE_RESPONSE = RefreshCallQueueResponseProto
+            .newBuilder().build();
+    private final RefreshCallQueueProtocol impl;
 
-  private final static RefreshCallQueueResponseProto
-  VOID_REFRESH_CALL_QUEUE_RESPONSE = RefreshCallQueueResponseProto
-      .newBuilder().build();
-
-  public RefreshCallQueueProtocolServerSideTranslatorPB(
-      RefreshCallQueueProtocol impl) {
-    this.impl = impl;
-  }
-
-  @Override
-  public RefreshCallQueueResponseProto refreshCallQueue(
-      RpcController controller, RefreshCallQueueRequestProto request)
-      throws ServiceException {
-    try {
-      impl.refreshCallQueue();
-    } catch (IOException e) {
-      throw new ServiceException(e);
+    public RefreshCallQueueProtocolServerSideTranslatorPB(
+            RefreshCallQueueProtocol impl) {
+        this.impl = impl;
     }
-    return VOID_REFRESH_CALL_QUEUE_RESPONSE;
-  }
+
+    @Override
+    public RefreshCallQueueResponseProto refreshCallQueue(
+            RpcController controller, RefreshCallQueueRequestProto request)
+            throws ServiceException {
+        try {
+            impl.refreshCallQueue();
+        } catch (IOException e) {
+            throw new ServiceException(e);
+        }
+        return VOID_REFRESH_CALL_QUEUE_RESPONSE;
+    }
 }

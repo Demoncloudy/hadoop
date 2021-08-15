@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,49 +18,46 @@
 
 package org.apache.hadoop.yarn.server.applicationhistoryservice.webapp;
 
-import static org.apache.hadoop.yarn.util.StringHelper.sjoin;
-import static org.apache.hadoop.yarn.webapp.YarnWebParams.APP_STATE;
-import static org.apache.hadoop.yarn.webapp.view.JQueryUI.ACCORDION;
-import static org.apache.hadoop.yarn.webapp.view.JQueryUI.ACCORDION_ID;
-import static org.apache.hadoop.yarn.webapp.view.JQueryUI.DATATABLES;
-import static org.apache.hadoop.yarn.webapp.view.JQueryUI.DATATABLES_ID;
-import static org.apache.hadoop.yarn.webapp.view.JQueryUI.initID;
 import org.apache.hadoop.yarn.server.webapp.AppsBlock;
 import org.apache.hadoop.yarn.server.webapp.WebPageUtils;
 import org.apache.hadoop.yarn.webapp.SubView;
 import org.apache.hadoop.yarn.webapp.view.TwoColumnLayout;
 
+import static org.apache.hadoop.yarn.util.StringHelper.sjoin;
+import static org.apache.hadoop.yarn.webapp.YarnWebParams.APP_STATE;
+import static org.apache.hadoop.yarn.webapp.view.JQueryUI.*;
+
 // Do NOT rename/refactor this to AHSView as it will wreak havoc
 // on Mac OS HFS
 public class AHSView extends TwoColumnLayout {
-  static final int MAX_DISPLAY_ROWS = 100; // direct table rendering
-  static final int MAX_FAST_ROWS = 1000; // inline js array
+    static final int MAX_DISPLAY_ROWS = 100; // direct table rendering
+    static final int MAX_FAST_ROWS = 1000; // inline js array
 
-  @Override
-  protected void preHead(Page.HTML<_> html) {
-    commonPreHead(html);
-    set(DATATABLES_ID, "apps");
-    set(initID(DATATABLES, "apps"), WebPageUtils.appsTableInit());
-    setTableStyles(html, "apps", ".queue {width:6em}", ".ui {width:8em}");
+    @Override
+    protected void preHead(Page.HTML<_> html) {
+        commonPreHead(html);
+        set(DATATABLES_ID, "apps");
+        set(initID(DATATABLES, "apps"), WebPageUtils.appsTableInit());
+        setTableStyles(html, "apps", ".queue {width:6em}", ".ui {width:8em}");
 
-    // Set the correct title.
-    String reqState = $(APP_STATE);
-    reqState = (reqState == null || reqState.isEmpty() ? "All" : reqState);
-    setTitle(sjoin(reqState, "Applications"));
-  }
+        // Set the correct title.
+        String reqState = $(APP_STATE);
+        reqState = (reqState == null || reqState.isEmpty() ? "All" : reqState);
+        setTitle(sjoin(reqState, "Applications"));
+    }
 
-  protected void commonPreHead(Page.HTML<_> html) {
-    set(ACCORDION_ID, "nav");
-    set(initID(ACCORDION, "nav"), "{autoHeight:false, active:0}");
-  }
+    protected void commonPreHead(Page.HTML<_> html) {
+        set(ACCORDION_ID, "nav");
+        set(initID(ACCORDION, "nav"), "{autoHeight:false, active:0}");
+    }
 
-  @Override
-  protected Class<? extends SubView> nav() {
-    return NavBlock.class;
-  }
+    @Override
+    protected Class<? extends SubView> nav() {
+        return NavBlock.class;
+    }
 
-  @Override
-  protected Class<? extends SubView> content() {
-    return AppsBlock.class;
-  }
+    @Override
+    protected Class<? extends SubView> content() {
+        return AppsBlock.class;
+    }
 }

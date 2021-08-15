@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,16 +18,15 @@
 
 package org.apache.hadoop.yarn.api.records.timeline;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.hadoop.classification.InterfaceAudience.Public;
+import org.apache.hadoop.classification.InterfaceStability.Unstable;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.apache.hadoop.classification.InterfaceAudience.Public;
-import org.apache.hadoop.classification.InterfaceStability.Unstable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The class that hosts a list of timeline entities.
@@ -38,51 +37,48 @@ import org.apache.hadoop.classification.InterfaceStability.Unstable;
 @Unstable
 public class TimelineEntities {
 
-  private List<TimelineEntity> entities =
-      new ArrayList<TimelineEntity>();
+    private List<TimelineEntity> entities =
+            new ArrayList<TimelineEntity>();
 
-  public TimelineEntities() {
+    public TimelineEntities() {
 
-  }
+    }
 
-  /**
-   * Get a list of entities
-   * 
-   * @return a list of entities
-   */
-  @XmlElement(name = "entities")
-  public List<TimelineEntity> getEntities() {
-    return entities;
-  }
+    /**
+     * Get a list of entities
+     *
+     * @return a list of entities
+     */
+    @XmlElement(name = "entities")
+    public List<TimelineEntity> getEntities() {
+        return entities;
+    }
 
-  /**
-   * Add a single entity into the existing entity list
-   * 
-   * @param entity
-   *          a single entity
-   */
-  public void addEntity(TimelineEntity entity) {
-    entities.add(entity);
-  }
+    /**
+     * Set the entity list to the given list of entities
+     *
+     * @param entities a list of entities
+     */
+    public void setEntities(List<TimelineEntity> entities) {
+        this.entities = entities;
+    }
 
-  /**
-   * All a list of entities into the existing entity list
-   * 
-   * @param entities
-   *          a list of entities
-   */
-  public void addEntities(List<TimelineEntity> entities) {
-    this.entities.addAll(entities);
-  }
+    /**
+     * Add a single entity into the existing entity list
+     *
+     * @param entity a single entity
+     */
+    public void addEntity(TimelineEntity entity) {
+        entities.add(entity);
+    }
 
-  /**
-   * Set the entity list to the given list of entities
-   * 
-   * @param entities
-   *          a list of entities
-   */
-  public void setEntities(List<TimelineEntity> entities) {
-    this.entities = entities;
-  }
+    /**
+     * All a list of entities into the existing entity list
+     *
+     * @param entities a list of entities
+     */
+    public void addEntities(List<TimelineEntity> entities) {
+        this.entities.addAll(entities);
+    }
 
 }

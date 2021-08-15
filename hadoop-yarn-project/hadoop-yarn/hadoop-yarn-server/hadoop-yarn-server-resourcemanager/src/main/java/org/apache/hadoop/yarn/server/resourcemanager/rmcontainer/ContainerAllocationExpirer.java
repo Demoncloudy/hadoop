@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,26 +29,26 @@ import org.apache.hadoop.yarn.util.SystemClock;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ContainerAllocationExpirer extends
-    AbstractLivelinessMonitor<ContainerId> {
+        AbstractLivelinessMonitor<ContainerId> {
 
-  private EventHandler dispatcher;
+    private EventHandler dispatcher;
 
-  public ContainerAllocationExpirer(Dispatcher d) {
-    super(ContainerAllocationExpirer.class.getName(), new SystemClock());
-    this.dispatcher = d.getEventHandler();
-  }
+    public ContainerAllocationExpirer(Dispatcher d) {
+        super(ContainerAllocationExpirer.class.getName(), new SystemClock());
+        this.dispatcher = d.getEventHandler();
+    }
 
-  public void serviceInit(Configuration conf) throws Exception {
-    int expireIntvl = conf.getInt(
-            YarnConfiguration.RM_CONTAINER_ALLOC_EXPIRY_INTERVAL_MS,
-            YarnConfiguration.DEFAULT_RM_CONTAINER_ALLOC_EXPIRY_INTERVAL_MS);
-    setExpireInterval(expireIntvl);
-    setMonitorInterval(expireIntvl/3);
-    super.serviceInit(conf);
-  }
+    public void serviceInit(Configuration conf) throws Exception {
+        int expireIntvl = conf.getInt(
+                YarnConfiguration.RM_CONTAINER_ALLOC_EXPIRY_INTERVAL_MS,
+                YarnConfiguration.DEFAULT_RM_CONTAINER_ALLOC_EXPIRY_INTERVAL_MS);
+        setExpireInterval(expireIntvl);
+        setMonitorInterval(expireIntvl / 3);
+        super.serviceInit(conf);
+    }
 
-  @Override
-  protected void expire(ContainerId containerId) {
-    dispatcher.handle(new ContainerExpiredSchedulerEvent(containerId));
-  }
+    @Override
+    protected void expire(ContainerId containerId) {
+        dispatcher.handle(new ContainerExpiredSchedulerEvent(containerId));
+    }
 }

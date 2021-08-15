@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,35 +17,53 @@
  */
 package org.apache.hadoop.hdfs.util;
 
-/** Read-write lock interface. */
+/**
+ * Read-write lock interface.
+ */
 public interface RwLock {
-  /** Acquire read lock. */
-  public void readLock();
-  
-  /**
-   * Acquire the long read lock, unless interrupted while waiting. The long
-   * read lock should also serve to block all concurrent writers.
-   **/
-  void longReadLockInterruptibly() throws InterruptedException;
-  
-  /** Release the long read lock. */
-  public void longReadUnlock();
+    /**
+     * Acquire read lock.
+     */
+    public void readLock();
 
-  /** Release read lock. */
-  public void readUnlock();
+    /**
+     * Acquire the long read lock, unless interrupted while waiting. The long
+     * read lock should also serve to block all concurrent writers.
+     **/
+    void longReadLockInterruptibly() throws InterruptedException;
 
-  /** Check if the current thread holds read lock. */
-  public boolean hasReadLock();
+    /**
+     * Release the long read lock.
+     */
+    public void longReadUnlock();
 
-  /** Acquire write lock. */
-  public void writeLock();
-  
-  /** Acquire write lock, unless interrupted while waiting  */
-  void writeLockInterruptibly() throws InterruptedException;
+    /**
+     * Release read lock.
+     */
+    public void readUnlock();
 
-  /** Release write lock. */
-  public void writeUnlock();
+    /**
+     * Check if the current thread holds read lock.
+     */
+    public boolean hasReadLock();
 
-  /** Check if the current thread holds write lock. */
-  public boolean hasWriteLock();
+    /**
+     * Acquire write lock.
+     */
+    public void writeLock();
+
+    /**
+     * Acquire write lock, unless interrupted while waiting
+     */
+    void writeLockInterruptibly() throws InterruptedException;
+
+    /**
+     * Release write lock.
+     */
+    public void writeUnlock();
+
+    /**
+     * Check if the current thread holds write lock.
+     */
+    public boolean hasWriteLock();
 }

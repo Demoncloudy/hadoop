@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,10 +18,12 @@
 
 package org.apache.hadoop.io;
 
-import java.io.*;
-
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInput;
+import java.io.DataInputStream;
 
 /** A reusable {@link DataInput} implementation that reads from an in-memory
  * buffer.
@@ -39,61 +41,81 @@ import org.apache.hadoop.classification.InterfaceStability;
  *   ... read buffer using DataInput methods ...
  * }
  * </pre>
- *  
+ *
  */
 @InterfaceAudience.LimitedPrivate({"HDFS", "MapReduce"})
 @InterfaceStability.Unstable
 public class DataInputBuffer extends DataInputStream {
-  private static class Buffer extends ByteArrayInputStream {
-    public Buffer() {
-      super(new byte[] {});
+    private Buffer buffer;
+
+    /**
+     * Constructs a new empty buffer.
+     */
+    public DataInputBuffer() {
+        this(new Buffer());
     }
 
+    private DataInputBuffer(Buffer buffer) {
+        super(buffer);
+        this.buffer = buffer;
+    }
+
+    /**
+     * Resets the data that the buffer reads.
+     */
+    public void reset(byte[] input, int length) {
+        buffer.reset(input, 0, length);
+    }
+
+    /**
+     * Resets the data that the buffer reads.
+     */
     public void reset(byte[] input, int start, int length) {
-      this.buf = input;
-      this.count = start+length;
-      this.mark = start;
-      this.pos = start;
+        buffer.reset(input, start, length);
     }
 
-    public byte[] getData() { return buf; }
-    public int getPosition() { return pos; }
-    public int getLength() { return count; }
-  }
+    public byte[] getData() {
+        return buffer.getData();
+    }
 
-  private Buffer buffer;
-  
-  /** Constructs a new empty buffer. */
-  public DataInputBuffer() {
-    this(new Buffer());
-  }
+    /**
+     * Returns the current position in the input.
+     */
+    public int getPosition() {
+        return buffer.getPosition();
+    }
 
-  private DataInputBuffer(Buffer buffer) {
-    super(buffer);
-    this.buffer = buffer;
-  }
+    /**
+     * Returns the index one greater than the last valid character in the input
+     * stream buffer.
+     */
+    public int getLength() {
+        return buffer.getLength();
+    }
 
-  /** Resets the data that the buffer reads. */
-  public void reset(byte[] input, int length) {
-    buffer.reset(input, 0, length);
-  }
+    private static class Buffer extends ByteArrayInputStream {
+        public Buffer() {
+            super(new byte[]{});
+        }
 
-  /** Resets the data that the buffer reads. */
-  public void reset(byte[] input, int start, int length) {
-    buffer.reset(input, start, length);
-  }
-  
-  public byte[] getData() {
-    return buffer.getData();
-  }
+        public void reset(byte[] input, int start, int length) {
+            this.buf = input;
+            this.count = start + length;
+            this.mark = start;
+            this.pos = start;
+        }
 
-  /** Returns the current position in the input. */
-  public int getPosition() { return buffer.getPosition(); }
+        public byte[] getData() {
+            return buf;
+        }
 
-  /**
-   * Returns the index one greater than the last valid character in the input
-   * stream buffer.
-   */
-  public int getLength() { return buffer.getLength(); }
+        public int getPosition() {
+            return pos;
+        }
+
+        public int getLength() {
+            return count;
+        }
+    }
 
 }
