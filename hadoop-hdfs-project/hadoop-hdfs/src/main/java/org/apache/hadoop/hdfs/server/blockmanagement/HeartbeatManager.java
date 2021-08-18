@@ -283,7 +283,9 @@ class HeartbeatManager implements DatanodeStatistics {
             int numOfStaleNodes = 0;
             int numOfStaleStorages = 0;
             synchronized (this) {
+                // datanodes存放的list
                 for (DatanodeDescriptor d : datanodes) {
+                    // 判断datanode是否宕机,  默认10.5min没有心跳, 就是宕机了
                     if (dead == null && dm.isDatanodeDead(d)) {
                         stats.incrExpiredHeartbeats();
                         dead = d;
@@ -320,6 +322,7 @@ class HeartbeatManager implements DatanodeStatistics {
                         return;
                     }
                     synchronized (this) {
+                        // 移除掉
                         dm.removeDeadDatanode(dead);
                     }
                 } finally {
@@ -413,6 +416,8 @@ class HeartbeatManager implements DatanodeStatistics {
             while (namesystem.isRunning()) {
                 try {
                     final long now = Time.now();
+                    // 最近一次心跳的间隔 + 默认间隔
+                    // 默认间隔默认为recheckInterval -> dfs.namenode.heartbeat.recheck-interval 5min
                     if (lastHeartbeatCheck + heartbeatRecheckInterval < now) {
                         heartbeatCheck();
                         lastHeartbeatCheck = now;

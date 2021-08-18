@@ -326,7 +326,7 @@ public class DatanodeManager {
                 conf.getInt(DFSConfigKeys.DFS_NAMENODE_DECOMMISSION_NODES_PER_INTERVAL_KEY,
                         DFSConfigKeys.DFS_NAMENODE_DECOMMISSION_NODES_PER_INTERVAL_DEFAULT)));
         decommissionthread.start();
-
+        // 启动heartbeat thread, 监控所有注册上来的datanode是否发送心跳
         heartbeatManager.activate(conf);
     }
 
@@ -609,8 +609,13 @@ public class DatanodeManager {
      * Is the datanode dead?
      */
     boolean isDatanodeDead(DatanodeDescriptor node) {
-        return (node.getLastUpdate() <
-                (Time.now() - heartbeatExpireInterval));
+        // 如果上次心跳时间  < 当前时间 - 间隔
+        // 2次心跳时间超过了时间间隔
+        // 2 * heartbeatRecheckInterval + 10 * 1000 * heartbeatIntervalSeconds
+        // heartbeatRecheckInterval ->  dfs.namenode.heartbeat.recheck-interval  default: 5*60*1000
+        // heartbeatIntervalSeconds ->  dfs.heartbeat.interval default 3s
+        // 2 * 5 min  +  10 * 1000 * 3ms = 10 min + 30s = 10.5 min
+        return (node.getLastUpdate() < (Time.now() - heartbeatExpireInterval));
     }
 
     /**
