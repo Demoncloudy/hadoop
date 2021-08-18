@@ -1102,6 +1102,7 @@ class NameNodeRpcServer implements NamenodeProtocols {
             throws IOException {
         checkNNStartup();
         verifySoftwareVersion(nodeReg);
+        // namenode注册请求
         namesystem.registerDatanode(nodeReg);
         return nodeReg;
     }

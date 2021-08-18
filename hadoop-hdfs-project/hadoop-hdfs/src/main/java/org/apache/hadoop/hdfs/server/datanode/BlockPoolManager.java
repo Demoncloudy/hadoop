@@ -65,6 +65,7 @@ class BlockPoolManager {
         if (bpos.getBlockPoolId() == null) {
             throw new IllegalArgumentException("Null blockpool id");
         }
+        // 放入map中
         bpByBlockPoolId.put(bpos.getBlockPoolId(), bpos);
     }
 
@@ -119,11 +120,13 @@ class BlockPoolManager {
 
     synchronized void startAll() throws IOException {
         try {
+            // datanode 注册
             UserGroupInformation.getLoginUser().doAs(
                     new PrivilegedExceptionAction<Object>() {
                         @Override
                         public Object run() throws Exception {
                             for (BPOfferService bpos : offerServices) {
+                                // 启动BPServiceActor
                                 bpos.start();
                             }
                             return null;
@@ -167,6 +170,7 @@ class BlockPoolManager {
             // Step 1. For each of the new nameservices, figure out whether
             // it's an update of the set of NNs for an existing NS,
             // or an entirely new nameservice.
+            // 有没有新的nameservice
             for (String nameserviceId : addrMap.keySet()) {
                 if (bpByNameserviceId.containsKey(nameserviceId)) {
                     toRefresh.add(nameserviceId);
@@ -175,6 +179,7 @@ class BlockPoolManager {
                 }
             }
 
+            // 删除不用的
             // Step 2. Any nameservices we currently have but are no longer present
             // need to be removed.
             toRemove = Sets.newHashSet(Sets.difference(
@@ -191,7 +196,9 @@ class BlockPoolManager {
             if (!toAdd.isEmpty()) {
                 LOG.info("Starting BPOfferServices for nameservices: " +
                         Joiner.on(",").useForNull("<default>").join(toAdd));
-
+                // BPOfferService包括BPServiceActor,
+                // nameservice, 一组namenode, active/standby.
+                // 初始化blockpoolmanager时候, 会根据配置文件中的nameservice的配置, 对每个nameservice创建一个BPOfferService
                 for (String nsToAdd : toAdd) {
                     ArrayList<InetSocketAddress> addrs =
                             Lists.newArrayList(addrMap.get(nsToAdd).values());
@@ -200,12 +207,14 @@ class BlockPoolManager {
                     offerServices.add(bpos);
                 }
             }
+            // 启动
             startAll();
         }
 
         // Step 4. Shut down old nameservices. This happens outside
         // of the synchronized(this) lock since they need to call
         // back to .remove() from another thread
+        // 把需要删除的nameserver对应的BPServiceActor停掉
         if (!toRemove.isEmpty()) {
             LOG.info("Stopping BPOfferServices for nameservices: " +
                     Joiner.on(",").useForNull("<default>").join(toRemove));
@@ -219,6 +228,7 @@ class BlockPoolManager {
         }
 
         // Step 5. Update nameservices whose NN list has changed
+        // 有列表变化
         if (!toRefresh.isEmpty()) {
             LOG.info("Refreshing list of NNs for nameservices: " +
                     Joiner.on(",").useForNull("<default>").join(toRefresh));

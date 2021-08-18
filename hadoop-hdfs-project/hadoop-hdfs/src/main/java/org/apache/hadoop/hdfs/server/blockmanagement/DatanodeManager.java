@@ -921,6 +921,8 @@ public class DatanodeManager {
     /**
      * Register the given datanode with the namenode. NB: the given
      * registration is mutated and given back to the datanode.
+     * 将datanode注册到namenode上去, DatanodeRegistration对象是可变的(mutated)
+     * 将变化后的datanode对象返还给datanode
      *
      * @param nodeReg the datanode registration
      * @throws DisallowedDatanodeException if the registration request is
@@ -1036,9 +1038,9 @@ public class DatanodeManager {
                 }
                 return;
             }
-
-            DatanodeDescriptor nodeDescr
-                    = new DatanodeDescriptor(nodeReg, NetworkTopology.DEFAULT_RACK);
+            // 第一次注册会到这里
+            // 为第一次注册的对象封装DatanodeDescriptor
+            DatanodeDescriptor nodeDescr = new DatanodeDescriptor(nodeReg, NetworkTopology.DEFAULT_RACK);
             boolean success = false;
             try {
                 // resolve network location
@@ -1051,16 +1053,19 @@ public class DatanodeManager {
                     nodeDescr.setDependentHostNames(
                             getNetworkDependenciesWithDefault(nodeDescr));
                 }
+                // 将这个datanode放入集群拓扑的对象里面
                 networktopology.add(nodeDescr);
                 nodeDescr.setSoftwareVersion(nodeReg.getSoftwareVersion());
 
-                // register new datanode
+                // register new datanode 注册
                 addDatanode(nodeDescr);
+                // 部署HDFS的时候, 有一个文件, 里面可以加入那些datanode是需要下线的. 这面就是检查一下是否需要下线
                 checkDecommissioning(nodeDescr);
 
                 // also treat the registration message as a heartbeat
                 // no need to update its timestamp
                 // because its is done when the descriptor is created
+                // 心跳, 加入heartbeatManager中
                 heartbeatManager.addDatanode(nodeDescr);
                 success = true;
                 incrementVersionCount(nodeReg.getSoftwareVersion());

@@ -144,6 +144,8 @@ class BPServiceActor implements Runnable {
         NamespaceInfo nsInfo = null;
         while (shouldRun()) {
             try {
+                // bpNamenode作为RPC代理, 构造网络请求, 连接到namenode的rpc server, 发送请求
+                // 发送到org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.versionRequest拿到namespace info
                 nsInfo = bpNamenode.versionRequest();
                 LOG.debug(this + " received versionRequest response: " + nsInfo);
                 break;
@@ -186,15 +188,21 @@ class BPServiceActor implements Runnable {
 
     private void connectToNNAndHandshake() throws IOException {
         // get NN proxy
+        // 连接到namenode, 获取bpNamenode
+        // bpNamenode负责rpc接口的代理, 让bpserveractor以rpc接口代理的方式去请求namenode,
         bpNamenode = dn.connectToNN(nnAddr);
 
-        // First phase of the handshake with NN - get the namespace
-        // info.
+        // First phase of the handshake with NN - get the namespace info.
+        // 通过上面获取到的代理, 调用namenode version request的rpc接口. 获取到namenode的namespaceinfo
+        // NamespaceInfo包含namenode的id
         NamespaceInfo nsInfo = retrieveNamespaceInfo();
 
         // Verify that this matches the other NN in this HA pair.
         // This also initializes our block pool in the DN if we are
         // the first NN connection for this BP.
+        // 1. 比较获取到的namespaceinfo, 检验是否相同
+        // 2. 第一个namenode返回namespaceinfo后, 会在datanode这里初始化datastorage,
+        // 里面会初始化对应的block存储空间, 启动block相关的后台线程
         bpos.verifyAndSetNamespaceInfo(nsInfo);
 
         // Second phase of the handshake with the NN.
@@ -441,6 +449,8 @@ class BPServiceActor implements Runnable {
     List<DatanodeCommand> blockReport() throws IOException {
         // send block report if timer has expired.
         final long startTime = now();
+        // 当前时间 - 上次汇报的时间 <= 汇报间隔 就直接返回
+        // dfs.blockreport.intervalMsec -> 2160 0000/1000/60/60 = 6 默认6h
         if (startTime - lastBlockReport <= dnConf.blockReportInterval) {
             return null;
         }
@@ -455,14 +465,12 @@ class BPServiceActor implements Runnable {
         lastDeletedReport = startTime;
 
         long brCreateStartTime = now();
-        Map<DatanodeStorage, BlockListAsLongs> perVolumeBlockLists =
-                dn.getFSDataset().getBlockReports(bpos.getBlockPoolId());
+        Map<DatanodeStorage, BlockListAsLongs> perVolumeBlockLists = dn.getFSDataset().getBlockReports(bpos.getBlockPoolId());
 
         // Convert the reports to the format expected by the NN.
         int i = 0;
         int totalBlockCount = 0;
-        StorageBlockReport reports[] =
-                new StorageBlockReport[perVolumeBlockLists.size()];
+        StorageBlockReport reports[] = new StorageBlockReport[perVolumeBlockLists.size()];
 
         for (Map.Entry<DatanodeStorage, BlockListAsLongs> kvPair : perVolumeBlockLists.entrySet()) {
             BlockListAsLongs blockList = kvPair.getValue();
@@ -555,6 +563,7 @@ class BPServiceActor implements Runnable {
         // send cache report if timer has expired.
         DatanodeCommand cmd = null;
         final long startTime = Time.monotonicNow();
+        // cacheReportInterval ->  dfs.cachereport.intervalMsec 10000ms -> 10s
         if (startTime - lastCacheReport > dnConf.cacheReportInterval) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Sending cacheReport from service actor: " + this);
@@ -596,6 +605,7 @@ class BPServiceActor implements Runnable {
 
     //This must be called only by BPOfferService
     void start() {
+        // 防止二次启动
         if ((bpThread != null) && (bpThread.isAlive())) {
             //Thread is started already
             return;
@@ -668,12 +678,14 @@ class BPServiceActor implements Runnable {
         // Now loop for a long time....
         //
         while (shouldRun()) {
+            // 这里的死循环为了重试
             try {
                 final long startTime = now();
 
-                //
+                // 发送心跳
                 // Every so often, send heartbeat or block-report
-                //
+                // 当前时间 - 上次心跳时间 >= 配置的心跳时间
+                // dfs.heartbeat.interval -> 默认3S
                 if (startTime - lastHeartbeat >= dnConf.heartBeatInterval) {
                     //
                     // All heartbeat messages include following info:
@@ -713,21 +725,28 @@ class BPServiceActor implements Runnable {
                         }
                     }
                 }
-                if (sendImmediateIBR ||
-                        (startTime - lastDeletedReport > dnConf.deleteReportInterval)) {
+
+                // 汇报block
+
+                // deleteReportInterval -> 100 * heartBeatInterval 3*100 = 5min
+                if (sendImmediateIBR || (startTime - lastDeletedReport > dnConf.deleteReportInterval)) {
+                    // 汇报delete report
                     reportReceivedDeletedBlocks();
                     lastDeletedReport = startTime;
                 }
 
+                // 汇报block, 默认间隔6h
                 List<DatanodeCommand> cmds = blockReport();
                 processCommand(cmds == null ? null : cmds.toArray(new DatanodeCommand[cmds.size()]));
 
+                // cache block report, 默认10s
                 DatanodeCommand cmd = cacheReport();
                 processCommand(new DatanodeCommand[]{cmd});
 
                 // Now safe to start scanning the block pool.
                 // If it has already been started, this is a no-op.
                 if (dn.blockScanner != null) {
+                    // org.apache.hadoop.hdfs.server.datanode.DataNode.initBlockPool中启动的
                     dn.blockScanner.addBlockPool(bpos.getBlockPoolId());
                 }
 
@@ -735,8 +754,7 @@ class BPServiceActor implements Runnable {
                 // There is no work to do;  sleep until hearbeat timer elapses,
                 // or work arrives, and then iterate again.
                 //
-                long waitTime = dnConf.heartBeatInterval -
-                        (Time.now() - lastHeartbeat);
+                long waitTime = dnConf.heartBeatInterval - (Time.now() - lastHeartbeat);
                 synchronized (pendingIncrementalBRperStorage) {
                     if (waitTime > 0 && !sendImmediateIBR) {
                         try {
@@ -783,13 +801,17 @@ class BPServiceActor implements Runnable {
     void register() throws IOException {
         // The handshake() phase loaded the block pool storage
         // off disk - so update the bpRegistration object from that info
+        // 创建了DatanodeRegistration, 大体上相当于一个datanode注册请求
+        //  如果namenode收到了这个注册请求bpRegistration, 那么就可以标识出是那个datanode发起的注册
         bpRegistration = bpos.createRegistration();
 
         LOG.info(this + " beginning handshake with NN");
-
+        // 不断的重试
         while (shouldRun()) {
             try {
                 // Use returned registration from namenode with updated fields
+                // 发送给namenode注册请求 -> org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.registerDatanode
+                // 包含了注册成功后返回的信息
                 bpRegistration = bpNamenode.registerDatanode(bpRegistration);
                 break;
             } catch (EOFException e) {  // namenode might have just restarted
@@ -806,6 +828,9 @@ class BPServiceActor implements Runnable {
         bpos.registrationSucceeded(this, bpRegistration);
 
         // random short delay - helps scatter the BR from all DNs
+        // 延迟调度一次block report->
+        // initialBlockReportDelay dfs.blockreport.initialDelay 默认是0
+        // 这里会做一些时间的设定, 在BPServiceActor的run中, 会开始进行block report, 第一次是全量汇报自己的block
         scheduleBlockReport(dnConf.initialBlockReportDelay);
     }
 
@@ -825,6 +850,8 @@ class BPServiceActor implements Runnable {
      * <p>
      * Only stop when "shouldRun" or "shouldServiceRun" is turned off, which can
      * happen either at shutdown or due to refreshNamenodes.
+     * <p>
+     * 核心方法 datanode往namenode注册, datanode去定时的给namenode发送心跳
      */
     @Override
     public void run() {
@@ -835,6 +862,7 @@ class BPServiceActor implements Runnable {
                 // init stuff
                 try {
                     // setup storage
+                    // 封装了namenode第一次启动和注册的全过程
                     connectToNNAndHandshake();
                     break;
                 } catch (IOException ioe) {
@@ -854,7 +882,7 @@ class BPServiceActor implements Runnable {
             }
 
             runningState = RunningState.RUNNING;
-
+            // 发送心跳和汇报block都在这里
             while (shouldRun()) {
                 try {
                     offerService();

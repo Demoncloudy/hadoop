@@ -68,6 +68,8 @@ public class DatanodeProtocolClientSideTranslatorPB implements
     private static DatanodeProtocolPB createNamenode(
             InetSocketAddress nameNodeAddr, Configuration conf,
             UserGroupInformation ugi) throws IOException {
+
+        // 获取可以调用namenode接口的代理
         return RPC.getProxy(DatanodeProtocolPB.class,
                 RPC.getProtocolVersion(DatanodeProtocolPB.class), nameNodeAddr, ugi,
                 conf, NetUtils.getSocketFactory(conf, DatanodeProtocolPB.class));

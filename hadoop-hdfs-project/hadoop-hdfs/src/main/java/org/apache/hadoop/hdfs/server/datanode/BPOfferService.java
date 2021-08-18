@@ -95,8 +95,9 @@ class BPOfferService {
         Preconditions.checkArgument(!nnAddrs.isEmpty(),
                 "Must pass at least one NN.");
         this.dn = dn;
-
+        // BP: BlockPool
         for (InetSocketAddress addr : nnAddrs) {
+            // BPServiceActor datanode向namenode发送请求, 一个就是一个线程
             this.bpServices.add(new BPServiceActor(addr, this));
         }
     }
@@ -309,6 +310,7 @@ class BPOfferService {
     void verifyAndSetNamespaceInfo(NamespaceInfo nsInfo) throws IOException {
         writeLock();
         try {
+            // bpNSInfo 是null, 代表第一个返回的namespceinfo
             if (this.bpNSInfo == null) {
                 this.bpNSInfo = nsInfo;
                 boolean success = false;
@@ -317,6 +319,7 @@ class BPOfferService {
                 // The DN can now initialize its local storage if we are the
                 // first BP to handshake, etc.
                 try {
+                    // 已经知道了namespce id了, datanode就可以初始化本地存储
                     dn.initBlockPool(this);
                     success = true;
                 } finally {
@@ -328,6 +331,7 @@ class BPOfferService {
                     }
                 }
             } else {
+                // 第二个返回的, 校验是否匹配
                 checkNSEquality(bpNSInfo.getBlockPoolID(), nsInfo.getBlockPoolID(),
                         "Blockpool ID");
                 checkNSEquality(bpNSInfo.getNamespaceID(), nsInfo.getNamespaceID(),
