@@ -220,6 +220,7 @@ class HeartbeatManager implements DatanodeStatistics {
                                       StorageReport[] reports, long cacheCapacity, long cacheUsed,
                                       int xceiverCount, int failedVolumes) {
         stats.subtract(node);
+        // DatanodeDescriptor的updateHeartbeat
         node.updateHeartbeat(reports, cacheCapacity, cacheUsed,
                 xceiverCount, failedVolumes);
         stats.add(node);

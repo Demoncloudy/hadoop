@@ -4968,6 +4968,7 @@ public class FSNamesystem implements Namesystem, FSClusterStats,
             //get datanode commands
             final int maxTransfer = blockManager.getMaxReplicationStreams()
                     - xmitsInProgress;
+            // datanodeManager 实际上来处理心跳
             DatanodeCommand[] cmds = blockManager.getDatanodeManager().handleHeartbeat(
                     nodeReg, reports, blockPoolId, cacheCapacity, cacheUsed,
                     xceiverCount, maxTransfer, failedVolumes);

@@ -24,8 +24,11 @@ public class StorageReport {
     public static final StorageReport[] EMPTY_ARRAY = {};
     private final DatanodeStorage storage;
     private final boolean failed;
+    // 总磁盘大小
     private final long capacity;
+    // 使用大小
     private final long dfsUsed;
+    // 剩余大小
     private final long remaining;
     private final long blockPoolUsed;
 

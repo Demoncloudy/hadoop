@@ -1439,7 +1439,7 @@ public class DatanodeManager {
                 if (nodeinfo == null || !nodeinfo.isAlive) {
                     return new DatanodeCommand[]{RegisterCommand.REGISTER};
                 }
-
+                // 更新heartbeat
                 heartbeatManager.updateHeartbeat(nodeinfo, reports,
                         cacheCapacity, cacheUsed,
                         xceiverCount, failedVolumes);
@@ -1450,6 +1450,8 @@ public class DatanodeManager {
                     return new DatanodeCommand[0];
                 }
 
+                // namenode在判断, 这次datanode发送心跳时候, 有没有需要它执行的任务
+                // 返回一个command给datanode
                 //check lease recovery
                 BlockInfoUnderConstruction[] blocks = nodeinfo
                         .getLeaseRecoveryCommand(Integer.MAX_VALUE);

@@ -300,6 +300,7 @@ public class DatanodeDescriptor extends DatanodeInfo {
                                 long cacheUsed, int xceiverCount, int volFailures) {
         updateHeartbeatState(reports, cacheCapacity, cacheUsed, xceiverCount,
                 volFailures);
+        // 自动注册以来是否发送过心跳
         heartbeatedSinceRegistration = true;
     }
 
@@ -340,10 +341,11 @@ public class DatanodeDescriptor extends DatanodeInfo {
             failedStorageInfos = new HashSet<DatanodeStorageInfo>(
                     storageMap.values());
         }
-
+        // 更新DatanodeDescriptor中的信息
         setCacheCapacity(cacheCapacity);
         setCacheUsed(cacheUsed);
         setXceiverCount(xceiverCount);
+        // 设置最近接收心跳时间
         setLastUpdate(Time.now());
         this.volumeFailures = volFailures;
         for (StorageReport report : reports) {

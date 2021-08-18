@@ -587,13 +587,11 @@ class BPServiceActor implements Runnable {
     }
 
     HeartbeatResponse sendHeartBeat() throws IOException {
-        StorageReport[] reports =
-                dn.getFSDataset().getStorageReports(bpos.getBlockPoolId());
+        StorageReport[] reports = dn.getFSDataset().getStorageReports(bpos.getBlockPoolId());
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Sending heartbeat with " + reports.length +
-                    " storage reports from service actor: " + this);
+            LOG.debug("Sending heartbeat with " + reports.length + " storage reports from service actor: " + this);
         }
-
+        // 发送到org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.sendHeartbeat
         return bpNamenode.sendHeartbeat(bpRegistration,
                 reports,
                 dn.getFSDataset().getCacheCapacity(),
@@ -696,6 +694,7 @@ class BPServiceActor implements Runnable {
                     //
                     lastHeartbeat = startTime;
                     if (!dn.areHeartbeatsDisabledForTests()) {
+                        // 发送心跳
                         HeartbeatResponse resp = sendHeartBeat();
                         assert resp != null;
                         dn.getMetrics().addHeartbeat(now() - startTime);
@@ -706,14 +705,15 @@ class BPServiceActor implements Runnable {
                         // Important that this happens before processCommand below,
                         // since the first heartbeat to a new active might have commands
                         // that we should actually process.
-                        bpos.updateActorStatesFromHeartbeat(
-                                this, resp.getNameNodeHaState());
+                        // 根据返回namenode的状态(active/standby) 更新当前BPServiceActor对应namenode的状态
+                        bpos.updateActorStatesFromHeartbeat(this, resp.getNameNodeHaState());
                         state = resp.getNameNodeHaState().getState();
 
                         if (state == HAServiceState.ACTIVE) {
                             handleRollingUpgradeStatus(resp);
                         }
 
+                        // 执行command
                         long startProcessCommands = now();
                         if (!processCommand(resp.getCommands()))
                             continue;
