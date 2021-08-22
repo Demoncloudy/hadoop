@@ -834,6 +834,7 @@ public class DistributedFileSystem extends FileSystem {
      *                   details about how this is used to calculate the
      *                   effective permission.
      */
+    // 创建目录
     @Override
     public boolean mkdirs(Path f, FsPermission permission) throws IOException {
         return mkdirsInternal(f, permission, true);
@@ -847,6 +848,7 @@ public class DistributedFileSystem extends FileSystem {
             @Override
             public Boolean doCall(final Path p)
                     throws IOException, UnresolvedLinkException {
+                // 创建目录
                 return dfs.mkdirs(getPathName(p), permission, createParent);
             }
 

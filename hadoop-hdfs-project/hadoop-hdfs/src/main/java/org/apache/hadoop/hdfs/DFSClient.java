@@ -107,6 +107,11 @@ import static org.apache.hadoop.hdfs.DFSConfigKeys.*;
  * DistributedFileSystem, which uses DFSClient to handle
  * filesystem tasks.
  *
+ * 可以连接到hadoop的文件系统以及执行基础的文件操作.
+ * 使用ClientProtocol和namenode进程进行通信, 可以直接来连接到datanode上读写数据
+ *
+ * HDFS用户应该获取DistributedFileSystem对象实例, 使用DFSClient去处理文件任务
+ *
  ********************************************************/
 @InterfaceAudience.Private
 public class DFSClient implements java.io.Closeable, RemotePeerFactory,
@@ -251,6 +256,7 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
                     "null URI");
             proxyInfo = NameNodeProxies.createProxy(conf, nameNodeUri,
                     ClientProtocol.class, nnFallbackToSimpleAuth);
+            // 调用ClientProtocol, 发起网络请求, 和namenode的server端进行通信
             this.dtService = proxyInfo.getDelegationTokenService();
             this.namenode = proxyInfo.getProxy();
         }
@@ -2248,6 +2254,7 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
      * @return True if the operation success.
      * @see ClientProtocol#mkdirs(String, FsPermission, boolean)
      */
+    // 创建目录
     public boolean mkdirs(String src, FsPermission permission,
                           boolean createParent) throws IOException {
         if (permission == null) {
@@ -2283,6 +2290,11 @@ public class DFSClient implements java.io.Closeable, RemotePeerFactory,
             LOG.debug(src + ": masked=" + absPermission);
         }
         try {
+            // 创建目录是元数据, 只会放在namenode的文件目录树里面
+            // 发送rpc请求
+            // org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.mkdirs
+            // org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.mkdirs
+            // org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.mkdirs
             return namenode.mkdirs(src, absPermission, createParent);
         } catch (RemoteException re) {
             throw re.unwrapRemoteException(AccessControlException.class,

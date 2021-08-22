@@ -68,6 +68,9 @@ import static org.apache.hadoop.util.Time.now;
  * FSDirectory is a pure in-memory data structure, all of whose operations
  * happen entirely in memory. In contrast, FSNamesystem persists the operations
  * to the disk.
+ * <p>
+ * FSDirectory和FSNamesystem一起管理namespace的状态. FSDirectory是一个纯内存的数据结构, 所有的操作都直接在内存中.
+ * 相反的, FSNamesystem会持久化在磁盘上
  *
  * @see org.apache.hadoop.hdfs.server.namenode.FSNamesystem
  **/
@@ -106,6 +109,9 @@ public class FSDirectory implements Closeable {
      * byte[] objects and reduce heap usage.
      */
     private final NameCache<ByteArray> nameCache;
+    // 根目录 本质就是INode, 模仿linux的概念
+    // INodeDirectory代表目录
+    // INodeFile代表文件
     INodeDirectory rootDir;
     private volatile boolean skipQuotaCheck = false; //skip while consuming edits
     private long yieldCount = 0; // keep track of lock yield count.
@@ -490,6 +496,8 @@ public class FSDirectory implements Closeable {
      * Check if a given path is reserved
      */
     public static boolean isReservedName(String src) {
+        // 是否是保留目录
+        // 如果指定的路径是/.reserved开头, 就是reservedName
         return src.startsWith(DOT_RESERVED_PATH_PREFIX);
     }
 
@@ -1947,8 +1955,9 @@ public class FSDirectory implements Closeable {
                           List<AclEntry> aclEntries, long timestamp)
             throws QuotaExceededException, AclException {
         assert hasWriteLock();
-        final INodeDirectory dir = new INodeDirectory(inodeId, name, permission,
-                timestamp);
+        // 封装对象, 代表了需要创建的目录
+        final INodeDirectory dir = new INodeDirectory(inodeId, name, permission, timestamp);
+        // 把INodeDirectory 挂载到文件目录树中去
         if (addChild(inodesInPath, pos, dir, true)) {
             if (aclEntries != null) {
                 AclStorage.updateINodeAcl(dir, aclEntries, Snapshot.CURRENT_STATE_ID);
@@ -2159,9 +2168,11 @@ public class FSDirectory implements Closeable {
         updateCount(iip, pos,
                 counts.get(Quota.NAMESPACE), counts.get(Quota.DISKSPACE), checkQuota);
         boolean isRename = (child.getParent() != null);
+        // 获取到parent目录
         final INodeDirectory parent = inodes[pos - 1].asDirectory();
         boolean added;
         try {
+            // 挂载到父目录的child里面
             added = parent.addChild(child, true, iip.getLatestSnapshotId());
         } catch (QuotaExceededException e) {
             updateCountNoQuotaCheck(iip, pos,

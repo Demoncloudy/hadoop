@@ -32,6 +32,7 @@ import java.util.List;
 /**
  * Storing all the {@link INode}s and maintaining the mapping between INode ID
  * and INode.
+ * 保存inodeid和inode的映射关系
  */
 public class INodeMap {
 

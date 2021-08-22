@@ -4114,6 +4114,7 @@ public class FSNamesystem implements Namesystem, FSClusterStats,
                    boolean createParent) throws IOException, UnresolvedLinkException {
         boolean ret = false;
         try {
+            //
             ret = mkdirsInt(src, permissions, createParent);
         } catch (AccessControlException e) {
             logAuditEvent(false, "mkdirs", src);
@@ -4131,14 +4132,23 @@ public class FSNamesystem implements Namesystem, FSClusterStats,
         if (!DFSUtil.isValidName(src)) {
             throw new InvalidPathException(src);
         }
+        // 权限检查
         FSPermissionChecker pc = getPermissionChecker();
         checkOperation(OperationCategory.WRITE);
+        // 处理是否是/.reserved 开头的, 正常情况下为空
         byte[][] pathComponents = FSDirectory.getPathComponentsForReservedPath(src);
         HdfsFileStatus resultingStat = null;
         boolean status = false;
+        // mkdirsInternal中完成了2个任务
+        // 1. 在内存中的文件目录树中加入要创建的目录
+        // 2. 写入edits log到磁盘文件中, 记录本次元数据的更新操作
+
+        // 纯内存数据操作
         writeLock();
         try {
+            // 权限检查
             checkOperation(OperationCategory.WRITE);
+            // 安全模式检查
             checkNameNodeSafeMode("Cannot create directory " + src);
             src = resolvePath(src, pathComponents);
             status = mkdirsInternal(pc, src, permissions, createParent);
@@ -4148,6 +4158,7 @@ public class FSNamesystem implements Namesystem, FSClusterStats,
         } finally {
             writeUnlock();
         }
+        // 3. 在上面的writelock写锁释放后, 强制sync edits 到磁盘文件中
         getEditLog().logSync();
         if (status) {
             logAuditEvent(true, "mkdirs", srcArg, null, resultingStat);
@@ -4211,28 +4222,28 @@ public class FSNamesystem implements Namesystem, FSClusterStats,
             UnresolvedLinkException, SnapshotAccessControlException,
             AclException {
         src = FSDirectory.normalizePath(src);
+        // 获取
         byte[][] components = INode.getPathComponents(src);
         final int lastInodeIndex = components.length - 1;
 
         dir.writeLock();
         try {
+            // 获取已经存在的目录
             INodesInPath iip = dir.getExistingPathINodes(components);
             if (iip.isSnapshot()) {
-                throw new SnapshotAccessControlException(
-                        "Modification on RO snapshot is disallowed");
+                throw new SnapshotAccessControlException("Modification on RO snapshot is disallowed");
             }
             INode[] inodes = iip.getINodes();
 
             // find the index of the first null in inodes[]
             StringBuilder pathbuilder = new StringBuilder();
             int i = 1;
+            // 找到抵押给为null的index, 从那里开始创建就行
             for (; i < inodes.length && inodes[i] != null; i++) {
-                pathbuilder.append(Path.SEPARATOR).
-                        append(DFSUtil.bytes2String(components[i]));
+                pathbuilder.append(Path.SEPARATOR).append(DFSUtil.bytes2String(components[i]));
                 if (!inodes[i].isDirectory()) {
-                    throw new FileAlreadyExistsException(
-                            "Parent path is not a directory: "
-                                    + pathbuilder + " " + inodes[i].getLocalName());
+                    throw new FileAlreadyExistsException("Parent path is not a directory: "
+                            + pathbuilder + " " + inodes[i].getLocalName());
                 }
             }
 
@@ -4270,11 +4281,13 @@ public class FSNamesystem implements Namesystem, FSClusterStats,
 
             // create directories beginning from the first null index
             for (; i < inodes.length; i++) {
-                pathbuilder.append(Path.SEPARATOR).
-                        append(DFSUtil.bytes2String(components[i]));
+                // pathbuilder = /usr/warehouse/hive
+                pathbuilder.append(Path.SEPARATOR).append(DFSUtil.bytes2String(components[i]));
+                // 完成/usr/warehouse/hive的目录创建
+                // 假设/usr/warehouse/hive/data
+                // 先创建/usr/warehouse/hive这样一个目录, 在去创建下层的
                 dir.unprotectedMkdir(allocateNewInodeId(), iip, i, components[i],
-                        (i < lastInodeIndex) ? parentPermissions : permissions, null,
-                        now);
+                        (i < lastInodeIndex) ? parentPermissions : permissions, null, now);
                 if (inodes[i] == null) {
                     return false;
                 }
@@ -4283,10 +4296,10 @@ public class FSNamesystem implements Namesystem, FSClusterStats,
                 NameNode.getNameNodeMetrics().incrFilesCreated();
 
                 final String cur = pathbuilder.toString();
+                // 向edits log中写入日志
                 getEditLog().logMkDir(cur, inodes[i]);
                 if (NameNode.stateChangeLog.isDebugEnabled()) {
-                    NameNode.stateChangeLog.debug(
-                            "mkdirs: created directory " + cur);
+                    NameNode.stateChangeLog.debug("mkdirs: created directory " + cur);
                 }
             }
         } finally {

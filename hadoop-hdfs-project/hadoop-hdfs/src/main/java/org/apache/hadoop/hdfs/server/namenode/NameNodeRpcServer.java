@@ -813,6 +813,7 @@ class NameNodeRpcServer implements NamenodeProtocols {
             throw new IOException("mkdirs: Pathname too long.  Limit "
                     + MAX_PATH_LENGTH + " characters, " + MAX_PATH_DEPTH + " levels.");
         }
+        // 承接rpc接口, 交给fsnamesystem去处理
         return namesystem.mkdirs(src,
                 new PermissionStatus(getRemoteUser().getShortUserName(),
                         null, masked), createParent);

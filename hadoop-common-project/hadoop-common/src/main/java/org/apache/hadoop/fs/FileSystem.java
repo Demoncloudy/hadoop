@@ -2009,6 +2009,7 @@ public abstract class FileSystem extends Configured implements Closeable {
     /**
      * Call {@link #mkdirs(Path, FsPermission)} with default permission.
      */
+    // 创建目录
     public boolean mkdirs(Path f) throws IOException {
         return mkdirs(f, FsPermission.getDirDefault());
     }

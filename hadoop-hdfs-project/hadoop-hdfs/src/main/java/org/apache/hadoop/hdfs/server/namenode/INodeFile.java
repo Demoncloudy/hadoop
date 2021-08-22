@@ -48,6 +48,7 @@ public class INodeFile extends INodeWithAdditionalFields
         implements INodeFileAttributes, BlockCollection {
 
     private long header = 0L;
+    // 这个文件分成了那些block
     private BlockInfo[] blocks;
 
     INodeFile(long id, byte[] name, PermissionStatus permissions, long mtime,
