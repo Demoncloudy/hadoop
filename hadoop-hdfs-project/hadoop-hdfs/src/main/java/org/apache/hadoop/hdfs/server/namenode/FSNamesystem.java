@@ -4238,7 +4238,7 @@ public class FSNamesystem implements Namesystem, FSClusterStats,
             // find the index of the first null in inodes[]
             StringBuilder pathbuilder = new StringBuilder();
             int i = 1;
-            // 找到抵押给为null的index, 从那里开始创建就行
+            // 找到目录null的index, 从那里开始创建就行
             for (; i < inodes.length && inodes[i] != null; i++) {
                 pathbuilder.append(Path.SEPARATOR).append(DFSUtil.bytes2String(components[i]));
                 if (!inodes[i].isDirectory()) {
