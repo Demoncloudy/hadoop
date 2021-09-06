@@ -4297,6 +4297,7 @@ public class FSNamesystem implements Namesystem, FSClusterStats,
 
                 final String cur = pathbuilder.toString();
                 // 向edits log中写入日志
+                // FSEditslog 负责在操作完内存文件目录树之后, 输出操作日志到磁盘上的edits log文件中
                 getEditLog().logMkDir(cur, inodes[i]);
                 if (NameNode.stateChangeLog.isDebugEnabled()) {
                     NameNode.stateChangeLog.debug("mkdirs: created directory " + cur);

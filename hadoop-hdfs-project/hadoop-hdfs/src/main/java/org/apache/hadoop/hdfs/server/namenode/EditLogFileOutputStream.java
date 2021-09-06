@@ -72,12 +72,14 @@ public class EditLogFileOutputStream extends EditLogOutputStream {
 
         file = name;
         doubleBuf = new EditsDoubleBuffer(size);
+        // 创建RandomAccessFile
         RandomAccessFile rp;
         if (shouldSyncWritesAndSkipFsync) {
             rp = new RandomAccessFile(name, "rws");
         } else {
             rp = new RandomAccessFile(name, "rw");
         }
+        // 初始化fp
         fp = new FileOutputStream(rp.getFD()); // open for append
         fc = rp.getChannel();
         fc.position(fc.size());
@@ -112,6 +114,7 @@ public class EditLogFileOutputStream extends EditLogOutputStream {
 
     @Override
     public void write(FSEditLogOp op) throws IOException {
+        // 写入缓冲
         doubleBuf.writeOp(op);
     }
 
@@ -204,6 +207,7 @@ public class EditLogFileOutputStream extends EditLogOutputStream {
             return;
         }
         preallocate(); // preallocate file if necessary
+        // 写入
         doubleBuf.flushTo(fp);
         if (durable && !shouldSkipFsyncForTests && !shouldSyncWritesAndSkipFsync) {
             fc.force(false); // metadata updates not needed

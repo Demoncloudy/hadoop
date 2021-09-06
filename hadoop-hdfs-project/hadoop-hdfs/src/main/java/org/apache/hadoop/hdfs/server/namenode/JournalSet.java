@@ -249,6 +249,7 @@ public class JournalSet implements JournalManager {
             JournalClosure closure, String status) throws IOException {
 
         List<JournalAndStream> badJAS = Lists.newLinkedList();
+        // 遍历journal set内部的流
         for (JournalAndStream jas : journals) {
             try {
                 closure.apply(jas);
@@ -324,6 +325,7 @@ public class JournalSet implements JournalManager {
     }
 
     void add(JournalManager j, boolean required, boolean shared) {
+        // 每次添加, 都会创建JournalAndStream
         JournalAndStream jas = new JournalAndStream(j, required, shared);
         journals.add(jas);
     }
@@ -522,6 +524,7 @@ public class JournalSet implements JournalManager {
         public void startLogSegment(long txId, int layoutVersion) throws IOException {
             Preconditions.checkState(stream == null);
             disabled = false;
+            // 获取对应流
             stream = journal.startLogSegment(txId, layoutVersion);
         }
 
@@ -621,6 +624,7 @@ public class JournalSet implements JournalManager {
                 @Override
                 public void apply(JournalAndStream jas) throws IOException {
                     if (jas.isActive()) {
+                        // 获取加入的流, 调用write方法
                         jas.getCurrentStream().write(op);
                     }
                 }

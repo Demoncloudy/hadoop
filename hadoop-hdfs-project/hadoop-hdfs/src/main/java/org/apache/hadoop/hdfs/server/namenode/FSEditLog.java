@@ -63,6 +63,7 @@ import static org.apache.hadoop.util.Time.now;
 
 /**
  * FSEditLog maintains a log of the namespace modifications.
+ * 维护namespace(命名空间)的修改
  */
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
@@ -70,6 +71,7 @@ public class FSEditLog implements LogsPurgeable {
 
     static final Log LOG = LogFactory.getLog(FSEditLog.class);
     // stores the most current transactionId of this thread.
+    // 每个线程都有一个副本, 将id放入里面, 后面直接使用自己的thread id
     private static final ThreadLocal<TransactionId> myTransactionId = new ThreadLocal<TransactionId>() {
         @Override
         protected synchronized TransactionId initialValue() {
@@ -99,6 +101,8 @@ public class FSEditLog implements LogsPurgeable {
     private State state = State.UNINITIALIZED;
     //initialize
     private JournalSet journalSet = null;
+    // 包装流, 封装了其他的底层流
+    // 写一条edits log就是写2个流
     private EditLogOutputStream editLogStream = null;
     // a monotonically increasing counter that represents transactionIds.
     private long txid = 0;
@@ -136,8 +140,9 @@ public class FSEditLog implements LogsPurgeable {
 
         // If this list is empty, an error will be thrown on first use
         // of the editlog, as no journals will exist
+        // namenode将edits log写入自己本地磁盘的那个目录, 默认就是hadoop.tmp.dir下面的路径
         this.editsDirs = Lists.newArrayList(editsDirs);
-
+        // 写入到那些journal node的集群上去
         this.sharedEditsDirs = FSNamesystem.getSharedEditsDirs(conf);
     }
 
@@ -202,6 +207,7 @@ public class FSEditLog implements LogsPurgeable {
         state = State.OPEN_FOR_READING;
     }
 
+    // journalSet初始化
     private synchronized void initJournals(List<URI> dirs) {
         int minimumRedundantJournals = conf.getInt(
                 DFSConfigKeys.DFS_NAMENODE_EDITS_DIR_MINIMUM_KEY,
@@ -213,13 +219,16 @@ public class FSEditLog implements LogsPurgeable {
             for (URI u : dirs) {
                 boolean required = FSNamesystem.getRequiredNamespaceEditsDirs(conf)
                         .contains(u);
+                // 如果传入uri是本地文件系统
                 if (u.getScheme().equals(NNStorage.LOCAL_URI_SCHEME)) {
                     StorageDirectory sd = storage.getStorageDirectory(u);
                     if (sd != null) {
+                        // 创建FileJournalManager, 负责将edits log写入本地磁盘
                         journalSet.add(new FileJournalManager(conf, sd, storage),
                                 required, sharedEditsDirs.contains(u));
                     }
                 } else {
+                    // 传入uri不是本地文件系统, 反射创建QuorumJournalManager, 负责将edits log写入JournalNode
                     journalSet.add(createJournal(u), required,
                             sharedEditsDirs.contains(u));
                 }
@@ -363,15 +372,25 @@ public class FSEditLog implements LogsPurgeable {
             // wait if an automatic sync is scheduled
             waitIfAutoSyncScheduled();
 
+            // 开启了transaction
             long start = beginTransaction();
+            // 每个FSEditLogOp就代表了一次元数据操作, 会有一个全局唯一的txid
             op.setTransactionId(txid);
 
             try {
+                // 对外输出日志
+                // 1. 将edits log写入本地磁盘文件
+                // 2. 将edits log写入journal node, standby node从journal node里同步
+                // org.apache.hadoop.hdfs.server.namenode.FSEditLog.startLogSegment 封装了多个流
+
+                // org.apache.hadoop.hdfs.server.namenode.JournalSet.JournalSetOutputStream.write
+                // 写入双缓冲的一块区域
                 editLogStream.write(op);
             } catch (IOException ex) {
                 // All journals failed, it is handled in logSync.
             }
 
+            // 结束当前transaction
             endTransaction(start);
 
             // check if it is time to schedule an automatic sync
@@ -382,6 +401,8 @@ public class FSEditLog implements LogsPurgeable {
         }
 
         // sync buffered edit log entries to persistent store
+        // 在synchronized同步代码块之外调用, 强制同步到磁盘
+        // 第二段加锁
         logSync();
     }
 
@@ -418,6 +439,7 @@ public class FSEditLog implements LogsPurgeable {
     }
 
     private long beginTransaction() {
+        // 判断是否持有锁
         assert Thread.holdsLock(this);
         // get a new transactionId
         txid++;
@@ -494,14 +516,18 @@ public class FSEditLog implements LogsPurgeable {
      * The internal concurrency design of this class is as follows:
      * - Log items are written synchronized into an in-memory buffer,
      * and each assigned a transaction ID.
+     * 每个log同步的写入内存缓冲中,而且都被分配一个id
      * - When a thread (client) would like to sync all of its edits, logSync()
      * uses a ThreadLocal transaction ID to determine what edit number must
      * be synced to.
+     * 如果线程要执行sync操作, logSync用一个ThreadLocal的txid去决定是否要执行flush
      * - The isSyncRunning volatile boolean tracks whether a sync is currently
      * under progress.
+     * isSyncRunning用来标识是否有sync正在执行
      * <p>
      * The data is double-buffered within each edit log implementation so that
      * in-memory writing can occur in parallel with the on-disk writing.
+     * 每个edit log的是实现都是双缓冲, 所以说内存的写日志和磁盘的写可以并行
      * <p>
      * Each sync occurs in three steps:
      * 1. synchronized, it swaps the double buffer and sets the isSyncRunning
@@ -509,12 +535,16 @@ public class FSEditLog implements LogsPurgeable {
      * 2. unsynchronized, it flushes the data to storage
      * 3. synchronized, it resets the flag and notifies anyone waiting on the
      * sync.
+     * 1. synchronized交换双缓冲, 设置isSyncRunning标识
+     * 2. unsynchronized刷新内存到磁盘上
+     * 3. synchronized重置标识位, 通知其他需要同步的线程
      * <p>
      * The lack of synchronization on step 2 allows other threads to continue
      * to write into the memory buffer while the sync is in progress.
      * Because this step is unsynchronized, actions that need to avoid
      * concurrency with sync() should be synchronized and also call
      * waitForSyncToFinish() before assuming they are running alone.
+     * 第二步没有用synchronization允许在sync的过程中其他线程继续写到内存中
      */
     public void logSync() {
         long syncStart = 0;
@@ -530,6 +560,8 @@ public class FSEditLog implements LogsPurgeable {
                     printStatistics(false);
 
                     // if somebody is already syncing, then wait
+                    // 同一时间只能有一个线程同步内存buffer到磁盘上
+                    // isSyncRunning标志位, 表示有线程正在同步
                     while (mytxid > synctxid && isSyncRunning) {
                         try {
                             wait(1000);
@@ -539,7 +571,7 @@ public class FSEditLog implements LogsPurgeable {
 
                     //
                     // If this transaction was already flushed, then nothing to do
-                    //
+                    // 已经刷新进去了, 不需要在刷新了
                     if (mytxid <= synctxid) {
                         numTransactionsBatchedInSync++;
                         if (metrics != null) {
@@ -559,6 +591,7 @@ public class FSEditLog implements LogsPurgeable {
                         if (journalSet.isEmpty()) {
                             throw new IOException("No journals available to flush");
                         }
+                        // 交换缓冲区
                         editLogStream.setReadyToFlush();
                     } catch (IOException e) {
                         final String msg =
@@ -584,6 +617,7 @@ public class FSEditLog implements LogsPurgeable {
             long start = now();
             try {
                 if (logStream != null) {
+                    // 调用所有流的flush, 刷入磁盘
                     logStream.flush();
                 }
             } catch (IOException ex) {
@@ -728,6 +762,7 @@ public class FSEditLog implements LogsPurgeable {
      */
     public void logMkDir(String path, INode newNode) {
         PermissionStatus permissions = newNode.getPermissionStatus();
+        // 构造器
         MkdirOp op = MkdirOp.getInstance(cache.get())
                 .reset()
                 .setInodeId(newNode.getId())
@@ -744,6 +779,7 @@ public class FSEditLog implements LogsPurgeable {
         if (x != null) {
             op.setXAttrs(x.getXAttrs());
         }
+        // 实际完成日志记录
         logEdit(op);
     }
 
@@ -1125,6 +1161,8 @@ public class FSEditLog implements LogsPurgeable {
      * Start writing to the log segment with the given txid.
      * Transitions from BETWEEN_LOG_SEGMENTS state to IN_LOG_SEGMENT state.
      */
+    // 开启一个新得日志段
+    // namenode启动加载磁盘上的fsimage和editslog合并后, 写fsimage到磁盘上去, 打开新的edits log写入日志
     synchronized void startLogSegment(final long segmentTxId,
                                       boolean writeHeaderTxn) throws IOException {
         LOG.info("Starting log segment at " + segmentTxId);
@@ -1146,6 +1184,10 @@ public class FSEditLog implements LogsPurgeable {
         storage.attemptRestoreRemovedStorage();
 
         try {
+            // 初始化了一个新的EditLogOutputStream, journalSet中包含了2个流
+            // org.apache.hadoop.hdfs.server.namenode.JournalSet.JournalClosure.apply
+
+            // 返回org.apache.hadoop.hdfs.server.namenode.JournalSet.JournalSetOutputStream
             editLogStream = journalSet.startLogSegment(segmentTxId,
                     NameNodeLayoutVersion.CURRENT_LAYOUT_VERSION);
         } catch (IOException ex) {

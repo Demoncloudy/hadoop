@@ -33,6 +33,8 @@ import java.io.OutputStream;
  * is flushed, the two internal buffers are swapped. This allows edits
  * to progress concurrently to flushes without allocating new buffers each
  * time.
+ * 2个缓冲区, 新的edits是写入第一个buffer中的, 第二个buffer是用于刷新内存数据到磁盘或者网络中的
+ * 每次双缓冲被刷新的时候, 2个buffer会交换下. 这样可以让edits log持续进行写入
  */
 @InterfaceAudience.Private
 public class EditsDoubleBuffer {
