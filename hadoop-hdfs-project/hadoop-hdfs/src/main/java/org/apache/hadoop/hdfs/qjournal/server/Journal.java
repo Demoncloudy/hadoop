@@ -355,7 +355,7 @@ public class Journal implements Closeable {
         // "catching up" with the rest. Hence we do not need to fsync.
         boolean isLagging = lastTxnId <= committedTxnId.get();
         boolean shouldFsync = !isLagging;
-
+        // org.apache.hadoop.hdfs.server.namenode.EditLogFileOutputStream.writeRaw
         curSegment.writeRaw(records, 0, records.length);
         curSegment.setReadyToFlush();
         Stopwatch sw = new Stopwatch();

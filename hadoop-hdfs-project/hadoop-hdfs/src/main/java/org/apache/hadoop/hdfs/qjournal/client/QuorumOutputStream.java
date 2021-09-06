@@ -46,6 +46,7 @@ class QuorumOutputStream extends EditLogOutputStream {
 
     @Override
     public void write(FSEditLogOp op) throws IOException {
+        // 也是双缓冲写入
         buf.writeOp(op);
     }
 
@@ -95,15 +96,21 @@ class QuorumOutputStream extends EditLogOutputStream {
             // 2) because the calls to the underlying nodes are asynchronous, we
             //    need a defensive copy to avoid accidentally mutating the buffer
             //    before it is sent.
+            // 将缓冲中的数据拷贝到字节数组中去
+            // 1. IPC代码, rpc调用就是需要一次性将缓冲区里的数据全部发送到journalnode上去,
+            // 通过rpc接口请求没有办法每次就发送一个大的数组的一部分
+            // 2. journal node的调用是异步的, 需要一个防御性的拷贝区避免在发送这段数据之前buffer被修改
             DataOutputBuffer bufToSend = new DataOutputBuffer(numReadyBytes);
+            // 将buffer里面的数据, 先写入了一个新得dataoutputbuffer里面去
             buf.flushTo(bufToSend);
             assert bufToSend.getLength() == numReadyBytes;
             byte[] data = bufToSend.getData();
             assert data.length == bufToSend.getLength();
-
+            // 通过AsyncLoggerSet这个组件, 异步发送edits log到大多数journal node上去
             QuorumCall<AsyncLogger, Void> qcall = loggers.sendEdits(
                     segmentTxId, firstTxToFlush,
                     numReadyTxns, data);
+            // 等待到大多数journal node都成功以后, 在继续执行
             loggers.waitForWriteQuorum(qcall, writeTimeoutMs, "sendEdits");
 
             // Since we successfully wrote this batch, let the loggers know. Any future

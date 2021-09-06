@@ -75,6 +75,7 @@ public class IPCLoggerChannel implements AsyncLogger {
      * Executes tasks submitted to it serially, on a single thread, in FIFO order
      * (generally used for write tasks that should not be reordered).
      */
+    // 每个asyncLogger其实都有一个单线程的线程池, 在里面发送请求的同时, 就可以基于单线程的线程池来异步执行请求任务
     private final ListeningExecutorService singleThreadExecutor;
     /**
      * Executes tasks submitted to it in parallel with each other and with those
@@ -353,6 +354,7 @@ public class IPCLoggerChannel implements AsyncLogger {
 
                     long rpcSendTimeNanos = System.nanoTime();
                     try {
+                        // 向journal node 推送数据
                         getProxy().journal(createReqInfo(),
                                 segmentTxId, firstTxnId, numTxns, data);
                     } catch (IOException e) {

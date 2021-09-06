@@ -120,6 +120,7 @@ class AsyncLoggerSet {
      */
     <V> Map<AsyncLogger, V> waitForWriteQuorum(QuorumCall<AsyncLogger, V> q,
                                                int timeoutMs, String operationName) throws IOException {
+        // 获取大部分数量
         int majority = getMajoritySize();
         try {
             q.waitFor(
@@ -252,6 +253,7 @@ class AsyncLoggerSet {
     public QuorumCall<AsyncLogger, Void> sendEdits(
             long segmentTxId, long firstTxnId, int numTxns, byte[] data) {
         Map<AsyncLogger, ListenableFuture<Void>> calls = Maps.newHashMap();
+        // 每个AsyncLogger会对应一个journal node来发送数据
         for (AsyncLogger logger : loggers) {
             ListenableFuture<Void> future =
                     logger.sendEdits(segmentTxId, firstTxnId, numTxns, data);

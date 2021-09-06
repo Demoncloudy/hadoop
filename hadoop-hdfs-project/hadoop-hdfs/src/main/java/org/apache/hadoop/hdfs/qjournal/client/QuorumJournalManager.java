@@ -81,6 +81,8 @@ public class QuorumJournalManager implements JournalManager {
     private final Configuration conf;
     private final URI uri;
     private final NamespaceInfo nsInfo;
+    // 封装了多个AsyncLogger, 在flush的时候, 通过这个去journal node发送edits log
+    // 封装quorum算法, 成功大多数,就算成功
     private final AsyncLoggerSet loggers;
     private final URLConnectionFactory connectionFactory;
     private boolean isActiveWriter;
@@ -88,6 +90,7 @@ public class QuorumJournalManager implements JournalManager {
 
     public QuorumJournalManager(Configuration conf,
                                 URI uri, NamespaceInfo nsInfo) throws IOException {
+        // IPCLoggerChannel是AsyncLogger的实现类
         this(conf, uri, nsInfo, IPCLoggerChannel.FACTORY);
     }
 
@@ -387,6 +390,7 @@ public class QuorumJournalManager implements JournalManager {
                 layoutVersion);
         loggers.waitForWriteQuorum(q, startSegmentTimeoutMs,
                 "startLogSegment(" + txId + ")");
+        // write flush都是通过这里
         return new QuorumOutputStream(loggers, txId,
                 outputBufferCapacity, writeTxnsTimeoutMs);
     }

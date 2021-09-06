@@ -385,6 +385,7 @@ public class FSEditLog implements LogsPurgeable {
 
                 // org.apache.hadoop.hdfs.server.namenode.JournalSet.JournalSetOutputStream.write
                 // 写入双缓冲的一块区域
+                // org.apache.hadoop.hdfs.qjournal.client.QuorumOutputStream.write
                 editLogStream.write(op);
             } catch (IOException ex) {
                 // All journals failed, it is handled in logSync.
